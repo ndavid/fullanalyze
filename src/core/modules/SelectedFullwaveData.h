@@ -64,8 +64,11 @@ using boost::shared_ptr;
 #include "LidarFormat/geometry/LidarCenteringTransfo.h"
 
 #include "fullwave/format/FullwaveLidarDataContainer.h"
+#include "fullwave/format/FullwaveFile.h"
 
-using namespace Lidar;
+using Lidar::FullwaveLidarDataContainer;
+using Lidar::LidarCenteringTransfo;
+using Lidar::FullwaveFile;
 
 struct SelectedFullwaveData
 {

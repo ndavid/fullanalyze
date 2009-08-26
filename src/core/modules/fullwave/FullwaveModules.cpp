@@ -50,6 +50,7 @@ knowledge of the CeCILL-B license and that you accept its terms.
  
 ***********************************************************************/
 
+
 #include <wx/config.h>
 #include <boost/filesystem.hpp>
 
@@ -63,6 +64,17 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "gui/files/FilesPanel.h"
 #include "3d/GLPanel.h"
 #include "gui/3d/CloudControl.h"
+#include "gui/images/PanelViewerFWSensor.h"
+#include "gui/images/PanelViewerFWOrtho.h"
+
+//algorithms
+#include "fullwave/algorithms/SensorEnergyImage.h"
+#include "fullwave/algorithms/FullwaveTools.h"
+
+//images
+#include <boost/gil/extension/matis/float_images.hpp>
+#include <boost/gil/extension/io/tiff_io.hpp>
+namespace gil = boost::gil;
 
 //3d
 #include "3d/fullwave/FullwaveCloud.h"
@@ -76,123 +88,118 @@ REGISTER_MODULE(fullwave_display3d, "Display waveforms in 3D", Action::FULLWAVE)
 
 void Module_fullwave_display3d::run()
 {
-	shared_ptr<SelectedFullwaveData> selectedData = getSelectedFullwaveData();
+	shared_ptr<SelectedFullwaveData> selectedData = getSelectedFullwaveData(true);
 	const SelectedFullwaveData::FullwaveData& fwData = selectedData->front();
 
 	FAEventHandler::Instance()->getPanel3D()->getCloudControl()->AddCloud( shared_ptr<Cloud>(new FullwaveCloud(fwData.m_container, fwData.m_transfo, fwData.m_basename )));
 }
 
 
-//void FAEventHandler::fullwaveCenter(const std::string &fileName)
-//{
-//	FullwaveLidarDataContainer fwContainer(fileName);
-//
-//	double x=0, y=0;
-//	wxTextEntryDialog dialogX(m_pimpl->m_parent, _("Transfo x"), _("Please enter text"), _("0."));
-//	if (dialogX.ShowModal() == wxID_OK)
-//	{
-//		wxString result = dialogX.GetValue();
-//		if(!result.ToDouble(&x))
-//		{
-//			wxMessageBox(_("Bad transfo value !"));
-//			return;
-//		}
-//	}
-//	wxTextEntryDialog dialogY(m_pimpl->m_parent, _("Transfo y"), _("Please enter text"), _("0."));
-//	if (dialogY.ShowModal() == wxID_OK)
-//	{
-//		wxString result = dialogY.GetValue();
-//		if(!result.ToDouble(&y))
-//		{
-//			wxMessageBox(_("Bad transfo value !"));
-//			return;
-//		}
-//	}
-//
-//	LidarCenteringTransfo transfo;
-//	transfo.setTransfo(x,y);
-//
-//	shared_ptr<LidarDataContainer> centeredContainer = transfo.centerLidarDataContainer(fwContainer.getAttributeContainer(), "originX", "originY", "originZ");
-//	fwContainer.setAttributeContainer(*centeredContainer);
-//
-//	fwContainer.LoadWaveforms();
-//
-//	std::string fileNameXML = boost::filesystem::path(fileName).branch_path().string() + "/" + boost::filesystem::basename(fileName) + "-centered.xml";
-//	FullwaveFile::save(fwContainer, fileNameXML, transfo);
-//
-//	std::cout << "Fin centrage fw" << std::endl;
-//}
+
+/*** Display 1d module ***/
+
+REGISTER_MODULE(fullwave_display1d, "Display waveforms as 1D signals", Action::FULLWAVE)
+
+void Module_fullwave_display1d::run()
+{
+	shared_ptr<SelectedFullwaveData> selectedData = getSelectedFullwaveData(true);
+	const SelectedFullwaveData::FullwaveData& fwData = selectedData->front();
+
+	Lidar::SensorEnergyImage sensorImageMaker(fwData.m_container);
+
+	shared_ptr<gil::gray32F_image_t> sensorImage = sensorImageMaker.run();
+	FAEventHandler::Instance()->getPanelFWSensor()->addSensorLayer(sensorImage);
+
+	FAEventHandler::Instance()->setPlotFullwave(fwData.m_container);
+}
 
 
 
-//void FAEventHandler::fullwaveDisplay1d(const std::string &fileName)
-//{
-//	//TODO généraliser
-////	const std::string sensorImageFileName("/home/achauve/Documents/data_test/images/brusquet_bande6_parc-centered-capteur.tif");
-//
-//	shared_ptr<FullwaveLidarDataContainer> fwContainer(new FullwaveLidarDataContainer(fileName));
-//	fwContainer->LoadWaveforms();
-//
-//	SensorEnergyImage sensorImageMaker(fwContainer);
-//
-//	shared_ptr<gil::gray32F_image_t> sensorImage = sensorImageMaker.run();
-//	m_pimpl->m_panelViewerSensor->addSensorLayer(sensorImage);
-//
-//	m_pimpl->m_plotFW = shared_ptr<PlotFullwave>(new PlotFullwave(fwContainer));
-//
-//	if(!m_pimpl->m_plotPanel)
-//	{
-//		m_pimpl->m_plotPanel = new Plot(m_pimpl->m_parent,m_pimpl-> m_plotFW);
-//		m_pimpl->m_panelViewerSensor->setPointCallback(boost::bind(&PlotFullwave::updatePosition, m_pimpl->m_plotFW, _1));
-//		m_pimpl->m_notifyPlotPanelCreated();
-//	}
-//
-//	m_pimpl->m_plotFW->setPlotNotifier(boost::bind(&Plot::Redraw, m_pimpl->m_plotPanel));
-//
-//	m_pimpl->m_notifyShowPanelSensorViewer();
-//
-//}
+/*** Centering module ***/
+
+REGISTER_MODULE(fullwave_center, "Center waveforms", Action::FULLWAVE)
+
+void Module_fullwave_center::run()
+{
+	shared_ptr<SelectedFullwaveData> selectedData = getSelectedFullwaveData(true);
+	const SelectedFullwaveData::FullwaveData& fwData = selectedData->front();
+
+	double x=0, y=0;
+	wxTextEntryDialog dialogX(FAEventHandler::Instance()->getMainFrame(), _("Transfo x"), _("Please enter text"), _("0."));
+	if (dialogX.ShowModal() == wxID_OK)
+	{
+		wxString result = dialogX.GetValue();
+		if(!result.ToDouble(&x))
+		{
+			wxMessageBox(_("Bad transfo value !"));
+			return;
+		}
+	}
+	wxTextEntryDialog dialogY(FAEventHandler::Instance()->getMainFrame(), _("Transfo y"), _("Please enter text"), _("0."));
+	if (dialogY.ShowModal() == wxID_OK)
+	{
+		wxString result = dialogY.GetValue();
+		if(!result.ToDouble(&y))
+		{
+			wxMessageBox(_("Bad transfo value !"));
+			return;
+		}
+	}
+
+	LidarCenteringTransfo transfo;
+	transfo.setTransfo(x,y);
+
+	shared_ptr<Lidar::LidarDataContainer> centeredContainer = transfo.centerLidarDataContainer(fwData.m_container->getAttributeContainer(), "originX", "originY", "originZ");
+	fwData.m_container->setAttributeContainer(*centeredContainer);
+
+	std::string fileNameXML = ( boost::filesystem::path(fwData.m_path) / (fwData.m_basename + "-centering.xml") ).string();
+
+	FullwaveFile::save(*fwData.m_container, fileNameXML, transfo);
+
+	std::cout << "Fin centrage fw" << std::endl;
+}
 
 
-//void FAEventHandler::fullwaveShowStrip(const std::string &fileName)
-//{
-//	FullwaveLidarDataContainer fwContainer(fileName);
-//	FullwaveFile file(fileName);
-//
-//	LidarCenteringTransfo transfo;
-//	file.loadTransfo(transfo);
-//
-//	std::vector<double> stripX, stripY;
-//	FullwaveTools::calculeEmprise(fwContainer, stripX, stripY, transfo);
-//	m_pimpl->m_panelViewerMain->showStrip(stripX, stripY, boost::filesystem::basename(fileName));
-//}
 
-//void FAEventHandler::fullwavePrintWaveforms(const std::string &fileName)
-//{
-//	using namespace std;
-//	cout << "Chargement des données fw (échos): " << fileName << endl;
-//	FullwaveLidarDataContainer fwContainer(fileName);
-//
-////	m_pimpl->createPanel3d();
-//
-//	try{
-//		cout << "Chargement des données fw (intensités): " << fileName << endl;
-//		fwContainer.LoadWaveforms();
-//		cout << "Fin Chargement " << endl << endl;
-//
-//		fwContainer.printHeaderAttribut(cout);
-//
-//		cout << "Affichage dix premiers échos : " << endl;
-//		ostream_iterator<const Waveform> it_output( cout, "\n\n" );
-////		cout << "Emitted Pulse " << endl;
-//		copy(fwContainer.begin(), fwContainer.begin()+10, it_output);
-////		cout << *fwContainer.begin() << std::endl;
-//
-//	}
-//
-//	catch(std::exception &e)
-//	{
-//		cout << "Exception ! \n";
-//		cout << e.what() << endl;
-//	}
-//}
+/*** Display strip module ***/
+
+REGISTER_MODULE(fullwave_display_strip, "Display strip", Action::FULLWAVE)
+
+void Module_fullwave_display_strip::run()
+{
+	shared_ptr<SelectedFullwaveData> selectedData = getSelectedFullwaveData();
+	const SelectedFullwaveData::FullwaveData& fwData = selectedData->front();
+
+	std::vector<double> stripX, stripY;
+	FullwaveTools::calculeEmprise(*fwData.m_container, stripX, stripY, fwData.m_transfo);
+	FAEventHandler::Instance()->getPanelFWOrtho()->showStrip(stripX, stripY, fwData.m_basename);
+}
+
+
+
+/*** Print waveforms module ***/
+
+REGISTER_MODULE(fullwave_print, "Print first waveforms", Action::FULLWAVE)
+
+void Module_fullwave_print::run()
+{
+
+
+	try{
+		shared_ptr<SelectedFullwaveData> selectedData = getSelectedFullwaveData(true);
+		const SelectedFullwaveData::FullwaveData& fwData = selectedData->front();
+
+		fwData.m_container->printHeaderAttribut(std::cout);
+
+		std::cout << "Printing first 10 waveforms: " << std::endl;
+		std::ostream_iterator<const Lidar::Waveform> it_output( std::cout, "\n\n" );
+		std::copy(fwData.m_container->begin(), fwData.m_container->begin()+10, it_output);
+	}
+
+	catch(std::exception &e)
+	{
+		std::cout << "Exception ! \n";
+		std::cout << e.what() << std::endl;
+	}
+}
+

@@ -280,7 +280,7 @@ shared_ptr<SelectedLidarData> FAEventHandler::getSelectedLidarData() const
 
 
 #ifdef BUILD_FULLWAVE
-shared_ptr<SelectedFullwaveData> FAEventHandler::getSelectedFullwaveData() const
+shared_ptr<SelectedFullwaveData> FAEventHandler::getSelectedFullwaveData(const bool loadIntensities) const
 {
 	using namespace Lidar;
 	const std::string fileName(m_pimpl->m_panelMainFiles->getFullwaveSelectedItemName());
@@ -290,6 +290,8 @@ shared_ptr<SelectedFullwaveData> FAEventHandler::getSelectedFullwaveData() const
 	LidarCenteringTransfo transfo;
 	file.loadTransfo(transfo);
 
+	if(loadIntensities)
+		fwData->LoadWaveforms();
 
 	SelectedFullwaveData::FullwaveData data;
 	data.m_container = fwData;
@@ -302,6 +304,28 @@ shared_ptr<SelectedFullwaveData> FAEventHandler::getSelectedFullwaveData() const
 	selectedData->m_data.push_back(data);
 	return selectedData;
 
+}
+
+
+void FAEventHandler::setPlotFullwave(const shared_ptr<Lidar::FullwaveLidarDataContainer>& fwContainer)
+{
+	using namespace Lidar;
+	m_pimpl->m_plotFW = shared_ptr<PlotFullwave>(new PlotFullwave(fwContainer));
+
+	if(!m_pimpl->m_plotPanel)
+	{
+		m_pimpl->m_plotPanel = new Plot(m_pimpl->m_parent,m_pimpl-> m_plotFW);
+		m_pimpl->m_notifyPlotPanelCreated();
+	}
+	else
+	{
+		m_pimpl->m_plotPanel->setPlotType(m_pimpl->m_plotFW);
+	}
+
+	m_pimpl->m_panelViewerSensor->setPointCallback(boost::bind(&PlotFullwave::updatePosition, m_pimpl->m_plotFW, _1));
+	m_pimpl->m_plotFW->setPlotNotifier(boost::bind(&Plot::Redraw, m_pimpl->m_plotPanel));
+
+	m_pimpl->m_notifyShowPanelSensorViewer();
 }
 #endif
 

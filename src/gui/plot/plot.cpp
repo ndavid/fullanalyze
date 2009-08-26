@@ -68,7 +68,7 @@ Plot::Plot(wxWindow* parent, const shared_ptr<PlotType>& typePlot, const wxStrin
 			wxPanel(parent, wxID_ANY, wxDefaultPosition, size, wxWANTS_CHARS, wxPanelNameStr), m_frameConfigCalques(NULL), m_plotType(typePlot)
 {
 
-	m_dataPlot=m_plotType->GetDataPlotContainer();
+	m_dataPlot = m_plotType->GetDataPlotContainer();
 
 	//Creation de la fen de config
 	if (m_frameConfigCalques==NULL)
@@ -78,6 +78,13 @@ Plot::Plot(wxWindow* parent, const shared_ptr<PlotType>& typePlot, const wxStrin
 
 	m_taille_fenetre=size;
 
+}
+
+void Plot::setPlotType(const shared_ptr<PlotType>& typePlot)
+{
+	m_plotType = typePlot;
+	m_dataPlot = m_plotType->GetDataPlotContainer();
+	m_frameConfigCalques->setPlotType(m_plotType);
 }
 
 Plot::~Plot()
@@ -383,6 +390,13 @@ PlotCalques::PlotCalques(wxWindow* parent, const shared_ptr<PlotType>& typePlot,
 	//Initialisation du gestionnaire de calques
 	const t_ptrConstPlotDataContainer ptrData =((Plot*) m_parent)->GetDataPlotContainer();
 
+	UpdateTableauCalques();
+}
+
+
+void PlotCalques::setPlotType(const shared_ptr<PlotType>& typePlot)
+{
+	m_plotType = typePlot;
 	UpdateTableauCalques();
 }
 
