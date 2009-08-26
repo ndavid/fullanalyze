@@ -83,9 +83,9 @@ using boost::shared_ptr;
 		{\
 			return FAEventHandler::Instance()->getSelectedLidarData();\
 		}\
-		static shared_ptr<SelectedFullwaveData> getSelectedFullwaveData()\
+		static shared_ptr<SelectedFullwaveData> getSelectedFullwaveData(const bool loadIntensities = false)\
 		{\
-			return FAEventHandler::Instance()->getSelectedFullwaveData();\
+			return FAEventHandler::Instance()->getSelectedFullwaveData(loadIntensities);\
 		}\
 	};\
 	bool Module_ ## ModuleName::m_registerModule = Module_ ## ModuleName ::registerModule();

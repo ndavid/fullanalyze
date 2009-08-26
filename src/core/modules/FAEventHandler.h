@@ -72,6 +72,10 @@ class GLPanel;
 class Plot;
 class wxFrame;
 
+namespace Lidar {
+class FullwaveLidarDataContainer;
+}
+
 struct SelectedImageData;
 struct SelectedLidarData;
 struct SelectedFullwaveData;
@@ -87,39 +91,38 @@ class FAEventHandler : public PatternSingleton<FAEventHandler>
 
 		void guiParseFiles();
 
-		//pour bug panel 3D créé au démarrage de l'appli
+		/// Callbacks
 		void setNotifyGLPanelCreated(const boost::function<void()>& notify);
 		void setNotifyPlotPanelCreated(const boost::function<void()>& notify);
 		void setNotifyShowPanelSensorViewer(const boost::function<void()>& notify);
 
+		////////// GUI
 		wxFrame* getMainFrame();
-
-		//////////Panel carto
 		PanelViewerFWOrtho* getPanelFWOrtho();
-
-
-		//////////Panel Sensor
 		PanelViewerFWSensor* getPanelFWSensor();
+		FilesPanel* getFilesPanel();
+		GLPanel* getPanel3D();
+		Plot* getPlotPanel();
 
-		///Actions
+		/// Actions
 		void registerAction(const Action& action);
 		const std::vector<Action>& getActions() const { return m_actions; }
 
-		//Selected data provider (gui selection)
+		/// Selected data provider (gui selection)
 		shared_ptr<SelectedImageData> getSelectedImageData() const;
 		shared_ptr<SelectedLidarData> getSelectedLidarData() const;
 
 #ifdef BUILD_FULLWAVE
-		shared_ptr<SelectedFullwaveData> getSelectedFullwaveData() const;
+		shared_ptr<SelectedFullwaveData> getSelectedFullwaveData(const bool loadIntensities = false) const;
+
+		void setPlotFullwave(const shared_ptr<Lidar::FullwaveLidarDataContainer>& fwContainer);
 #endif
 
 
 
 
 
-		FilesPanel* getFilesPanel();
-		GLPanel* getPanel3D();
-		Plot* getPlotPanel();
+
 
 
 

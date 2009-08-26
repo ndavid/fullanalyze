@@ -143,6 +143,8 @@ class PlotCalques : public wxMiniFrame
 		void OnTextChange(wxCommandEvent& event);
 		//    void OnScrollSlider(wxScrollEvent& event);
 
+		void setPlotType(const shared_ptr<PlotType>& typePlot);
+
 		//Accesseurs de la config
 		const wxColour GetColour(const std::string& dataName);
 		const double GetMinValue(const std::string& dataName);
@@ -189,6 +191,8 @@ class Plot : public wxPanel
 
 		// Rafraichissement de la fenetre de dessin
 		void Redraw();
+
+		void setPlotType(const shared_ptr<PlotType>& typePlot);
 
 		const t_ptrConstPlotDataContainer& GetDataPlotContainer()
 		{
