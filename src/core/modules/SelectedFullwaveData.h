@@ -69,6 +69,7 @@ using boost::shared_ptr;
 using Lidar::FullwaveLidarDataContainer;
 using Lidar::LidarCenteringTransfo;
 using Lidar::FullwaveFile;
+using Lidar::LidarDataContainer;
 
 struct SelectedFullwaveData
 {

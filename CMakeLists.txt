@@ -59,7 +59,7 @@ ENDIF()
 
 
 
-SET(ALL_SRC ${ALL_SRC}
+SET(ALL_SRC
        ${SRC_3D}
        ${SRC_3D_FULLWAVE}
        ${SRC_CORE} 
@@ -80,6 +80,8 @@ SET(ALL_SRC ${ALL_SRC}
        ${SRC_TOOLS}
        ${SRC_FULLWAVE_ALGORITHMS}
        ${SRC_FULLWAVE_FORMAT}
+       
+       ${SRC_PLUGINS}
     )
 
 
@@ -93,6 +95,7 @@ INCLUDE_DIRECTORIES(${SRC_DIR})
 FIND_PACKAGE( wxWidgets COMPONENTS base core gl aui REQUIRED )
 IF( wxWidgets_FOUND )
 	INCLUDE( ${wxWidgets_USE_FILE} )
+	SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} ${wxWidgets_LIBRARIES})
 ELSE()
 	# For convenience. When we cannot continue, inform the user
 	MESSAGE( FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ..." )
@@ -103,6 +106,7 @@ SET(CMAKE_MODULE_PATH "cmakeContrib")
 FIND_PACKAGE(XercesC)
 IF( XERCESC_FOUND )
 	INCLUDE_DIRECTORIES( ${XERCESC_INCLUDE_DIR} )
+	SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} ${XERCESC_LIBRARIES})
 ELSE()
 	MESSAGE( FATAL_ERROR "XercesC not found ! Please set XercesC path ..." )
 ENDIF()
@@ -121,7 +125,7 @@ SET(Boost_ADDITIONAL_VERSIONS "1.37.0" "1.37" "1.38" "1.38.0" "1.39.0" "1.39")
 FIND_PACKAGE( Boost 1.36 COMPONENTS filesystem system thread)
 IF( Boost_FOUND )
     INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
-    #MESSAGE("Boost Include Path : " ${Boost_INCLUDE_DIR} )
+    SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} ${Boost_LIBRARIES})
 ELSE()
 	MESSAGE( FATAL_ERROR "Boost not found ! Please set Boost path ..." )
 ENDIF()
@@ -140,20 +144,16 @@ SET( GILVIEWER_PATH "../../GilViewer/trunk" CACHE PATH "GilViewer directory" )
 LINK_DIRECTORIES( ${GILVIEWER_PATH}/lib )
 INCLUDE_DIRECTORIES( ${GILVIEWER_PATH}/src )
 INCLUDE_DIRECTORIES( ${GILVIEWER_PATH}/extern )
+SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} GilViewer)
 
 
 # Pour la lib de format :
 SET( LIDAR_FORMAT_PATH "../../LidarFormat/trunk" CACHE PATH "LidarFormat directory" )
 LINK_DIRECTORIES( ${LIDAR_FORMAT_PATH} )
 INCLUDE_DIRECTORIES( ${LIDAR_FORMAT_PATH}/src )
+SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} LidarFormat)
 
 
-
-SET(FullAnalyze_LIBRAIRIES GilViewer LidarFormat
-						    ${wxWidgets_LIBRARIES}
-						    ${Boost_LIBRARIES}
-						    ${XERCESC_LIBRARIES}
-						   )
 
 
 IF(UNIX)
