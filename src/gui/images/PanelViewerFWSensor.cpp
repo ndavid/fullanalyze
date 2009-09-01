@@ -60,7 +60,8 @@ knowledge of the CeCILL-B license and that you accept its terms.
 ////si ITK
 //#include "layers/NewImageLayer.h"
 
-
+#include <boost/gil/extension/matis/float_images.hpp>
+#include <boost/gil/extension/io/tiff_io.hpp>
 
 #include "gui/PanelManager.h"
 
@@ -84,8 +85,8 @@ void PanelViewerFWSensor::addSensorLayer(const shared_ptr<boost::gil::gray32F_im
 	////si ITK
 //	Layer::ptrLayerType layerSensor = Layers::NewImageLayer(fileName);
 
-	AddLayer( ImageLayer::CreateImageLayer(*img) );
-	Refresh();
+//	AddLayer( ImageLayer::CreateImageLayer(*img) );
+//	Refresh();
 }
 
 void PanelViewerFWSensor::setCropCallback(const boost::function<void(const RegionOfInterest2D&)> cropCallback)
