@@ -51,6 +51,7 @@ knowledge of the CeCILL-B license and that you accept its terms.
 ***********************************************************************/
 
 
+
 #include "PanelViewerFW.h"
 #include "layers/VectorLayerGhost.h"
 #include "gui/LayerControl.hpp"

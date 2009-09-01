@@ -60,6 +60,9 @@ knowledge of the CeCILL-B license and that you accept its terms.
 
 ////si GIL
 #include "layers/ImageLayer.hpp"
+
+#include <boost/gil/extension/matis/float_images.hpp>
+#include <boost/gil/extension/io/tiff_io.hpp>
 ////si ITK
 //#include "layers/NewImageLayer.h"
 

@@ -59,6 +59,7 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include <boost/filesystem.hpp>
 #include <boost/bind.hpp>
 
+#include <wx/xrc/xmlres.h>
 #include <wx/checkbox.h>
 #include <wx/bmpbuttn.h>
 #include <wx/textctrl.h>
@@ -73,6 +74,9 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include <wx/icon.h>
 #include <wx/file.h>
 #include <wx/log.h>
+
+extern void InitXmlResource();
+
 
 #include "3d/Cloud.h"
 #include "3d/PointCloud.h"
@@ -96,19 +100,10 @@ knowledge of the CeCILL-B license and that you accept its terms.
 #include "define_id_FA3D.h"
 
 
-#include "gui/bitmaps/new.xpm"
-#include "gui/bitmaps/Nuvola_apps_kcmsystem.xpm"
-#include "gui/bitmaps/eldel.xpm"
-#include "gui/bitmaps/open.xpm"
-#include "gui/bitmaps/save.xpm"
-#include "gui/bitmaps/Gnome_clear.xpm"
-#include "gui/bitmaps/up_arrow.xpm"
-#include "gui/bitmaps/down_arrow.xpm"
-#include "gui/bitmaps/eye.xpm"
-//#include "gui/bitmaps/Measure.xpm"
-#include "gui/bitmaps/polygon_icon.xpm"
-#include "gui/bitmaps/image_icon.xpm"
-#include "gui/bitmaps/layers_16x16.xpm"
+#include "gui/resources/eye.xpm"
+#include "gui/resources/Measure.xpm"
+#include "gui/resources/polygon_icon.xpm"
+#include "gui/resources/image_icon.xpm"
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,19 +170,21 @@ CloudControlRow::CloudControlRow(CloudControl* parent, const std::string &name, 
 
 	// L'icone du bouton  info depend du type : vecteur ou image
 	if (dynamic_cast<PointCloudSettingsControl*> (cloudSettings) != NULL)
-		m_infoButton = new wxBitmapButton(m_parent, ID_FA_INFO + m_index, wxBitmap(polygon_icon_xpm));
+	    m_infoButton = new wxBitmapButton(m_parent, ID_FA_INFO + m_index, wxXmlResource::Get()->LoadBitmap( wxT("APPLICATIONS-OTHERS_16x16") ));
 	else
-		m_infoButton = new wxBitmapButton(m_parent, ID_FA_INFO + m_index, wxBitmap(image_icon_xpm));
+	    m_infoButton = new wxBitmapButton(m_parent, ID_FA_INFO + m_index, wxXmlResource::Get()->LoadBitmap( wxT("APPLICATIONS-GRAPHICS_16x16") ) );
+
 	m_infoButton->SetToolTip(wxT("Display layer informations"));
 	m_boxSizer->Add(m_infoButton, 0, wxALL | wxALIGN_CENTRE, 5);
 	m_infoButton->Connect(ID_FA_INFO + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(CloudControl::OnInfoButton), NULL, m_parent);
 
-	m_deleteButton = new wxBitmapButton(m_parent, ID_FA_DELETE + m_index, wxBitmap(eldel_xpm));
+    m_deleteButton = new wxBitmapButton(m_parent, ID_FA_DELETE + m_index, wxXmlResource::Get()->LoadBitmap( wxT("USER-TRASH_16x16") ) );
 	m_deleteButton->SetToolTip(wxT("Delete layer"));
 	m_boxSizer->Add(m_deleteButton, 0, wxALL | wxALIGN_CENTRE, 5);
 	m_deleteButton->Connect(ID_FA_DELETE + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(CloudControl::OnDeleteButton), NULL, m_parent);
 
-	m_settingsButton = new wxBitmapButton(m_parent, ID_FA_SETTINGS + m_index, wxBitmap(Nuvola_apps_kcmsystem_xpm));
+    m_settingsButton = new wxBitmapButton(m_parent, ID_FA_SETTINGS + m_index, wxXmlResource::Get()->LoadBitmap( wxT("APPLICATIONS-SYSTEM_16x16") ) );
+
 	m_settingsButton->SetToolTip(wxT("Layer settings"));
 	m_boxSizer->Add(m_settingsButton, 0, wxALL | wxALIGN_CENTRE, 5);
 	m_settingsButton->Connect(ID_FA_SETTINGS + m_index, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(CloudControl::OnSettingsButton), NULL, m_parent);
@@ -228,8 +225,12 @@ CloudControl::CloudControl(wxWindow *parent, PointCloudCanvas* ptCloudCanvas, bo
 //	m_notifySetTranslation(setTranslation)
 
 {
-	SetIcon(wxICON(layers_16x16));
-	// Couleur de fond grisee
+	// Initialising resources ...
+	wxXmlResource::Get()->InitAllHandlers();
+	InitXmlResource();
+
+	SetIcon(wxArtProvider::GetIcon(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(32,32)));	// Couleur de fond grisee
+
 	wxColour bgcolor(220, 220, 220);
 	SetBackgroundColour(bgcolor);
 	ClearBackground();
@@ -245,14 +246,14 @@ CloudControl::CloudControl(wxWindow *parent, PointCloudCanvas* ptCloudCanvas, bo
 	// Un sizer pour les fleches "up" et "down"
 	wxBoxSizer* upDownButtonSizer = new wxBoxSizer(wxHORIZONTAL);
 	// Fleche "up"
-	wxBitmapButton* upButton = new wxBitmapButton(this, wxID_UP, wxBitmap(up_arrow_xpm));
+	wxBitmapButton* upButton = new wxBitmapButton(this, wxID_UP, wxXmlResource::Get()->LoadBitmap( wxT("GO-UP_16x16") ) );
 	//upButton->SetToolTip( _("
 	upDownButtonSizer->Add(upButton, 0, wxALL | wxALIGN_CENTRE, 5);
 	// Fleche "down"
-	upDownButtonSizer->Add(new wxBitmapButton(this, wxID_DOWN, wxBitmap(down_arrow_xpm)), 0, wxALL | wxALIGN_CENTRE, 5);
+    upDownButtonSizer->Add(new wxBitmapButton(this, wxID_DOWN, wxXmlResource::Get()->LoadBitmap( wxT("GO-DOWN_16x16") ) ) , 0, wxALL | wxALIGN_CENTRE, 5);
 	m_sizer->Add(upDownButtonSizer, 0, wxALL | wxALIGN_CENTRE, 5);
 	// Bouton pour inverser la visibilite de tous les calques selectionnes
-	wxBitmapButton* visibilityButton = new wxBitmapButton(this, ID_FA_VISIBILITY_BUTTON, wxBitmap(eye_xpm));
+	wxBitmapButton* visibilityButton = new wxBitmapButton(this, ID_FA_VISIBILITY_BUTTON, wxXmlResource::Get()->LoadBitmap( wxT("EYE_16x16") ));
 	visibilityButton->SetToolTip(_("Change selected layers visibility"));
 	m_sizer->Add(visibilityButton, 0, wxALL | wxALIGN_CENTRE, 5);
 //	// Bouton pour inverser la transformabilite (!!!) de tous les calques selectionnes
@@ -263,17 +264,17 @@ CloudControl::CloudControl(wxWindow *parent, PointCloudCanvas* ptCloudCanvas, bo
 	wxBoxSizer *globalSettingsSizer = new wxBoxSizer(wxHORIZONTAL);
 
 	// Bouton pour les modifications globales
-	wxBitmapButton* globalSettingsButton = new wxBitmapButton(this, ID_FA_GLOBAL_SETTINGS_BUTTON, wxBitmap(Nuvola_apps_kcmsystem_xpm));
+	wxBitmapButton* globalSettingsButton = new wxBitmapButton(this, ID_FA_GLOBAL_SETTINGS_BUTTON, wxXmlResource::Get()->LoadBitmap( wxT("PREFERENCES-SYSTEM_16x16") ) );
 	globalSettingsButton->SetToolTip(_("Global settings control"));
 	globalSettingsSizer->Add(globalSettingsButton, 0, wxALL | wxALIGN_CENTRE, 5);
 
 	// Bouton pour la sauvegarde de la configuration d'affichage
-	wxBitmapButton* saveDisplayConfig = new wxBitmapButton(this, wxID_SAVE, wxBitmap(save_xpm));
+	wxBitmapButton* saveDisplayConfig = new wxBitmapButton(this, wxID_SAVE, wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_16x16") ) );
 	saveDisplayConfig->SetToolTip(_("Save display configuration"));
 	globalSettingsSizer->Add(saveDisplayConfig, 0, wxALL | wxALIGN_CENTRE, 5);
 
 	// Bouton pour l'ouverture d'une configuration d'affichage
-	wxBitmapButton* loadDisplayConfig = new wxBitmapButton(this, wxID_OPEN, wxBitmap(open_xpm));
+	wxBitmapButton* loadDisplayConfig = new wxBitmapButton(this, wxID_OPEN, wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-OPEN_16x16") ) );
 	loadDisplayConfig->SetToolTip(_("Load display configuration"));
 	globalSettingsSizer->Add(loadDisplayConfig, 0, wxALL | wxALIGN_CENTRE, 5);
 
@@ -355,10 +356,11 @@ bool CloudControl::InitToolbar(wxToolBar* toolBar)
 	// Set up toolbar
 	wxBitmap* toolBarBitmaps[4];
 
-	toolBarBitmaps[0] = new wxBitmap(new_xpm);
-	toolBarBitmaps[1] = new wxBitmap(open_xpm);
-	toolBarBitmaps[2] = new wxBitmap(save_xpm);
-	toolBarBitmaps[3] = new wxBitmap(gnome_clear_xpm);
+     toolBar->AddTool(wxID_NEW, _("N"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-NEW_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("New file"));
+     toolBar->AddTool(wxID_OPEN, _("O"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-OPEN_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Open file"));
+     toolBar->AddTool(wxID_SAVE, _("S"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Save file"));
+     toolBar->AddTool(wxID_RESET, _("R"), wxXmlResource::Get()->LoadBitmap( wxT("EDIT-CLEAR_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Reset"));
+
 
 	int width = 16;
 	int currentX = 5;
