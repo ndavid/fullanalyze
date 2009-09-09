@@ -67,7 +67,7 @@ class CloudViewGlobalSettingsControl : public CloudViewGlobalSettingsControlMode
 		bool drawBBox() const { return m_drawBBox; }
 		wxColour backgroundColor() const { return m_backgroundColor; }
 
-		int far() const { return m_far; }
+		int getFar() const { return m_far; }
 		double zoom() const { return m_zoom; }
 		double translation() const { return m_translation; }
 		double rotation() const { return m_rotation; }

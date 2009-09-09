@@ -50,6 +50,10 @@ knowledge of the CeCILL-B license and that you accept its terms.
  
 ***********************************************************************/
 
+#ifdef _WINDOWS
+#include <windows.h>
+#endif
+
 #include "GL/gl.h"
 #include "GL/glu.h"
 
@@ -130,9 +134,9 @@ PointCloudCanvas::PointCloudCanvas(wxWindow *parent) :
 }
 
 
-void PointCloudCanvas::setFar(const int far)
+void PointCloudCanvas::setFar(const int _far)
 {
-	m_far = far;
+	m_far = _far;
 	DoResize();
 }
 

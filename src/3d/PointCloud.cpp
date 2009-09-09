@@ -50,6 +50,14 @@ knowledge of the CeCILL-B license and that you accept its terms.
  
 ***********************************************************************/
 
+#ifdef _WINDOWS
+#include <windows.h>
+
+#	undef min
+#	undef max
+#endif
+
+
 #include "GL/gl.h"
 #include "GL/glu.h"
 

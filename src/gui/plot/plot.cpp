@@ -51,6 +51,7 @@ knowledge of the CeCILL-B license and that you accept its terms.
 ***********************************************************************/
 
 #include <fstream>
+#include <iostream>
 
 #include "plot.h"
 
@@ -206,7 +207,7 @@ void Plot::OnPaint(wxPaintEvent &WXUNUSED(event))
 					pen.SetWidth(1); //5 -> demo videoproj
 //					pen.SetWidth(5);
 					dc.SetPen(pen);
-					for (PlotCourbe::iterator it_pt=++courbe.begin(); it_pt!=courbe.end(); ++it_pt)
+					for (PlotCourbe::const_iterator it_pt=++courbe.begin(); it_pt!=courbe.end(); ++it_pt)
 					{
 						data2plot(abscisse, (*it_pt)->GetX(), miniX, maxiX, (double) LONG_AXE_ABSC);
 						data2plot(ordonnee, (*it_pt)->GetY(), miniY, maxiY, (double) LONG_AXE_ORDO);
@@ -226,7 +227,7 @@ void Plot::OnPaint(wxPaintEvent &WXUNUSED(event))
 					pen.SetWidth(1);
 					dc.SetPen(pen);
 					dc.SetBrush(couleur);
-					for (PlotCourbe::iterator it_pt=courbe.begin(); it_pt!=courbe.end(); ++it_pt)
+					for (PlotCourbe::const_iterator it_pt=courbe.begin(); it_pt!=courbe.end(); ++it_pt)
 					{
 						//Si la couleur est définie pour chaque point on la récupère
 						if (m_plotType->GetTypeCouleur()==PlotType::COULEUR_POINTS)
@@ -255,19 +256,19 @@ void Plot::OnPaint(wxPaintEvent &WXUNUSED(event))
 
 				//Ajustement du nombre de chiffres significatifs affichés pour la légende
 				dc.SetPen(*wxWHITE);
-				wxString format_x = CalculeFormatString(plot2data(std::floor(LONG_AXE_ABSC/nb_seq), miniX, maxiX, double(LONG_AXE_ABSC)));
-				for (int grad_x=0; grad_x<std::floor(LONG_AXE_ABSC/nb_seq); ++grad_x)
+				wxString format_x = CalculeFormatString(plot2data(std::floor(1.*LONG_AXE_ABSC/nb_seq), miniX, maxiX, double(LONG_AXE_ABSC)));
+				for (int grad_x=0; grad_x<std::floor(1.*LONG_AXE_ABSC/nb_seq); ++grad_x)
 				{
 					if ((grad_x%80)==0)
 					{
-						pt_courant=pt_origine+TPoint2D<int>((int) floor(grad_x), 0);
+						pt_courant=pt_origine+TPoint2D<int>((int) floor(1.*grad_x), 0);
 						wxString txt_grad_x = wxString::Format(format_x, plot2data(double(grad_x), miniX, maxiX, double(LONG_AXE_ABSC)));
 						dc.DrawLine(pt_courant.x, pt_courant.y, pt_courant.x, pt_courant.y+5);
 						dc.DrawText(txt_grad_x, pt_courant.x-txt_grad_x.length()*4, pt_courant.y+4);
 					}
 					else if ((grad_x%40)==0)
 					{
-						pt_courant=pt_origine+TPoint2D<int>((int) floor(grad_x), 0);
+						pt_courant=pt_origine+TPoint2D<int>((int) floor(1.*grad_x), 0);
 						dc.DrawLine(pt_courant.x, pt_courant.y, pt_courant.x, pt_courant.y+2);
 					}
 				}
@@ -277,14 +278,14 @@ void Plot::OnPaint(wxPaintEvent &WXUNUSED(event))
 				{
 					if ((grad_y%80)==0)
 					{
-						pt_courant=pt_origine+TPoint2D<int>(0, -(int) floor(grad_y));
+						pt_courant=pt_origine+TPoint2D<int>(0, -(int) floor((float)grad_y));
 						wxString txt_grad_y = wxString::Format(format_y, plot2data(double(grad_y), miniY, maxiY, double(LONG_AXE_ORDO)));
 						dc.DrawLine(pt_courant.x, pt_courant.y, pt_courant.x-5, pt_courant.y);
 						dc.DrawText(txt_grad_y, pt_courant.x-OFFSET_GAUCHE+5, pt_courant.y-10);
 					}
 					else if ((grad_y%40)==0)
 					{
-						pt_courant=pt_origine+TPoint2D<int>(0, -(int) floor(grad_y));
+						pt_courant=pt_origine+TPoint2D<int>(0, -(int) floor((float)grad_y));
 						dc.DrawLine(pt_courant.x, pt_courant.y, pt_courant.x-2, pt_courant.y);
 					}
 				}
@@ -337,7 +338,7 @@ void Plot::OnClickSaveAs(wxCommandEvent& WXUNUSED(event))
 				for (std::size_t i=0; i<tab_seq.size(); ++i)
 				{
 					const PlotCourbe& courbe=*tab_seq[i]; //alias
-					for (PlotCourbe::iterator it_pt=courbe.begin(); it_pt!=courbe.end(); ++it_pt)
+					for (PlotCourbe::const_iterator it_pt=courbe.begin(); it_pt!=courbe.end(); ++it_pt)
 						fic_ecriture<<(*it_pt)->GetX() + i*sautAbscisse<<"\t"<<(*it_pt)->GetY()<<"\n";
 				}
 
