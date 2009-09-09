@@ -92,17 +92,32 @@ INCLUDE_DIRECTORIES(${SRC_DIR})
 #####################################
 
 #Find wxWidgets
-FIND_PACKAGE( wxWidgets COMPONENTS base core gl aui REQUIRED )
-IF( wxWidgets_FOUND )
-	INCLUDE( ${wxWidgets_USE_FILE} )
-	SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} ${wxWidgets_LIBRARIES})
-ELSE()
-	# For convenience. When we cannot continue, inform the user
-	MESSAGE( FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ..." )
-ENDIF()
+if ( WIN32 )
+	FIND_PACKAGE(wxWidgets REQUIRED adv base gl core xml aui xrc html tiff jpeg png)
+	IF(wxWidgets_FOUND)  
+		INCLUDE(${wxWidgets_USE_FILE})
+		include_directories( ${wxWidgets_ROOT_DIR}/src/jpeg )
+		include_directories( ${wxWidgets_ROOT_DIR}/src/tiff )
+		include_directories( ${wxWidgets_ROOT_DIR}/src/png )
+		include_directories( ${wxWidgets_ROOT_DIR}/src/zlib )
+		
+		SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} ${wxWidgets_LIBRARIES})
+	ELSE()
+		MESSAGE(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
+	ENDIF()
+else()
+	FIND_PACKAGE(wxWidgets REQUIRED adv base gl core xml aui xrc html )
+	IF(wxWidgets_FOUND)  
+		INCLUDE(${wxWidgets_USE_FILE})
+		SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} ${wxWidgets_LIBRARIES})
+	ELSE()
+		MESSAGE(FATAL_ERROR "wxWidgets not found ! Please set wxWidgets path ...")
+	ENDIF()
+endif()
 
 #Pour utiliser le find xerces et xsd:
-SET(CMAKE_MODULE_PATH "cmakeContrib")
+
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmakeContrib)
 FIND_PACKAGE(XercesC)
 IF( XERCESC_FOUND )
 	INCLUDE_DIRECTORIES( ${XERCESC_INCLUDE_DIR} )
@@ -121,14 +136,19 @@ ENDIF()
 
 
 # Find BOOST
+# CMake does not include boost version 1.39
 SET(Boost_ADDITIONAL_VERSIONS "1.37.0" "1.37" "1.38" "1.38.0" "1.39.0" "1.39")
-FIND_PACKAGE( Boost 1.36 COMPONENTS filesystem system thread)
-IF( Boost_FOUND )
-    INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
-    SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} ${Boost_LIBRARIES})
-ELSE()
-	MESSAGE( FATAL_ERROR "Boost not found ! Please set Boost path ..." )
-ENDIF()
+find_package( Boost 1.36 COMPONENTS filesystem system unit_test_framework)
+if( Boost_FOUND )
+	include_directories( ${Boost_INCLUDE_DIR} )
+	link_directories( ${Boost_LIBRARY_DIRS} )
+	# Autolink under Windows platforms
+	if( NOT WIN32 )
+		SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} ${Boost_LIBRARIES})
+	endif()
+else()
+	message( FATAL_ERROR "Boost not found ! Please set Boost path ..." )
+endif()
 
 
 #####################################
@@ -144,7 +164,7 @@ SET( GILVIEWER_PATH "../../GilViewer/trunk" CACHE PATH "GilViewer directory" )
 LINK_DIRECTORIES( ${GILVIEWER_PATH}/lib )
 INCLUDE_DIRECTORIES( ${GILVIEWER_PATH}/src )
 INCLUDE_DIRECTORIES( ${GILVIEWER_PATH}/extern )
-SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} GilViewer)
+SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} GilViewer shapelib tinyxml)
 
 
 # Pour la lib de format :
@@ -159,14 +179,19 @@ SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} LidarFormat)
 IF(UNIX)
 
 	ADD_DEFINITIONS(-Wall) 
+else()
+	ADD_DEFINITIONS( -W3 )
+	# Visual warnings on checked iterators
+	ADD_DEFINITIONS( -D_SCL_SECURE_NO_WARNINGS )
+	ADD_DEFINITIONS( -D_CRT_SECURE_NO_WARNINGS )
+	
+	SET(EXECUTABLE_WIN32 WIN32)
+endif()
 
-	ADD_EXECUTABLE(FullAnalyze
-						${ALL_SRC}
-	               )
+ADD_EXECUTABLE(FullAnalyze ${EXECUTABLE_WIN32}
+					${ALL_SRC}
+			   )
 
-	TARGET_LINK_LIBRARIES( FullAnalyze 
-								${FullAnalyze_LIBRAIRIES}
-						 )
-
-
-ENDIF(UNIX)
+TARGET_LINK_LIBRARIES( FullAnalyze 
+							${FullAnalyze_LIBRAIRIES}
+					 )

@@ -50,6 +50,13 @@ knowledge of the CeCILL-B license and that you accept its terms.
  
 ***********************************************************************/
 
+#ifdef _WINDOWS
+#include <windows.h>
+
+#	undef min
+#	undef max
+#endif
+
 #include "CloudControl.h"
 
 #include <list>
@@ -309,7 +316,7 @@ wxColour CloudControl::backgroundColor() const
 
 void CloudControl::updateFromGlobalViewSettingsControl() const
 {
-	m_pointCloudCanvas->setFar(m_cloudViewGlobalSettingsControl->far());
+	m_pointCloudCanvas->setFar(m_cloudViewGlobalSettingsControl->getFar());
 	m_pointCloudCanvas->setTranslationScale(m_cloudViewGlobalSettingsControl->translation());
 	m_pointCloudCanvas->setZoom(m_cloudViewGlobalSettingsControl->zoom());
 	m_pointCloudCanvas->setRotationScale(m_cloudViewGlobalSettingsControl->rotation());
