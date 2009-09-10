@@ -56,6 +56,10 @@ knowledge of the CeCILL-B license and that you accept its terms.
 
 #include "gui/MainFrame.h"
 
+#ifdef _WINDOWS
+#include "LidarFormat/file_formats/StaticRegisterFormats.cpp"
+#endif
+
 
 #ifdef __LINUX__
 #include <locale.h>
@@ -79,6 +83,10 @@ bool MyApp::InitFrame()
 {
 
 	wxInitAllImageHandlers();
+
+#ifdef _WINDOWS
+	registerAllFileFormats();
+#endif
 
 	m_mainFrameDock = new MainFrame;
 
