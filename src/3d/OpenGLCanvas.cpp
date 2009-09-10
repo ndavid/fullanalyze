@@ -37,10 +37,16 @@ Author:
 
 #include <cmath>
 
+#ifdef _WINDOWS
+#include <windows.h>
+#endif
+
+#include "wx/wx.h"
+
 #include "GL/gl.h"
 #include "GL/glu.h"
 
-#include "wx/wx.h"
+
 
 #include "OpenGLCanvas.h"
 

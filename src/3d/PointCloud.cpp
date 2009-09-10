@@ -35,6 +35,14 @@ Author:
  
 ***********************************************************************/
 
+#ifdef _WINDOWS
+#include <windows.h>
+
+#	undef min
+#	undef max
+#endif
+
+
 #include "GL/gl.h"
 #include "GL/glu.h"
 
