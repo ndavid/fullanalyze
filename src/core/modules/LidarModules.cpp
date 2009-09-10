@@ -35,10 +35,14 @@ Author:
  
 ***********************************************************************/
 
+#include <sstream>
+
 #include <boost/filesystem.hpp>
 
 #include <wx/config.h>
 #include <wx/textdlg.h>
+#include <wx/log.h>
+
 
 //register modules
 #include "core/modules/Module.h"
@@ -53,6 +57,10 @@ Author:
 #include <boost/gil/extension/matis/float_images.hpp>
 #include <boost/gil/extension/io/tiff_io.hpp>
 namespace gil = boost::gil;
+
+#ifdef WIN32
+#	include <wx/msw/winundef.h>
+#endif
 
 //gui access
 #include "gui/files/FilesPanel.h"
@@ -85,14 +93,34 @@ REGISTER_MODULE(lidar_print_echoes, "Print first 10 echoes", Action::LIDAR)
 
 void Module_lidar_print_echoes::run()
 {
-	shared_ptr<SelectedLidarData> selectedData = getSelectedLidarData();
+	shared_ptr<SelectedLidarData> selectedData;
+
+	try{
+		selectedData = getSelectedLidarData();
+	}
+	catch(const std::exception& e)
+	{
+		std::ostringstream message;
+        message << "Error while loading lidar data ";
+        message << "\n" << e.what();
+		wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
+		return;
+	}
+	
 	const SelectedLidarData::LidarData& lidarData = selectedData->front();
 
-	lidarData.m_container->printHeader(std::cout);
-	std::cout.precision(12);
+	//lidarData.m_container->printHeader(std::cout);
+	//std::cout.precision(12);
+
+	std::ostringstream message;
+	message.precision(12);
+	lidarData.m_container->printHeader(message);
 
 	for(Lidar::LidarIteratorEcho it = lidarData.m_container->begin(); it != lidarData.m_container->begin()+10 && it < lidarData.m_container->end(); ++it)
-		std::cout << LidarEcho(*it) << std::endl;
+		message << LidarEcho(*it) << std::endl;
+		//std::cout << LidarEcho(*it) << std::endl;
+
+	wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
 }
 
 

@@ -35,6 +35,14 @@ Author:
  
 ***********************************************************************/
 
+#ifdef _WINDOWS
+#include <windows.h>
+#include <wx/msw/winundef.h>
+#endif
+
+
+
+
 #include <boost/filesystem.hpp>
 //#include <boost/shared_ptr.hpp>
 
