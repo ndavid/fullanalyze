@@ -360,32 +360,13 @@ bool CloudControl::InitToolbar(wxToolBar* toolBar)
 {
 	toolBar->SetMargins(5, 5);
 
-	// Set up toolbar
-	wxBitmap* toolBarBitmaps[4];
-
-     toolBar->AddTool(wxID_NEW, _("N"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-NEW_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("New file"));
-     toolBar->AddTool(wxID_OPEN, _("O"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-OPEN_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Open file"));
-     toolBar->AddTool(wxID_SAVE, _("S"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Save file"));
-     toolBar->AddTool(wxID_RESET, _("R"), wxXmlResource::Get()->LoadBitmap( wxT("EDIT-CLEAR_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Reset"));
-
-
-	int width = 16;
-	int currentX = 5;
-
-	toolBar->AddTool(wxID_NEW, *(toolBarBitmaps[0]), wxNullBitmap, false, currentX, wxDefaultCoord, (wxObject *) NULL, _("New file"));
-	currentX += width + 5;
-	toolBar->AddTool(wxID_OPEN, *(toolBarBitmaps[1]), wxNullBitmap, false, currentX, wxDefaultCoord, (wxObject *) NULL, _("Open file"));
-	currentX += width + 5;
-	toolBar->AddTool(wxID_SAVE, *(toolBarBitmaps[2]), wxNullBitmap, false, currentX, wxDefaultCoord, (wxObject *) NULL, _("Save file"));
-	currentX += width + 5;
-	toolBar->AddTool(wxID_RESET, *(toolBarBitmaps[3]), wxNullBitmap, false, currentX, wxDefaultCoord, (wxObject *) NULL, _("Reset"));
+	// Set up toolba
+	toolBar->AddTool(wxID_NEW, _("N"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-NEW_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("New file"));
+	toolBar->AddTool(wxID_OPEN, _("O"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-OPEN_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Open file"));
+	toolBar->AddTool(wxID_SAVE, _("S"), wxXmlResource::Get()->LoadBitmap( wxT("DOCUMENT-SAVE_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Save file"));
+	toolBar->AddTool(wxID_RESET, _("R"), wxXmlResource::Get()->LoadBitmap( wxT("EDIT-CLEAR_22x22") ) , wxNullBitmap, wxITEM_NORMAL, _("Reset"));
 
 	toolBar->Realize();
-
-	// Can delete the bitmaps since they're reference counted
-	int i;
-	for (i = 0; i < 4; i++)
-		delete toolBarBitmaps[i];
 
 	return true;
 }

@@ -121,7 +121,7 @@ void FilesPanel::parseImageFiles()
 				ori.ReadOriFromImageFile(dirName+"/"+*itr);
 				m_treeFiles->AppendItem(m_rootImages, wxString(itr->c_str(), *wxConvCurrent) );
 			}
-			catch (const std::logic_error &e)
+			catch (const std::logic_error &)
 			{
 				wxLogMessage(_("FA : No orientation found for image file ! the file was not loaded !"));
 			}
@@ -354,27 +354,12 @@ void FilesPanel::initPopupMenu()
 
 	//Menu images
 	m_popupMenuImages = new wxMenu;
-//	m_popupMenuImages->Append(ID_IMAGE_OPEN, _("Display") );
-//	m_popupMenuImages->Append(ID_IMAGE_SHADED, _("Shading") );
 
 	//Menu Lidar
 	m_popupMenuLidar = new wxMenu;
-//	m_popupMenuLidar->Append(ID_LIDAR_SHOW_STRIP, _("Show strip") );
-//	m_popupMenuLidar->Append(ID_LIDAR_PRINT_ECHOES, _("Print echoes"));
-//	m_popupMenuLidar->Append(ID_LIDAR_SAVE_AS_BINARY, _("Save in binary format"));
-//	m_popupMenuLidar->Append(ID_LIDAR_SAVE_AS_ASCII, _("Save in ascii format"));
-//	m_popupMenuLidar->Append(ID_LIDAR_CENTER, _("Center point cloud"));
-//	m_popupMenuLidar->Append(ID_LIDAR_CENTER_CUSTOM, _("Custom center point cloud"));
-//	m_popupMenuLidar->Append(ID_LIDAR_MAKE_MNS, _("Compute MNS"));
 
 	//Menu Fullwave
 	m_popupMenuFullwave = new wxMenu;
-//	m_popupMenuFullwave->Append(ID_FULLWAVE_DISPLAY_3D, _("Display waveforms in 3D") );
-//	m_popupMenuFullwave->Append(ID_FULLWAVE_SHOW_STRIP, _("Show strip") );
-//	m_popupMenuFullwave->Append(ID_FULLWAVE_PRINT_WAVEFORMS, _("Print waveforms") );
-//	m_popupMenuFullwave->Append(ID_FULLWAVE_SHOW_SENSOR_1D, _("Display waveforms in sensor geometry") );
-//	m_popupMenuFullwave->Append(ID_FULLWAVE_CENTER, _("Center waveforms") );
-
 
 	std::vector<Action> actions = FAEventHandler::Instance()->getActions();
 
@@ -393,7 +378,7 @@ void FilesPanel::initPopupMenu()
 				menuTemp = m_popupMenuFullwave;
 				break;
 			case Action::MULTIPLE:
-				;//nothing !
+				;//nothing yet!
 
 		}
 
@@ -422,17 +407,17 @@ std::string FilesPanel::getSelectedItemName() const
 
 std::string FilesPanel::getFullwaveSelectedItemName() const
 {
-	return std::string((m_dirPickerFullwave->GetPath() + _("/")).fn_str())   + getSelectedItemName();
+	return ( boost::filesystem::path(m_dirPickerFullwave->GetPath().fn_str()) / getSelectedItemName()).string();
 }
 
 std::string FilesPanel::getLidarSelectedItemName() const
 {
-	return std::string((m_dirPickerLidar->GetPath() + _("/")).fn_str())   + getSelectedItemName();
+	return ( boost::filesystem::path(m_dirPickerLidar->GetPath().fn_str()) / getSelectedItemName()).string();
 }
 
 std::string FilesPanel::getImagesSelectedItemName() const
 {
-	return std::string((m_dirPickerImages->GetPath() + _("/")).fn_str())   + getSelectedItemName();
+	return ( boost::filesystem::path(m_dirPickerImages->GetPath().fn_str()) / getSelectedItemName()).string();
 }
 
 
