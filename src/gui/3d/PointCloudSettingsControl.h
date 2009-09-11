@@ -52,7 +52,7 @@ class wxTextCtrl;
 class wxCheckBox;
 class wxFilePickerCtrl;
 
-class PointCloudSettingsControl : public CloudSettingsControl, public PointCloudSettingsControlModel
+class PointCloudSettingsControl : public PointCloudSettingsControlModel, public CloudSettingsControl
 {
 public:
 	PointCloudSettingsControl(unsigned int index, CloudControl *parent, wxWindowID id = wxID_ANY, const wxString& title = _("Point cloud settings"),
