@@ -73,8 +73,8 @@ Author:
 
 
 PointCloudSettingsControl::PointCloudSettingsControl(unsigned int index, CloudControl* parent, wxWindowID id, const wxString& title, long style, const wxPoint& pos, const wxSize& size) :
-	CloudSettingsControl(parent),
 	PointCloudSettingsControlModel(parent),
+	CloudSettingsControl(parent),
 	m_parent(parent),
 	m_ptCld(static_cast<PointCloud&>(*m_parent->getClouds()[index]))
 {
