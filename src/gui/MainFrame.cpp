@@ -62,36 +62,15 @@ Author:
 #include "MainFrame.h"
 
 MainFrame::MainFrame() :
-	wxFrame( NULL, -1, _("FullAnalyze"), wxDefaultPosition, wxSize( 1280, 1024 ), wxDEFAULT_FRAME_STYLE)
+	BasicViewerFrame( NULL, -1, _("FullAnalyze"), wxDefaultPosition, wxSize( 1280, 1024 ), wxDEFAULT_FRAME_STYLE)
 {
-	//////////   Status bar
-	wxConfigBase *pConfig = wxConfigBase::Get();
-	double fontSize;
-	if ( pConfig )
-		wxConfigBase::Get()->Read(_T("/Options/FontSize"), &fontSize, 8);
-	// On tente un setting de la font pour pouvoir afficher les infos dans la status bar qd il y a bcp d'images ...
-	wxFont fontFrameViewer((unsigned int)fontSize, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-
-	m_status = new wxStatusBar ( this, wxID_ANY, wxST_SIZEGRIP, _("statusBar") );
-
-	this->SetStatusBar( m_status );
-	this->GetStatusBar()->SetFont(fontFrameViewer);
 
 
-	this->CenterOnScreen();
-
-	/////////// Mise en place AUI :
-	m_dockManager.SetManagedWindow(this);
-
-	/////////// Log window
-	m_logWindow = new wxLogWindow (this, _("Log window FullAnalyze"));
-	m_logWindow->Show(false);
-
-//	m_dockManager.Update();
 
 	InitMenus();
 	InitFenetres();
 
+	wxConfigBase *pConfig = wxConfigBase::Get();
 
 	//Réglage des options par défaut
 //	wxConfigBase *pConfig = wxConfigBase::Get();
@@ -123,7 +102,6 @@ MainFrame::MainFrame() :
 
 MainFrame::~MainFrame()
 {
-	m_dockManager.UnInit();
 }
 
 
@@ -131,6 +109,19 @@ void MainFrame::DestroyPanel( wxPanel* panel )
 {
 	if (panel)
 		panel->Destroy();
+}
+
+wxAboutDialogInfo MainFrame::getAboutInfo() const
+{
+	wxAboutDialogInfo info;
+	info.AddDeveloper(_("Adrien Chauve (Author)"));
+	info.AddDeveloper(_("Olivier Tournaire (Co-author of the raster/vector 2D viewer GilViewer)"));
+	info.SetName(_("FullAnalyze"));
+	info.SetVersion(_("0.1"));
+	info.SetWebSite(_("http://fullanalyze.sourceforge.net") );
+	info.SetDescription(_("Handling, processing and visualizing lidar data (waveforms and point clouds)"));
+	info.SetCopyright(_("adrien.chauve@gmail.com  - IGN/CEMAGREF"));
+	return info;
 }
 
 
@@ -222,7 +213,7 @@ void MainFrame::InitFenetres()
 
 
 
-	m_status->SetStatusText( _("FullAnalyze - Adrien Chauve") );
+	m_statusBar->SetStatusText( _("FullAnalyze - Adrien Chauve") );
 	// tell the manager to "commit" all the changes just made
 	m_dockManager.Update();
 
@@ -254,7 +245,7 @@ void MainFrame::InitMenus()
 //	m_menuBar->Append( m_menuProcessings, _("Processings"));
 	m_menuBar->Append( m_menuHelp, _("Help"));
 
-	this->SetMenuBar( m_menuBar );
+	SetMenuBar( m_menuBar );
 }
 
 void MainFrame::OnOpenMenu( wxMenuEvent &event )
@@ -323,11 +314,11 @@ void MainFrame::OnMenuClickWindows( wxCommandEvent &event )
 
 
 
-IMPLEMENTS_ITKVIEWER_METHODS_FOR_EVENTS_TABLE(MainFrame,m_panelViewerMain)
+//IMPLEMENTS_ITKVIEWER_METHODS_FOR_EVENTS_TABLE(MainFrame,m_panelViewerMain)
 
-BEGIN_EVENT_TABLE(MainFrame, wxFrame)
+BEGIN_EVENT_TABLE(MainFrame, BasicViewerFrame)
 
-	ADD_ITKVIEWER_EVENTS_TO_TABLE(MainFrame)
+	//ADD_ITKVIEWER_EVENTS_TO_TABLE(MainFrame)
 
 	/////////////MENUS
 	//Ouverture d'un menu -> lance la maj du menu windows
@@ -336,5 +327,5 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_MENU_RANGE(menu_WindowsDockAll, menu_WindowsDockAll+100, MainFrame::OnMenuClickWindows)
 	//Autres menus : lance la fonction concernée
 	EVT_MENU(menu_options, MainFrame::OnAfficheOptions)
-	EVT_MENU(menu_about, MainFrame::OnAbout)
+//	EVT_MENU(menu_about, MainFrame::OnAbout)
 END_EVENT_TABLE()

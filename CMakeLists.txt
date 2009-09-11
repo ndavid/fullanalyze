@@ -162,6 +162,7 @@ endif()
 # Repertoire vers la libViewerITK pour construire les chemins d'include et de link
 SET( GILVIEWER_PATH "../../GilViewer/trunk" CACHE PATH "GilViewer directory" )
 LINK_DIRECTORIES( ${GILVIEWER_PATH}/lib )
+INCLUDE_DIRECTORIES( ${GILVIEWER_PATH} )
 INCLUDE_DIRECTORIES( ${GILVIEWER_PATH}/src )
 INCLUDE_DIRECTORIES( ${GILVIEWER_PATH}/extern )
 SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} GilViewer shapelib tinyxml)

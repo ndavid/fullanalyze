@@ -67,16 +67,5 @@ std::pair<TPoint2D<int>,TPoint2D<int> > PanelViewerFW::GetSelection()
 	return std::make_pair( TPoint2D< int > ( m_ghostLayer.m_rectangleSelection.first.x, m_ghostLayer.m_rectangleSelection.first.y ), TPoint2D< int > ( m_ghostLayer.m_rectangleSelection.second.x, m_ghostLayer.m_rectangleSelection.second.y ) );
 }
 
-wxAboutDialogInfo PanelViewerFW::getAboutInfo() const
-{
-	wxAboutDialogInfo info;
-	info.AddDeveloper(_("Adrien Chauve (Author)"));
-	info.AddDeveloper(_("Olivier Tournaire (Co-author of the raster/vector 2D viewer GilViewer)"));
-	info.SetName(_("FullAnalyze"));
-	info.SetVersion(_("0.1"));
-	info.SetWebSite(_("http://fullanalyze.sourceforge.net") );
-	info.SetDescription(_("Handling, processing and visualizing lidar data (waveforms and point clouds)"));
-	info.SetCopyright(_("adrien.chauve@gmail.com  - IGN/CEMAGREF"));
-	return info;
-}
+
 

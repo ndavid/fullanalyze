@@ -41,7 +41,7 @@ Author:
 #include <boost/shared_ptr.hpp>
 using boost::shared_ptr;
 
-#include <boost/gil/extension/matis/float_images.hpp>
+#include "extern/gil/extension/matis/float_images.hpp"
 
 
 namespace Lidar
