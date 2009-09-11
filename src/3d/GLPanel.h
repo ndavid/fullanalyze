@@ -49,12 +49,13 @@ class GLPanel : public wxPanel
 	public:
 
 		GLPanel(wxFrame *parent);
-		~GLPanel();
+		 virtual ~GLPanel();
 
 		CloudControl* getCloudControl();
 
 		void update() { Refresh(); }
 
+		void OnShowCloudControl(wxCommandEvent& event);
 
 	protected:
 
