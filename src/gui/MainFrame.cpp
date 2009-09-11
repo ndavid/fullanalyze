@@ -41,8 +41,10 @@ Author:
 
 #include <wx/filename.h>
 #include <wx/config.h>
+#include <wx/xrc/xmlres.h>
 
-#include "gui/define_id.hpp"
+
+#include "gui/3d/define_id_FA3D.h"
 #include "gui/ApplicationSettings.hpp"
 #include "gui/LayerControl.hpp"
 
@@ -69,6 +71,7 @@ MainFrame::MainFrame() :
 
 	InitMenus();
 	InitFenetres();
+	InitToolBars();
 
 	wxConfigBase *pConfig = wxConfigBase::Get();
 
@@ -144,6 +147,14 @@ void MainFrame::notifyGLPanelCreated()
 	paneInfo3D.MaximizeButton(true);
 	m_dockManager.AddPane( m_panel3D, paneInfo3D );
 	m_dockManager.Update();
+
+	m_faToolBar->EnableTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, true);
+
+
+	m_panel3D->Connect(ID_FA_SHOW_HIDE_CLOUD_CONTROL, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(GLPanel::OnShowCloudControl));
+
+//	EVT_TOOL(ID_FA_SHOW_HIDE_CLOUD_CONTROL, GLPanel::OnShowCloudControl)
+
 }
 
 void MainFrame::notifyPlotPanelCreated()
@@ -165,6 +176,62 @@ void MainFrame::notifyPlotPanelCreated()
 void MainFrame::notifyShowPanelSensorViewer()
 {
 	m_dockManager.GetPane(m_panelViewerSensor).Show();
+	m_dockManager.Update();
+}
+
+void MainFrame::InitToolBars()
+{
+	m_faToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
+
+	// Creating an image list storing the toolbar icons
+	const wxSize imageSize(16,16);
+
+	m_faToolBar->AddTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, _("SHCC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
+
+//	m_toolBar->AddTool(ID_BASIC_SNAPSHOT, _("S"), wxXmlResource::Get()->LoadBitmap( wxT("CAMERA_PHOTO_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Snapshot"));
+//
+//	m_toolBar->AddTool(wxID_PREFERENCES, _("AS"), wxXmlResource::Get()->LoadBitmap( wxT("APPLICATIONS-SYSTEM_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
+//
+//	m_toolBar->AddSeparator();
+//	m_toolBar->AddTool(ID_MODE_NAVIGATION, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigation"));
+//	m_toolBar->AddTool(ID_MODE_CAPTURE, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Saisie"));
+//	m_toolBar->AddTool(ID_MODE_EDITION, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Edition"));
+//	m_toolBar->AddTool(ID_MODE_GEOMETRY_MOVING, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Geometry moving"));
+//	m_toolBar->AddTool(ID_MODE_SELECTION, _("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Selection"));
+//
+//	m_toolBar->AddSeparator();
+//
+//	m_toolBar->AddTool(ID_GEOMETRY_NULL, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("PROCESS-STOP_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("None"));
+//	m_toolBar->AddTool(ID_GEOMETRY_POINT, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POINTS_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Point"));
+//	m_toolBar->AddTool(ID_GEOMETRY_CIRCLE, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Circle"));
+//	m_toolBar->AddTool(ID_GEOMETRY_LINE, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POLYLINES_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Line"));
+//	m_toolBar->AddTool(ID_GEOMETRY_RECTANGLE, _("MN"), wxBitmap(capture_rectangle_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Rectangle"));
+//	m_toolBar->AddTool(ID_GEOMETRY_POLYGONE, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POLYGONS_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Polygone"));
+//
+//	m_toolBar->AddSeparator();
+//
+//	m_toolBar->AddTool(ID_SINGLE_CROP, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Single crop"));
+//	m_toolBar->AddTool(ID_MULTI_CROP, _("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Multi crop"));
+
+	m_faToolBar->Realize();
+
+	m_faToolBar->EnableTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, false);
+
+	wxAuiPaneInfo paneInfoFAToolbar;
+	paneInfoFAToolbar.ToolbarPane();
+	paneInfoFAToolbar.Top();
+	paneInfoFAToolbar.Caption( _("FA Toolbar") );
+	m_dockManager.AddPane(m_faToolBar, paneInfoFAToolbar);
+
+
+//	/////// Toolbar
+//	wxAuiPaneInfo paneInfoToolbar;
+//	paneInfoToolbar.ToolbarPane();
+//	paneInfoToolbar.Caption( _("Toolbar") );
+//	paneInfoToolbar.Top();
+//	m_dockManager.AddPane(m_panelViewerMain->GetToolBar(), paneInfoToolbar);
+
+
 	m_dockManager.Update();
 }
 
@@ -201,16 +268,6 @@ void MainFrame::InitFenetres()
 	paneInfoViewerSensor.Hide();
 	paneInfoViewerSensor.MinSize( wxSize( 300, 300 ) );
 	m_dockManager.AddPane( m_panelViewerSensor, paneInfoViewerSensor );
-
-
-	/////// Toolbar
-	wxAuiPaneInfo paneInfoToolbar;
-	paneInfoToolbar.ToolbarPane();
-	paneInfoToolbar.Caption( _("Toolbar") );
-	paneInfoToolbar.Top();
-	paneInfoToolbar.Fixed();
-	m_dockManager.AddPane(m_panelViewerMain->GetToolBar(), paneInfoToolbar);
-
 
 
 	m_statusBar->SetStatusText( _("FullAnalyze - Adrien Chauve") );

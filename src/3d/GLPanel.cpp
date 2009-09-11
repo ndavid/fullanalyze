@@ -44,6 +44,10 @@ Author:
 #include "PointCloudCanvas.h"
 
 #include "gui/3d/CloudControl.h"
+#include "gui/3d/define_id_FA3D.h"
+
+
+
 
 GLPanel::GLPanel(wxFrame *parent) :
 	wxPanel(parent)
@@ -56,8 +60,13 @@ GLPanel::GLPanel(wxFrame *parent) :
 
 	mainSizer->Add(m_pointCloudCanvas, 1, wxALL | wxGROW, 10);
 
-	this->SetSizer(mainSizer);
-	this->SetAutoLayout(true);
+	SetSizer(mainSizer);
+	SetAutoLayout(true);
+
+	wxAcceleratorEntry entries[1];
+	entries[0].Set(wxACCEL_NORMAL, WXK_F5, ID_FA_SHOW_HIDE_CLOUD_CONTROL);
+	wxAcceleratorTable acceleratorTable(1, entries);
+	SetAcceleratorTable(acceleratorTable);
 
 
 }
@@ -105,10 +114,16 @@ void GLPanel::OnMouse(wxMouseEvent& event)
 
 }
 
+void GLPanel::OnShowCloudControl(wxCommandEvent& event)
+{
+	m_pointCloudCanvas->getCloudControl()->Show(!m_pointCloudCanvas->getCloudControl()->IsVisible());
+}
+
 
 
 
 BEGIN_EVENT_TABLE(GLPanel, wxPanel)
 EVT_MOUSE_EVENTS(GLPanel::OnMouse)
+EVT_TOOL(ID_FA_SHOW_HIDE_CLOUD_CONTROL, GLPanel::OnShowCloudControl)
 END_EVENT_TABLE()
 

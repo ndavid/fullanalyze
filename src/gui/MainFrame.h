@@ -85,6 +85,8 @@ class MainFrame : public BasicViewerFrame
 		///Initialisation des menus
 		void InitMenus();
 
+		void InitToolBars();
+
 
 		void UpdateMenuWindows();
 
@@ -125,7 +127,7 @@ class MainFrame : public BasicViewerFrame
 
 
 
-
+		wxToolBar *m_faToolBar;
 
 		/////////////////////////////
 		///MENUS
