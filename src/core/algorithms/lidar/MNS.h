@@ -39,7 +39,7 @@ Author:
 #define MNS_H_
 
 #include <boost/shared_ptr.hpp>
-#include <boost/gil/extension/matis/float_images.hpp>
+#include "extern/gil/extension/matis/float_images.hpp"
 
 #include "LidarFormat/tools/Orientation2D.h"
 

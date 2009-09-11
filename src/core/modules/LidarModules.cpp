@@ -54,7 +54,7 @@ Author:
 #include "core/algorithms/lidar/MNS.h"
 
 //images
-#include <boost/gil/extension/matis/float_images.hpp>
+#include "extern/gil/extension/matis/float_images.hpp"
 #include <boost/gil/extension/io/tiff_io.hpp>
 namespace gil = boost::gil;
 
@@ -103,7 +103,8 @@ void Module_lidar_print_echoes::run()
 		std::ostringstream message;
         message << "Error while loading lidar data ";
         message << "\n" << e.what();
-		wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
+		::wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
+//		::wxLogWindow::;
 		return;
 	}
 	
@@ -115,6 +116,8 @@ void Module_lidar_print_echoes::run()
 	std::ostringstream message;
 	message.precision(12);
 	lidarData.m_container->printHeader(message);
+
+	message << "Printing first 10 echoes:\n";
 
 	for(Lidar::LidarIteratorEcho it = lidarData.m_container->begin(); it != lidarData.m_container->begin()+10 && it < lidarData.m_container->end(); ++it)
 		message << LidarEcho(*it) << std::endl;

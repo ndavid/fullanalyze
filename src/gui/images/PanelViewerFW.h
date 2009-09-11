@@ -57,8 +57,6 @@ class PanelViewerFW : public PanelViewer
 		void AfficheVoisinage(const bool affiche);
 		void SetRayonVoisinage(const double rayon);
 
-		wxAboutDialogInfo getAboutInfo() const;
-
 	protected:
 		PanelViewerFW(wxFrame *parent);
 		DECLARE_EVENT_TABLE();

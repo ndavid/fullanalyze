@@ -67,8 +67,6 @@ Author:
 #include <wx/file.h>
 #include <wx/log.h>
 
-extern void InitXmlResource();
-
 
 #include "3d/Cloud.h"
 #include "3d/PointCloud.h"
@@ -217,10 +215,6 @@ CloudControl::CloudControl(wxWindow *parent, PointCloudCanvas* ptCloudCanvas, bo
 //	m_notifySetTranslation(setTranslation)
 
 {
-	// Initialising resources ...
-	wxXmlResource::Get()->InitAllHandlers();
-	InitXmlResource();
-
 	SetIcon(wxArtProvider::GetIcon(wxART_LIST_VIEW, wxART_TOOLBAR, wxSize(32,32)));	// Couleur de fond grisee
 
 	wxColour bgcolor(220, 220, 220);

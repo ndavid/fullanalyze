@@ -48,6 +48,8 @@ Author:
 #include <wx/aui/aui.h>
 #include <wx/aui/auibook.h>
 
+#include "gui/BasicViewerFrame.h"
+
 #include "LidarFormat/extern/matis/tpoint2d.h"
 
 //Panels dérivés de la lib ITKViewerLib
@@ -65,7 +67,7 @@ using boost::shared_ptr;
 
 #include "convenient/MacrosITKViewer.hpp"
 
-class MainFrame : public wxFrame
+class MainFrame : public BasicViewerFrame
 {
 	public:
 		MainFrame();
@@ -75,6 +77,8 @@ class MainFrame : public wxFrame
 
 
 	private:
+
+		virtual wxAboutDialogInfo getAboutInfo() const;
 
 		///Création des fenêtres
 		void InitFenetres();
@@ -105,9 +109,6 @@ class MainFrame : public wxFrame
 		///////////////////
 		///FENETRES
 
-		///Gestionnaire de la fenetre
-		wxAuiManager m_dockManager;
-
 		///Panneaux principaux
 		PanelViewerFWOrtho *m_panelViewerMain; //panel viewer (ortho)
 		FilesPanel *m_panelMainFiles; //panel de gestion des fichiers
@@ -123,11 +124,8 @@ class MainFrame : public wxFrame
 		GLPanel *m_panel3D;
 
 
-		///////////////////////////////////////////
 
 
-		wxStatusBar *m_status;
-		wxLogWindow* m_logWindow;
 
 		/////////////////////////////
 		///MENUS
@@ -171,7 +169,7 @@ class MainFrame : public wxFrame
 			menu_WindowsDockAll
 		};
 
-		DECLARE_ITKVIEWER_METHODS_FOR_EVENTS_TABLE();
+		//DECLARE_ITKVIEWER_METHODS_FOR_EVENTS_TABLE();
 		DECLARE_EVENT_TABLE();
 };
 
