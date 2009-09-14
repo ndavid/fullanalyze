@@ -35,50 +35,5 @@ Author:
 
  
 Installation instructions:
---------------------------
 
-
-1. 	Dependencies
-
-		NB: On linux plateforms, you should use the official distribution packages.
-
-		Install the following tools or libraries:
-			CMake
-			Boost (>= 1.36)
-			Xerces
-			Code Synthesis XSD (can be downloaded at http://www.codesynthesis.com/download)
-			
-		Download and compile the following libraries:
-			LidarFormat (http://launchpad.net/lidarformat)
-			GilViewer (http://launchpad.net/gilviewer)
-			
-		Suggested directory organisation:
-			root
-			+LidarFormat
-			++trunk
-			+GilViewer
-			++trunk
-			+FullAnalyze
-			++trunk
-
-2. 	Compilation:
-
-		On Linux platforms, enter in a terminal (in the LidarFormat/trunk directory):
-		
-			ccmake . 
-			--> follow the CMake instructions, in particular:
-			--> launch the configure step with 'c'
-			--> set CMAKE_BUILD_TYPE to Release within CMake
-			--> generate the configuration with 'g'
-			make
-			make test
-			--> check all tests are passed!
-
-
-3.	Examples: 
-	
-		TODO
-		
-4.	Plugins:
-		
-		TODO
+	Please go to http://code.google.com/p/fullanalyze
