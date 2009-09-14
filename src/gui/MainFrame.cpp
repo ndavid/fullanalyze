@@ -120,7 +120,7 @@ wxAboutDialogInfo MainFrame::getAboutInfo() const
 	info.AddDeveloper(_("Adrien Chauve (Author)"));
 	info.AddDeveloper(_("Olivier Tournaire (Co-author of the raster/vector 2D viewer GilViewer)"));
 	info.SetName(_("FullAnalyze"));
-	info.SetVersion(_("0.1"));
+	info.SetVersion(_("0.1.0"));
 	info.SetWebSite(_("http://fullanalyze.sourceforge.net") );
 	info.SetDescription(_("Handling, processing and visualizing lidar data (waveforms and point clouds)"));
 	info.SetCopyright(_("adrien.chauve@gmail.com  - IGN/CEMAGREF"));
