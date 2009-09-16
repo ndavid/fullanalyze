@@ -69,7 +69,7 @@ void FullwaveLidarDataContainer::save(const std::string &xmlFileName, const Lida
 	//ajout des méta-données fw dans l'arbre xml
 	const std::string fullwaveFileName = basename(xmlFileName) + ".bin-fw";
 
-	cs::FullwaveMetaDataType fwMetaData(fullwaveFileName, m_fwGlobalParameters.m_nbMaxSequences, m_fwGlobalParameters.m_rangeStep, m_fwGlobalParameters.m_nbCol);
+	cs::FullwaveMetaDataType fwMetaData(m_fwGlobalParameters.m_nbMaxSequences, m_fwGlobalParameters.m_rangeStep, m_fwGlobalParameters.m_nbCol);
 	xmlLidarData->fullwaveMetaData(fwMetaData);
 
 	//sauvegarde des données fw
@@ -77,7 +77,7 @@ void FullwaveLidarDataContainer::save(const std::string &xmlFileName, const Lida
 	//fait que pour nbMaxSeq = 2
 
 	///ATENTION le fichier fullwave contient un pointeur vers la FIN de chacune des séquences de waveform
-	std::ofstream fileOut( (path(xmlFileName).branch_path().string() + "/" + fullwaveFileName).c_str(), std::ios::binary);
+	std::ofstream fileOut( (path(xmlFileName).branch_path() / fullwaveFileName).string().c_str(), std::ios::binary);
 	if(fileOut.is_open())
 	{
 		//pur chaque waveform...
@@ -249,7 +249,17 @@ FullwaveLidarDataContainer::FullwaveLidarDataContainer(const std::string &xmlFil
 	m_fwGlobalParameters.m_rangeStep = fwMetaData.rangeStep();
 
 	using namespace boost::filesystem;
-	m_fileIntensities = path(xmlFileName).branch_path().string() + "/" + fwMetaData.fullwaveFileName();
+	path fileNameIntensities = path(xmlFileName).branch_path();
+
+	if(fwMetaData.fullwaveFileName().present())
+	{
+		fileNameIntensities /= fwMetaData.fullwaveFileName().get();
+	}
+	else
+	{
+		fileNameIntensities /= (basename(xmlFileName) + ".bin-fw");
+	}
+	m_fileIntensities = fileNameIntensities.string();
 
 }
 
