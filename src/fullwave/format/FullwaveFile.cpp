@@ -71,7 +71,7 @@ void FullwaveFile::save(const FullwaveLidarDataContainer& fwContainer, const std
 
 	//génération du fichier xml
 	const std::string dataFileName = basename(xmlFileName) + ".bin";
-	cs::LidarDataType::AttributesType attributes(dataFileName, lidarContainer.size(), format);
+	cs::LidarDataType::AttributesType attributes(lidarContainer.size(), format);
 
 	//insertion des attributs dans le xml (avec leur nom et leur type)
 	const AttributeMapType& attributeMap = lidarContainer.getAttributeMap();
@@ -96,7 +96,7 @@ void FullwaveFile::save(const FullwaveLidarDataContainer& fwContainer, const std
 
 	const FullwaveGlobalParameter& fwGlobalParam = fwContainer.fwGlobalParameters();
 	const std::string fullwaveFileName = basename(xmlFileName) + ".bin-fw";
-	cs::FullwaveMetaDataType fwMetaData(fullwaveFileName, fwGlobalParam.m_nbMaxSequences, fwGlobalParam.m_rangeStep, fwGlobalParam.m_nbCol);
+	cs::FullwaveMetaDataType fwMetaData(fwGlobalParam.m_nbMaxSequences, fwGlobalParam.m_rangeStep, fwGlobalParam.m_nbCol);
 	xmlLidarData.fullwaveMetaData(fwMetaData);
 
 
