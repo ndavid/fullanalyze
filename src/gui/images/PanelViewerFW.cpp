@@ -42,7 +42,7 @@ Author:
 #include "gui/LayerControl.hpp"
 
 BEGIN_EVENT_TABLE(PanelViewerFW, PanelViewer)
-
+EVT_MOTION(PanelViewerFW::OnMouseMove)
 END_EVENT_TABLE()
 
 PanelViewerFW::PanelViewerFW(wxFrame *parent):
@@ -55,6 +55,12 @@ PanelViewerFW::~PanelViewerFW()
 {
 }
 
+
+void PanelViewerFW::OnMouseMove(wxMouseEvent &event)
+{
+	SetFocus();
+	event.Skip();
+}
 
 void PanelViewerFW::SetRayonVoisinage( const double rayon )
 {

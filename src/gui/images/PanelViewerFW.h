@@ -61,6 +61,9 @@ class PanelViewerFW : public PanelViewer
 		PanelViewerFW(wxFrame *parent);
 		DECLARE_EVENT_TABLE();
 
+	private:
+		void OnMouseMove(wxMouseEvent &event);
+
 
 
 
