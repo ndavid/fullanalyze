@@ -90,11 +90,6 @@ Author:
 #include "define_id_FA3D.h"
 
 
-#include "gui/resources/eye.xpm"
-#include "gui/resources/Measure.xpm"
-#include "gui/resources/polygon_icon.xpm"
-#include "gui/resources/image_icon.xpm"
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///                                                                                                  ///

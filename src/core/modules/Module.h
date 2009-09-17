@@ -56,9 +56,14 @@ using boost::shared_ptr;
 		static void run();\
 		static bool registerModule()\
 		{\
-			Action action(ModuleTitle, ModuleType, boost::function<void()>(&Module_ ## ModuleName ::run));\
+			Action action(ModuleTitle, ModuleType, boost::function<void()>(&Module_ ## ModuleName ::preRun));\
 			FAEventHandler::Instance()->registerAction(action);\
 			return true;\
+		}\
+		static void preRun()\
+		{\
+			run();\
+			FAEventHandler::Instance()->guiParseFiles();\
 		}\
 		static shared_ptr<SelectedImageData> getSelectedImageData()\
 		{\
