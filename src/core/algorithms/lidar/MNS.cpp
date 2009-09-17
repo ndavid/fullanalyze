@@ -84,6 +84,8 @@ shared_ptr<gray32F_image_t>  MNS::run()
 	shared_ptr<gray32F_image_t> result_image(new gray32F_image_t(grid.GetTaille().x, grid.GetTaille().y));
 	gray32F_image_t::view_t mns  = view(*result_image);
 
+	fill_pixels(mns, -999);
+
 	const LidarConstIteratorAttribute<float> beginZ = m_lidarContainer.beginAttribute<float>("z");
 
 	for(int col = 0; col < mns.width(); ++col)
