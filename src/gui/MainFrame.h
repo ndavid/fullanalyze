@@ -65,7 +65,7 @@ class FilesPanel;
 
 using boost::shared_ptr;
 
-#include "convenient/MacrosITKViewer.hpp"
+#include "convenient/MacrosGilViewer.hpp"
 
 class MainFrame : public BasicViewerFrame
 {
