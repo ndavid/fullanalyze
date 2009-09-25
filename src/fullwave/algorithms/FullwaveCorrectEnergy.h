@@ -2,22 +2,22 @@
 
 This file is part of the FullAnalyze project source files.
 
-FullAnalyze is a software for handling, visualizing and processing lidar 
+FullAnalyze is a software for handling, visualizing and processing lidar
 data (waveforms and point clouds).
 
 
-Homepage: 
+Homepage:
 
 	http://fullanalyze.sourceforge.net
-	
+
 Copyright:
-	
+
 	Institut Geographique National & CEMAGREF (2009)
 
-Author: 
+Author:
 
 	Adrien Chauve
-	
+
 
 
     FullAnalyze is free software: you can redistribute it and/or modify
@@ -30,37 +30,20 @@ Author:
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public 
+    You should have received a copy of the GNU Lesser General Public
     License along with FullAnalyze.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 ***********************************************************************/
 
-#ifndef SENSORENERGYIMAGE_H_
-#define SENSORENERGYIMAGE_H_
-
-#include <boost/shared_ptr.hpp>
-using boost::shared_ptr;
-
-#include "extern/gil/extension/matis/float_images.hpp"
+#ifndef FULLWAVECORRECTENERGY_H_
+#define FULLWAVECORRECTENERGY_H_
 
 
 namespace Lidar
 {
 
-class FullwaveLidarDataContainer;
-
-class SensorEnergyImage
-{
-	public:
-		SensorEnergyImage(const shared_ptr<const FullwaveLidarDataContainer>& fwContainer);
-
-		shared_ptr<boost::gil::gray32F_image_t> run() const;
-
-	private:
-		const shared_ptr<const FullwaveLidarDataContainer> m_fwContainer;
-};
-
+void fullwaveCorrectEnergy(const shared_ptr<FullwaveLidarDataContainer>& fwContainer, float normalisationEnergy = 0);
 
 }//namespace Lidar
 
-#endif /* SENSORENERGYIMAGE_H_ */
+#endif /* FULLWAVECORRECTENERGY_H_ */

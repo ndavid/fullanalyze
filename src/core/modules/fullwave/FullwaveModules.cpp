@@ -53,8 +53,9 @@ Author:
 #include "gui/images/PanelViewerFWOrtho.h"
 
 //algorithms
-#include "fullwave/algorithms/SensorEnergyImage.h"
+#include "fullwave/algorithms/FullwaveSensorImage.h"
 #include "fullwave/algorithms/FullwaveTools.h"
+#include "fullwave/algorithms/FullwaveCorrectEnergy.h"
 
 //images
 #include "extern/gil/extension/matis/float_images.hpp"
@@ -90,12 +91,43 @@ void Module_fullwave_display1d::run()
 	shared_ptr<SelectedFullwaveData> selectedData = getSelectedFullwaveData(true);
 	const SelectedFullwaveData::FullwaveData& fwData = selectedData->front();
 
-	Lidar::SensorEnergyImage sensorImageMaker(fwData.m_container);
 
-	shared_ptr<gil::gray32F_image_t> sensorImage = sensorImageMaker.run();
+	shared_ptr<gil::gray32F_image_t> sensorImage = Lidar::FullwaveSensorImage<>()(fwData.m_container, Lidar::FonctorSumBackscatteredEnergy());
 	FAEventHandler::Instance()->getPanelFWSensor()->addSensorLayer(sensorImage);
 
 	FAEventHandler::Instance()->setPlotFullwave(fwData.m_container);
+}
+
+
+
+/*** Correct intensity ***/
+
+REGISTER_MODULE(fullwave_correct_intensity, "Correct intensity", Action::FULLWAVE)
+
+void Module_fullwave_correct_intensity::run()
+{
+	shared_ptr<SelectedFullwaveData> selectedData = getSelectedFullwaveData(true);
+	const SelectedFullwaveData::FullwaveData& fwData = selectedData->front();
+
+
+
+	double normalisationValue = 0;
+	wxTextEntryDialog dialogX(FAEventHandler::Instance()->getMainFrame(), _("Normalizing intensity"), _("Please enter text"), _("0."));
+	if (dialogX.ShowModal() == wxID_OK)
+	{
+		wxString result = dialogX.GetValue();
+		if(!result.ToDouble(&normalisationValue))
+		{
+			wxMessageBox(_("Bad normalisation value !"));
+			return;
+		}
+	}
+
+	fullwaveCorrectEnergy(fwData.m_container, normalisationValue);
+
+	std::string fileNameXML = ( boost::filesystem::path(fwData.m_path) / (fwData.m_basename + "-i_corrected.xml") ).string();
+	FullwaveFile::save(*fwData.m_container, fileNameXML, fwData.m_transfo);
+
 }
 
 
