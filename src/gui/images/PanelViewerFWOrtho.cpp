@@ -112,7 +112,8 @@ void PanelViewerFWOrtho::executeModeGeometryMoving()
 		pt.x = ori.OriginX() + ori.Step() * pt.x;
 		pt.y = ori.OriginY() - ori.Step() * pt.y;
 
-		m_pointCallback(pt);
+		if(m_pointCallback)
+			m_pointCallback(pt);
 	}
 	else if (m_geometry == GEOMETRY_RECTANGLE)
 	{
@@ -125,7 +126,8 @@ void PanelViewerFWOrtho::executeModeGeometryMoving()
 		paire.second.y = ori.OriginY() - ori.Step() * paire.second.y;
 
 		//on lance le crop :
-		m_cropCallback(RectangularRegionOfInterest2D(paire.first, paire.second));
+		if(m_cropCallback)
+			m_cropCallback(RectangularRegionOfInterest2D(paire.first, paire.second));
 
 	}
 	else if(m_geometry == GEOMETRY_CIRCLE)
@@ -137,7 +139,8 @@ void PanelViewerFWOrtho::executeModeGeometryMoving()
 //		std::cout << "geometry moving cercle : " << centre << " ; rayon = " << m_ghostLayer.m_circle.second << std::endl;
 
 		//on lance le crop :
-		m_cropCallback(CircularRegionOfInterest2D(centre, m_ghostLayer.m_circle.second));
+		if(m_cropCallback)
+			m_cropCallback(CircularRegionOfInterest2D(centre, m_ghostLayer.m_circle.second));
 
 	}
 }

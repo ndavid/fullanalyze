@@ -51,8 +51,9 @@ Author:
 namespace Lidar
 {
 
-FullwaveSpatialIndexation::FullwaveSpatialIndexation(const shared_ptr<const FullwaveLidarDataContainer>& fwContainer):
-	m_fwContainer(fwContainer)
+FullwaveSpatialIndexation::FullwaveSpatialIndexation(const shared_ptr<const FullwaveLidarDataContainer>& fwContainer, IndexationMethod method):
+	m_fwContainer(fwContainer),
+	m_indexationMethod(method)
 {
 }
 
@@ -168,6 +169,50 @@ inline void FullwaveSpatialIndexation::insertPoint(const float x, const float y,
 
 void FullwaveSpatialIndexation::fillData()
 {
+	switch(m_indexationMethod)
+	{
+		case FIRST:
+			fillFirst();
+			break;
+
+		case LAST:
+			fillLast();
+			break;
+
+		case FIRST_LAST_EACH_SEQ:
+			fillFirstLastEachSeq();
+			break;
+
+		case MAXIMUM:
+			fillMaximum();
+			break;
+	}
+
+}
+
+
+void FullwaveSpatialIndexation::fillFirst()
+{
+	FullwaveEchoHelper fwHelper(*m_fwContainer);
+	const LidarConstIteratorEcho itBegin = m_fwContainer->beginEcho();
+
+	LidarConstIteratorEcho itb = m_fwContainer->beginEcho();
+	const LidarConstIteratorEcho ite = m_fwContainer->endEcho();
+
+	const int i=1;
+	for(;itb<ite; ++itb)
+	{
+		if(fwHelper.hasBackscatteredNthSequence(itb,i))
+		{
+			insertPoint( fwHelper.originXNthSequence(itb, i), fwHelper.originYNthSequence(itb, i), itb - itBegin );
+		}
+
+	}
+
+}
+
+void FullwaveSpatialIndexation::fillLast()
+{
 	FullwaveEchoHelper fwHelper(*m_fwContainer);
 	const LidarConstIteratorEcho itBegin = m_fwContainer->beginEcho();
 
@@ -177,18 +222,6 @@ void FullwaveSpatialIndexation::fillData()
 
 	for(;itb<ite; ++itb)
 	{
-//		for(unsigned int i=1; i<=2; ++i)
-//		{
-//			if(fwHelper.hasBackscatteredNthSequence(itb,i))
-//			{
-//				unsigned int index = itb - itBegin;
-//				insertPoint( fwHelper.originXNthSequence(itb, i), fwHelper.originYNthSequence(itb, i), index );
-//				insertPoint( fwHelper.endXNthSequence(itb, i), fwHelper.endYNthSequence(itb, i), index );
-//			}
-//			else
-//				break;
-//		}
-
 		int i=1;
 		if(fwHelper.hasBackscatteredNthSequence(itb,2))
 			i=2;
@@ -199,7 +232,79 @@ void FullwaveSpatialIndexation::fillData()
 
 	}
 
+}
 
+void FullwaveSpatialIndexation::fillFirstLastEachSeq()
+{
+	FullwaveEchoHelper fwHelper(*m_fwContainer);
+	const LidarConstIteratorEcho itBegin = m_fwContainer->beginEcho();
+
+	LidarConstIteratorEcho itb = m_fwContainer->beginEcho();
+	const LidarConstIteratorEcho ite = m_fwContainer->endEcho();
+
+	for(;itb<ite; ++itb)
+	{
+		for(unsigned int i=1; i<=2; ++i)
+		{
+			if(fwHelper.hasBackscatteredNthSequence(itb,i))
+			{
+				unsigned int index = itb - itBegin;
+				insertPoint( fwHelper.originXNthSequence(itb, i), fwHelper.originYNthSequence(itb, i), index );
+				insertPoint( fwHelper.endXNthSequence(itb, i), fwHelper.endYNthSequence(itb, i), index );
+			}
+			else
+				break;
+		}
+	}
+
+}
+
+void FullwaveSpatialIndexation::fillMaximum()
+{
+	FullwaveEchoHelper fwHelper(*m_fwContainer);
+	const LidarConstIteratorEcho itBegin = m_fwContainer->beginEcho();
+
+	LidarConstIteratorEcho itb = m_fwContainer->beginEcho();
+	const LidarConstIteratorEcho ite = m_fwContainer->endEcho();
+
+	BasicWaveformConstIteratorType itbW = m_fwContainer->getBasicWaveformContainer().begin();
+
+	for(;itb<ite; ++itb, ++itbW)
+	{
+		std::vector<BasicWaveform::FWAmplitudeType>::const_iterator itMax;
+		int iSeqMax = 0;
+
+		for(unsigned int i=1; i<=2; ++i)
+		{
+			if(fwHelper.hasBackscatteredNthSequence(itb,i))
+			{
+				std::vector<BasicWaveform::FWAmplitudeType>& data = (*itbW)->data_[i-1];
+				std::vector<BasicWaveform::FWAmplitudeType>::const_iterator itMaxTemp = std::max_element(data.begin(), data.end());
+
+				if(i>1)
+				{
+					if(*itMaxTemp > *itMax)
+					{
+						itMax = itMaxTemp;
+						iSeqMax = i;
+					}
+				}
+				else
+				{
+					itMax = itMaxTemp;
+					iSeqMax = 1;
+				}
+			}
+		}
+
+		if(iSeqMax > 0)
+		{
+			const int indiceMax = itMax - (*itbW)->data_[iSeqMax-1].begin();
+			insertPoint( fwHelper.positionXNthSequence(itb, iSeqMax, indiceMax), fwHelper.positionYNthSequence(itb, iSeqMax, indiceMax), itb - itBegin );
+		}
+
+
+	}
 
 }
 

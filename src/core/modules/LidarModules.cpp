@@ -36,6 +36,7 @@ Author:
 ***********************************************************************/
 
 #include <sstream>
+#include <numeric>
 
 #include <boost/filesystem.hpp>
 
@@ -51,10 +52,11 @@ Author:
 #include "core/modules/SelectedLidarData.h"
 
 //algorithms
-#include "core/algorithms/lidar/MNS.h"
+#include "core/algorithms/lidar/LidarOrthoImage.h"
 
 //images
 #include "extern/gil/extension/matis/float_images.hpp"
+#include <boost/gil/gil_all.hpp>
 #include <boost/gil/extension/io/tiff_io.hpp>
 namespace gil = boost::gil;
 
@@ -246,20 +248,58 @@ void Module_lidar_mns::run()
 		}
 	}
 
-	Lidar::MNS mns(*lidarData.m_container, lidarData.m_transfo, r);
+	Lidar::LidarOrthoImage<> mns;
+	shared_ptr<gil::gray32F_image_t> result = mns(lidarData.m_container, lidarData.m_transfo, r, Lidar::FonctorSimpleMNS(lidarData.m_container));
 
 	wxConfigBase *pConfig = wxConfigBase::Get();
 	wxString imagesDir;
 	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
-
-
-	shared_ptr<gil::gray32F_image_t> result = mns.run();
 
 	using namespace boost::filesystem;
 	gil::tiff_write_view( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-mns.tif")).string() , gil::view(*result));
 
 	Lidar::Orientation2D ori = mns.getOri();
 	ori.SaveOriToFile( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-mns.ori")).string() );
+
+}
+
+
+
+/*** Image density module ***/
+
+REGISTER_MODULE(lidar_point_density, "Compute point density", Action::LIDAR)
+
+void Module_lidar_point_density::run()
+{
+	shared_ptr<SelectedLidarData> selectedData = getSelectedLidarData();
+	const SelectedLidarData::LidarData& lidarData = selectedData->front();
+
+	double r=1.;
+	wxTextEntryDialog dialogResolution(FAEventHandler::Instance()->getMainFrame(), _("Raster resolution"), _("Please enter the raster resolution (m)"), _("1."));
+	if (dialogResolution.ShowModal() == wxID_OK)
+	{
+		wxString result = dialogResolution.GetValue();
+		if(!result.ToDouble(&r))
+		{
+			wxMessageBox(_("Bad resolution value !"));
+			return;
+		}
+	}
+
+	Lidar::LidarOrthoImage<> density_image;
+	shared_ptr<gil::gray32F_image_t> result = density_image(lidarData.m_container, lidarData.m_transfo, r, Lidar::FonctorDensityImage(), 0);
+
+	std::cout << "Total number of points: " << std::accumulate(gil::view(*result).begin(), gil::view(*result).end(), 0.) << std::endl;
+
+	wxConfigBase *pConfig = wxConfigBase::Get();
+	wxString imagesDir;
+	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
+
+	using namespace boost::filesystem;
+	gil::tiff_write_view( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-density.tif")).string() , gil::view(*result));
+
+	Lidar::Orientation2D ori = density_image.getOri();
+	ori.SaveOriToFile( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-density.ori")).string() );
 
 }
 
