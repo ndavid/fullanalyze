@@ -58,7 +58,16 @@ namespace Lidar
 class FullwaveSpatialIndexation : public RasterSpatialIndexation
 {
 	public:
-		FullwaveSpatialIndexation(const shared_ptr<const FullwaveLidarDataContainer>& fwContainer);
+
+		enum IndexationMethod
+		{
+			FIRST_LAST_EACH_SEQ, //index first and last point of each sequence of a waveform
+			FIRST, //index first point of the first sequence
+			LAST, //index last point of the last sequence
+			MAXIMUM //index the point whose amplitude is the max of all sequences
+		};
+
+		FullwaveSpatialIndexation(const shared_ptr<const FullwaveLidarDataContainer>& fwContainer, IndexationMethod method = LAST);
 		virtual ~FullwaveSpatialIndexation();
 
 		virtual void GetCenteredNeighborhood(NeighborhoodListeType &list, const TPoint2D<float> &centre, const float approxNeighborhoodSize, const NeighborhoodFunctionType isInside ) const;
@@ -69,8 +78,14 @@ class FullwaveSpatialIndexation : public RasterSpatialIndexation
 
 		void insertPoint(const float x, const float y, const unsigned int index);
 
+		void fillFirst();
+		void fillLast();
+		void fillFirstLastEachSeq();
+		void fillMaximum();
+
 		//reference data
 		shared_ptr<const FullwaveLidarDataContainer> m_fwContainer;
+		IndexationMethod m_indexationMethod;
 };
 
 }//namespace Lidar
