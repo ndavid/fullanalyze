@@ -77,7 +77,7 @@ PointCloud::PointCloud(const shared_ptr<LidarDataContainer>& lidarContainer, con
 	initCentering();
 
 	///debug
-//	m_layerPoints = VectorLayer::CreateVectorLayer( "test_crop", SHPT_POINT, CARTOGRAPHIC_COORDINATES , false );
+	m_layerPoints = VectorLayer::CreateVectorLayer( "test_crop", SHPT_POINT, CARTOGRAPHIC_COORDINATES , false );
 
 }
 
@@ -93,13 +93,13 @@ void PointCloud::updateFromCrop(const RegionOfInterest2D& region)
 	if(!m_spatialIndexationIsSet)
 	{
 		m_spatialIndexation = shared_ptr<LidarSpatialIndexation2D>(new LidarSpatialIndexation2D(*m_referenceLidarContainer));
-		m_spatialIndexation->setResolution(1); //1m //TODO pouvoir ajuster entre aéroporté et terrestre !!
+		m_spatialIndexation->setResolution(0.25); //1m //TODO pouvoir ajuster entre aéroporté et terrestre !!
 		m_spatialIndexation->indexData();
 
 		m_spatialIndexationIsSet = true;
 
 		///debug
-//		PanelManager::Instance()->GetPanelsList()[0]->AddLayer(m_layerPoints);
+		PanelManager::Instance()->GetPanelsList()[0]->AddLayer(m_layerPoints);
 	}
 
 	m_lidarContainer = region.cropLidarData(*m_referenceLidarContainer, *m_spatialIndexation, m_transfo);
@@ -107,20 +107,19 @@ void PointCloud::updateFromCrop(const RegionOfInterest2D& region)
 	initCentering();
 
 //	///Projection des points dans le panel pour checker les crops
-//	boost::shared_ptr<VectorLayer> vectorLayerPoints = boost::dynamic_pointer_cast<VectorLayer>(m_layerPoints);
-//	vectorLayerPoints->Clear();
-//
-//	LidarConstIteratorXYZ<float> itb = m_lidarContainer->beginXYZ<float>();
-//	const LidarConstIteratorXYZ<float> ite = m_lidarContainer->endXYZ<float>();
-//
-//	for (; itb != ite; ++itb)
-//	{
-//		const TPoint2D<double> pt = m_transfo.applyTransfo(itb.xy());
-//		std::cout << pt << std::endl;
-//		vectorLayerPoints->AddPoint(pt.x, pt.y);
-//	}
-//
-//	PanelManager::Instance()->GetPanelsList()[0]->Refresh();
+	boost::shared_ptr<VectorLayer> vectorLayerPoints = boost::dynamic_pointer_cast<VectorLayer>(m_layerPoints);
+	vectorLayerPoints->Clear();
+
+	LidarConstIteratorXYZ<float> itb = m_lidarContainer->beginXYZ<float>();
+	const LidarConstIteratorXYZ<float> ite = m_lidarContainer->endXYZ<float>();
+
+	for (; itb != ite; ++itb)
+	{
+		const TPoint2D<double> pt = m_transfo.applyTransfo(itb.xy());
+		vectorLayerPoints->AddPoint(pt.x, pt.y);
+	}
+
+	PanelManager::Instance()->GetPanelsList()[0]->Refresh();
 }
 
 
@@ -390,8 +389,8 @@ void PointCloud::initCentering()
 		}
 
 
-		std::cout<<"min:" << TPoint3D<float>(m_minX, m_minY, m_minZ)<<"\n";
-		std::cout<<"max:" << TPoint3D<float>(m_maxX, m_maxY, m_maxZ)<<"\n";
+//		std::cout<<"min:" << TPoint3D<float>(m_minX, m_minY, m_minZ)<<"\n";
+//		std::cout<<"max:" << TPoint3D<float>(m_maxX, m_maxY, m_maxZ)<<"\n";
 
 	}
 }

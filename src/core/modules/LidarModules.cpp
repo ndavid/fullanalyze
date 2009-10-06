@@ -229,9 +229,9 @@ void Module_lidar_custom_centering::run()
 
 /*** MNS module ***/
 
-REGISTER_MODULE(lidar_mns, "Compute MNS", Action::LIDAR)
+REGISTER_MODULE(lidar_simple_mns, "Compute MNS (basic algo)", Action::LIDAR)
 
-void Module_lidar_mns::run()
+void Module_lidar_simple_mns::run()
 {
 	shared_ptr<SelectedLidarData> selectedData = getSelectedLidarData();
 	const SelectedLidarData::LidarData& lidarData = selectedData->front();
@@ -248,18 +248,19 @@ void Module_lidar_mns::run()
 		}
 	}
 
+	const float blankValue = -999;
 	Lidar::LidarOrthoImage<> mns;
-	shared_ptr<gil::gray32F_image_t> result = mns(lidarData.m_container, lidarData.m_transfo, r, Lidar::FonctorSimpleMNS(lidarData.m_container));
+	shared_ptr<gil::gray32F_image_t> result = mns(lidarData.m_container, lidarData.m_transfo, r, Lidar::FonctorSimpleMNS(), blankValue);
 
 	wxConfigBase *pConfig = wxConfigBase::Get();
 	wxString imagesDir;
 	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
 
 	using namespace boost::filesystem;
-	gil::tiff_write_view( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-mns.tif")).string() , gil::view(*result));
+	gil::tiff_write_view( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-basic-mns.tif")).string() , gil::view(*result));
 
 	Lidar::Orientation2D ori = mns.getOri();
-	ori.SaveOriToFile( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-mns.ori")).string() );
+	ori.SaveOriToFile( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-basic-mns.ori")).string() );
 
 }
 

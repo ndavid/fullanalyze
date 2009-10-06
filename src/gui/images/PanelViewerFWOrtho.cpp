@@ -140,7 +140,7 @@ void PanelViewerFWOrtho::executeModeGeometryMoving()
 
 		//on lance le crop :
 		if(m_cropCallback)
-			m_cropCallback(CircularRegionOfInterest2D(centre, m_ghostLayer.m_circle.second));
+			m_cropCallback(CircularRegionOfInterest2D(centre, ori.Step() * m_ghostLayer.m_circle.second));
 
 	}
 }

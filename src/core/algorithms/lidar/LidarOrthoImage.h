@@ -38,9 +38,12 @@ Author:
 #ifndef LIDARORTHOIMAGE_H_
 #define LIDARORTHOIMAGE_H_
 
+#include <algorithm>
+#include <numeric>
 
 #include <boost/shared_ptr.hpp>
 #include "extern/gil/extension/matis/float_images.hpp"
+#include <boost/gil/extension/io/tiff_io.hpp>
 
 #include "LidarFormat/tools/Orientation2D.h"
 
@@ -49,6 +52,10 @@ using boost::shared_ptr;
 #include "LidarFormat/LidarDataContainer.h"
 #include "LidarFormat/geometry/LidarSpatialIndexation2D.h"
 #include "LidarFormat/geometry/LidarCenteringTransfo.h"
+
+#include "tools/OutilsMaths.h"
+
+namespace gil=boost::gil;
 
 
 namespace Lidar
@@ -68,29 +75,72 @@ struct FonctorIndexToIterator
 		TIterator it_;
 };
 
-struct FonctorSimpleMNS
-{
-		FonctorSimpleMNS(const shared_ptr<const LidarDataContainer>& lidarContainer):
-			m_beginZ(lidarContainer->beginAttribute<float>("z"))
-			{}
 
-		float operator()(const LidarSpatialIndexation2D::NeighborhoodListeType& neighborhood) const
+template<class TFuncIndexToZ>
+struct SortByZ
+{
+		SortByZ(TFuncIndexToZ f_):
+			f(f_){}
+
+		bool operator()(const unsigned int i1, const unsigned int i2)
 		{
-			std::vector<double> listeAltis(neighborhood.size());
-			std::transform( neighborhood.begin(), neighborhood.end(), listeAltis.begin(), FonctorIndexToIterator< LidarConstIteratorAttribute<float> >(m_beginZ) );
-			return *std::max_element(listeAltis.begin(), listeAltis.end());
+			return f(i1) < f(i2);
 		}
 
-	private:
-		const LidarConstIteratorAttribute<float> m_beginZ;
+		TFuncIndexToZ f;
 };
+
+
+struct FonctorSimpleMNS
+{
+		void operator()(gil::gray32F_view_t& mns, const LidarSpatialIndexation2D::GriddedDataType& grid, const shared_ptr<const LidarDataContainer>& lidarContainer, const Orientation2D& ori) const
+		{
+			const LidarConstIteratorAttribute<float> beginZ(lidarContainer->beginAttribute<float>("z"));
+			FonctorIndexToIterator< LidarConstIteratorAttribute<float> > foncIndexToZ(beginZ);
+
+			for(int lig = 0; lig < mns.height(); ++lig)
+			{
+				gil::gray32F_view_t::x_iterator mns_it = mns.row_begin(lig);
+
+				for(int col = 0; col < mns.width(); ++col)
+				{
+					const LidarSpatialIndexation2D::NeighborhoodListeType& neighborhood = grid(col,lig);
+
+					if(!neighborhood.empty())
+					{
+						std::vector<double> listeAltis(neighborhood.size());
+						std::transform( neighborhood.begin(), neighborhood.end(), listeAltis.begin(), foncIndexToZ );
+						mns_it[col] = *std::max_element(listeAltis.begin(), listeAltis.end());
+					}
+				}
+
+			}
+		}
+
+};
+
+
 
 
 struct FonctorDensityImage
 {
-		float operator()(const LidarSpatialIndexation2D::NeighborhoodListeType& neighborhood) const
+		void operator()(gil::gray32F_view_t& orthoImage, const LidarSpatialIndexation2D::GriddedDataType& grid, const shared_ptr<const LidarDataContainer>& lidarContainer, const Orientation2D& ori) const
 		{
-			return neighborhood.size();
+			LidarSpatialIndexation2D::GriddedDataType::const_iterator grid_it = grid.begin();
+
+			for(int lig = 0; lig < orthoImage.height(); ++lig)
+			{
+				gil::gray32F_view_t::x_iterator src_it = orthoImage.row_begin(lig);
+
+				for(int col = 0; col < orthoImage.width(); ++col, ++grid_it)
+				{
+					const LidarSpatialIndexation2D::NeighborhoodListeType& neighborhood = *grid_it;
+
+					if(!neighborhood.empty())
+						src_it[col] = neighborhood.size();
+				}
+
+			}
 		}
 };
 
@@ -98,20 +148,21 @@ struct FonctorDensityImage
 
 
 
-using boost::gil::gray32F_image_t;
+using gil::gray32F_image_t;
 
 template<typename PixelType = float, class Image = gray32F_image_t>
 struct LidarOrthoImage
 {
-		template<class Fonction>
-		shared_ptr<Image> operator()(const shared_ptr<const LidarDataContainer>& lidarContainer, const LidarCenteringTransfo& transfo, const float resolution, Fonction f, const PixelType blankValue = -999)
+		template<class InterpolatorFonctorT>
+		shared_ptr<Image> operator()(const shared_ptr<const LidarDataContainer>& lidarContainer, const LidarCenteringTransfo& transfo, const float resolution, InterpolatorFonctorT interpolator, const PixelType blankValue = -999)
 		{
 			LidarSpatialIndexation2D spatialIndexation(*lidarContainer);
 			spatialIndexation.setResolution(resolution);
 			spatialIndexation.indexData();
 
 			m_ori = spatialIndexation.getOri();
-			std::cout << "transfo : " << transfo.getTransfo() << std::endl;
+			Orientation2D centeredOri = m_ori;
+//			std::cout << "transfo : " << transfo.getTransfo() << std::endl;
 			LidarCenteringTransfo newTransfo(transfo);
 			newTransfo.applyTransfoOrientation(m_ori);
 
@@ -122,19 +173,7 @@ struct LidarOrthoImage
 
 			fill_pixels(orthoImageView, blankValue);
 
-			for(int col = 0; col < orthoImageView.width(); ++col)
-			{
-				for(int lig = 0; lig < orthoImageView.height(); ++lig)
-				{
-					const LidarSpatialIndexation2D::NeighborhoodListeType& neighborhood = grid(col,lig);
-
-					if(!neighborhood.empty())
-					{
-						orthoImageView(col,lig) = f(neighborhood);
-					}
-				}
-
-			}
+			interpolator(orthoImageView, grid, lidarContainer, centeredOri);
 
 			return orthoImage;
 		}
