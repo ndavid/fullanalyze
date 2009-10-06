@@ -115,26 +115,6 @@ else()
 	ENDIF()
 endif()
 
-#Pour utiliser le find xerces et xsd:
-
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmakeContrib)
-FIND_PACKAGE(XercesC)
-IF( XERCESC_FOUND )
-	INCLUDE_DIRECTORIES( ${XERCESC_INCLUDE_DIR} )
-	SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} ${XERCESC_LIBRARIES})
-ELSE()
-	MESSAGE( FATAL_ERROR "XercesC not found ! Please set XercesC path ..." )
-ENDIF()
-
-FIND_PACKAGE(Xsd)
-IF( XSD_FOUND )
-	INCLUDE_DIRECTORIES( ${XSD_INCLUDE_DIR} )
-	#MESSAGE("XSD Include Path : " ${XSD_INCLUDE_DIR} )
-ELSE()
-	MESSAGE( FATAL_ERROR "XSD not found ! Please set XSD path ..." )
-ENDIF()
-
-
 # Find BOOST
 # CMake does not include boost version 1.39
 SET(Boost_ADDITIONAL_VERSIONS "1.37.0" "1.37" "1.38" "1.38.0" "1.39.0" "1.39")
@@ -150,7 +130,25 @@ else()
 	message( FATAL_ERROR "Boost not found ! Please set Boost path ..." )
 endif()
 
+FIND_PACKAGE(LidarFormat REQUIRED)
+IF(LidarFormat_FOUND)
+	MESSAGE(STATUS "LidarFormat_FOUND found !")
+	include_directories(${LidarFormat_INCLUDE_DIRS})
+ELSE(LidarFormat_FOUND)
+	# For convenience. inform the user
+	MESSAGE(SEND_ERROR "LidarFormat not found ! check if you have still install this library
+	and/or set the correct LidarFormatConfig path ")
+ENDIF(LidarFormat_FOUND)
 
+FIND_PACKAGE( GilViewer REQUIRED)
+IF( GilViewer_FOUND)
+	MESSAGE(STATUS " GilViewer_FOUND found !")
+	include_directories(${GilViewer_INCLUDE_DIRS})
+ELSE( GilViewer_FOUND)
+	# For convenience. inform the user
+	MESSAGE(SEND_ERROR " GilViewernot found ! check if you have still install this library
+	and/or set the correct  GilViewerConfig path ")
+ENDIF(GilViewer_FOUND)
 #####################################
 ###                     Fin recherche des packages                         ###
 #####################################
@@ -158,24 +156,6 @@ endif()
 #######################
 ### Construction de l'executable ###
 #######################
-
-# Repertoire vers la libViewerITK pour construire les chemins d'include et de link
-SET( GILVIEWER_PATH "../../GilViewer/trunk" CACHE PATH "GilViewer directory" )
-LINK_DIRECTORIES( ${GILVIEWER_PATH}/lib )
-INCLUDE_DIRECTORIES( ${GILVIEWER_PATH} )
-INCLUDE_DIRECTORIES( ${GILVIEWER_PATH}/src )
-INCLUDE_DIRECTORIES( ${GILVIEWER_PATH}/extern )
-SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} GilViewer shapelib tinyxml)
-
-
-# Pour la lib de format :
-SET( LIDAR_FORMAT_PATH "../../LidarFormat/trunk" CACHE PATH "LidarFormat directory" )
-LINK_DIRECTORIES( ${LIDAR_FORMAT_PATH} )
-INCLUDE_DIRECTORIES( ${LIDAR_FORMAT_PATH}/src )
-SET(FullAnalyze_LIBRAIRIES ${FullAnalyze_LIBRAIRIES} LidarFormat)
-
-
-
 
 IF(UNIX)
 
@@ -194,5 +174,5 @@ ADD_EXECUTABLE(FullAnalyze ${EXECUTABLE_WIN32}
 			   )
 
 TARGET_LINK_LIBRARIES( FullAnalyze 
-							${FullAnalyze_LIBRAIRIES}
+							${FullAnalyze_LIBRAIRIES} LidarFormat GilViewer
 					 )

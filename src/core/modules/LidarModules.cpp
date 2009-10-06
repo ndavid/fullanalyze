@@ -55,7 +55,7 @@ Author:
 #include "core/algorithms/lidar/LidarOrthoImage.h"
 
 //images
-#include "extern/gil/extension/matis/float_images.hpp"
+#include "boost/gil/extension/matis/float_images.hpp"
 #include <boost/gil/gil_all.hpp>
 #include <boost/gil/extension/io/tiff_io.hpp>
 namespace gil = boost::gil;

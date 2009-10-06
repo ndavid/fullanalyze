@@ -45,7 +45,7 @@ Author:
 #define HILLSHADE_H_
 //BOOST
 #include <boost/shared_ptr.hpp>
-#include "extern/gil/extension/matis/float_images.hpp"
+#include "boost/gil/extension/matis/float_images.hpp"
 
 using boost::shared_ptr;
 

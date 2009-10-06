@@ -40,7 +40,7 @@ Author:
 
 
 #include <boost/shared_ptr.hpp>
-#include "extern/gil/extension/matis/float_images.hpp"
+#include "boost/gil/extension/matis/float_images.hpp"
 
 #include "LidarFormat/tools/Orientation2D.h"
 
