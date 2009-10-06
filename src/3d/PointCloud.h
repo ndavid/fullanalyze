@@ -49,7 +49,7 @@ using boost::shared_ptr;
 #include "Cloud.h"
 
 ///debug
-//#include "layers/VectorLayer.hpp"
+#include "layers/VectorLayer.hpp"
 
 namespace Lidar
 {
@@ -111,7 +111,7 @@ class PointCloud: public Cloud
 		const Lidar::LidarCenteringTransfo m_transfo;
 
 		///debug
-//		Layer::ptrLayerType m_layerPoints;
+		Layer::ptrLayerType m_layerPoints;
 
 		///texture
 		GLuint m_texName;
