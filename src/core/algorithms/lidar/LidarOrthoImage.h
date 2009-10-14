@@ -126,15 +126,13 @@ struct FonctorDensityImage
 {
 		void operator()(gil::gray32F_view_t& orthoImage, const LidarSpatialIndexation2D::GriddedDataType& grid, const shared_ptr<const LidarDataContainer>& lidarContainer, const Orientation2D& ori) const
 		{
-			LidarSpatialIndexation2D::GriddedDataType::const_iterator grid_it = grid.begin();
-
 			for(int lig = 0; lig < orthoImage.height(); ++lig)
 			{
 				gil::gray32F_view_t::x_iterator src_it = orthoImage.row_begin(lig);
 
-				for(int col = 0; col < orthoImage.width(); ++col, ++grid_it)
+				for(int col = 0; col < orthoImage.width(); ++col)
 				{
-					const LidarSpatialIndexation2D::NeighborhoodListeType& neighborhood = *grid_it;
+					const LidarSpatialIndexation2D::NeighborhoodListeType& neighborhood = grid(col,lig);
 
 					if(!neighborhood.empty())
 						src_it[col] = neighborhood.size();
