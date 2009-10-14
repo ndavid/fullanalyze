@@ -117,8 +117,12 @@ void MainFrame::DestroyPanel( wxPanel* panel )
 wxAboutDialogInfo MainFrame::getAboutInfo() const
 {
 	wxAboutDialogInfo info;
-	info.AddDeveloper(_("Adrien Chauve (Author)"));
-	info.AddDeveloper(_("Olivier Tournaire (Co-author of the raster/vector 2D viewer GilViewer)"));
+	info.AddDeveloper(_("Author:"));
+	info.AddDeveloper(_("Adrien Chauve"));
+	info.AddDeveloper(_(""));
+	info.AddDeveloper(_("Contributors:"));
+	info.AddDeveloper(_("Olivier Tournaire (GilViewer)"));
+	info.AddDeveloper(_("Nicolas David (CMake master)"));
 	info.SetName(_("FullAnalyze"));
 	info.SetVersion(_("0.1.0"));
 	info.SetWebSite(_("http://fullanalyze.sourceforge.net") );
