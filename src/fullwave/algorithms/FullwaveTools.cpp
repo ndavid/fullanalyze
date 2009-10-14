@@ -52,9 +52,9 @@ namespace FullwaveTools
 		const LidarConstIteratorEcho itb = fwContainer.beginEcho();
 		const LidarConstIteratorEcho ite = fwContainer.endEcho();
 
-		while( !fwHelper.hasBackscatteredSequences(it) && it>= itb && it<ite)
+		while(it>= itb && it<ite && !fwHelper.hasBackscatteredSequences(it))
 		{
-			//si le bord de bande n'a pas de retour (arrive fréquemment sur la zone acidentée du brusquet) on recherche le signal le plus proche à l'intérieur de la bande
+			//si le bord de bande n'a pas de retour (arrive fréquemment sur la zone accidentée du brusquet) on recherche le signal le plus proche à l'intérieur de la bande
 			if(increment<0)
 			{
 				it -= -increment;
@@ -63,7 +63,7 @@ namespace FullwaveTools
 				it += increment;
 		}
 
-		if(fwHelper.hasBackscatteredSequences(it))
+		if(it>= itb && it<ite && fwHelper.hasBackscatteredSequences(it))
 		{
 			TPoint2D<float> pt(fwHelper.originXNthSequence(it, 1), fwHelper.originYNthSequence(it, 1));
 			TPoint2D<double> ptTransfo = transfo.applyTransfo(pt);
