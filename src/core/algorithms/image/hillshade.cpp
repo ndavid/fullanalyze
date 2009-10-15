@@ -43,7 +43,7 @@ Author:
 #include <iterator>
 #include <vector>
 
-#include <boost/gil/algorithm.hpp>
+#include <boost/gil/gil_all.hpp>
 
 #include "hillshade.h"
 

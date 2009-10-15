@@ -35,6 +35,8 @@ Author:
  
 ***********************************************************************/
 
+#include <boost/gil/gil_all.hpp>
+
 #include "LidarFormat/LidarDataContainer.h"
 #include "core/algorithms/lidar/SensorIndexation.h"
 
