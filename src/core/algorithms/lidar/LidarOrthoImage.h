@@ -63,9 +63,9 @@ namespace Lidar
 
 
 template<class TIterator>
-struct FonctorIndexToIterator
+struct FonctorIndexToValue
 {
-	FonctorIndexToIterator(const TIterator &it): it_(it){}
+	FonctorIndexToValue(const TIterator &it): it_(it){}
 
 	typename TIterator::value_type operator()(const unsigned int index)
 	{
@@ -96,7 +96,7 @@ struct FonctorSimpleMNS
 		void operator()(gil::gray32F_view_t& mns, const LidarSpatialIndexation2D::GriddedDataType& grid, const shared_ptr<const LidarDataContainer>& lidarContainer, const Orientation2D& ori) const
 		{
 			const LidarConstIteratorAttribute<float> beginZ(lidarContainer->beginAttribute<float>("z"));
-			FonctorIndexToIterator< LidarConstIteratorAttribute<float> > foncIndexToZ(beginZ);
+			FonctorIndexToValue< LidarConstIteratorAttribute<float> > foncIndexToZ(beginZ);
 
 			for(int lig = 0; lig < mns.height(); ++lig)
 			{
