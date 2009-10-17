@@ -118,7 +118,7 @@ endif()
 # Find BOOST
 # CMake does not include boost version 1.39
 SET(Boost_ADDITIONAL_VERSIONS "1.37.0" "1.37" "1.38" "1.38.0" "1.39.0" "1.39")
-find_package( Boost 1.36 COMPONENTS filesystem system unit_test_framework)
+find_package( Boost 1.36 COMPONENTS filesystem system)
 if( Boost_FOUND )
 	include_directories( ${Boost_INCLUDE_DIR} )
 	link_directories( ${Boost_LIBRARY_DIRS} )
@@ -176,3 +176,5 @@ ADD_EXECUTABLE(FullAnalyze ${EXECUTABLE_WIN32}
 TARGET_LINK_LIBRARIES( FullAnalyze 
 							${FullAnalyze_LIBRAIRIES} LidarFormat GilViewer
 					 )
+					 
+INSTALL(TARGETS FullAnalyze DESTINATION bin)

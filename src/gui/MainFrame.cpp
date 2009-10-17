@@ -155,9 +155,7 @@ void MainFrame::notifyGLPanelCreated()
 	m_faToolBar->EnableTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, true);
 
 
-	m_panel3D->Connect(ID_FA_SHOW_HIDE_CLOUD_CONTROL, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(GLPanel::OnShowCloudControl));
-
-//	EVT_TOOL(ID_FA_SHOW_HIDE_CLOUD_CONTROL, GLPanel::OnShowCloudControl)
+	Connect(ID_FA_SHOW_HIDE_CLOUD_CONTROL, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(GLPanel::OnShowCloudControl), NULL, m_panel3D);
 
 }
 
@@ -191,49 +189,22 @@ void MainFrame::InitToolBars()
 	const wxSize imageSize(16,16);
 
 	m_faToolBar->AddTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, _("SHCC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
-
-//	m_toolBar->AddTool(ID_BASIC_SNAPSHOT, _("S"), wxXmlResource::Get()->LoadBitmap( wxT("CAMERA_PHOTO_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Snapshot"));
-//
-//	m_toolBar->AddTool(wxID_PREFERENCES, _("AS"), wxXmlResource::Get()->LoadBitmap( wxT("APPLICATIONS-SYSTEM_16x16") ) , wxNullBitmap, wxITEM_NORMAL, _("Application settings"));
-//
-//	m_toolBar->AddSeparator();
-//	m_toolBar->AddTool(ID_MODE_NAVIGATION, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigation"));
-//	m_toolBar->AddTool(ID_MODE_CAPTURE, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Saisie"));
-//	m_toolBar->AddTool(ID_MODE_EDITION, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Edition"));
-//	m_toolBar->AddTool(ID_MODE_GEOMETRY_MOVING, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Geometry moving"));
-//	m_toolBar->AddTool(ID_MODE_SELECTION, _("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Selection"));
-//
-//	m_toolBar->AddSeparator();
-//
-//	m_toolBar->AddTool(ID_GEOMETRY_NULL, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("PROCESS-STOP_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("None"));
-//	m_toolBar->AddTool(ID_GEOMETRY_POINT, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POINTS_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Point"));
-//	m_toolBar->AddTool(ID_GEOMETRY_CIRCLE, _("MN"), wxBitmap(mActionToggleEditing_xpm), wxNullBitmap, wxITEM_RADIO, _("Circle"));
-//	m_toolBar->AddTool(ID_GEOMETRY_LINE, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POLYLINES_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Line"));
-//	m_toolBar->AddTool(ID_GEOMETRY_RECTANGLE, _("MN"), wxBitmap(capture_rectangle_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Rectangle"));
-//	m_toolBar->AddTool(ID_GEOMETRY_POLYGONE, _("MN"), wxXmlResource::Get()->LoadBitmap( wxT("POLYGONS_16x16") ) , wxNullBitmap, wxITEM_RADIO, _("Polygone"));
-//
-//	m_toolBar->AddSeparator();
-//
-//	m_toolBar->AddTool(ID_SINGLE_CROP, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Single crop"));
-//	m_toolBar->AddTool(ID_MULTI_CROP, _("MN"), wxBitmap(select_16x16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Multi crop"));
-
 	m_faToolBar->Realize();
-
 	m_faToolBar->EnableTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, false);
 
 	wxAuiPaneInfo paneInfoFAToolbar;
 	paneInfoFAToolbar.ToolbarPane();
 	paneInfoFAToolbar.Top();
-	paneInfoFAToolbar.Caption( _("FA Toolbar") );
+	paneInfoFAToolbar.Caption( _("Toolbar 3D") );
 	m_dockManager.AddPane(m_faToolBar, paneInfoFAToolbar);
 
 
 //	/////// Toolbar
-//	wxAuiPaneInfo paneInfoToolbar;
-//	paneInfoToolbar.ToolbarPane();
-//	paneInfoToolbar.Caption( _("Toolbar") );
-//	paneInfoToolbar.Top();
-//	m_dockManager.AddPane(m_panelViewerMain->GetToolBar(), paneInfoToolbar);
+//	wxAuiPaneInfo paneInfoToolbarMainViewer;
+//	paneInfoToolbarMainViewer.ToolbarPane();
+//	paneInfoToolbarMainViewer.Caption( _("Toolbar Viewer Ortho") );
+//	paneInfoToolbarMainViewer.Top();
+//	m_dockManager.AddPane(m_panelViewerMain->GetToolBar(), paneInfoToolbarMainViewer);
 
 
 	m_dockManager.Update();
