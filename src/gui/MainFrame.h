@@ -171,7 +171,7 @@ class MainFrame : public BasicViewerFrame
 			menu_WindowsDockAll
 		};
 
-		//DECLARE_ITKVIEWER_METHODS_FOR_EVENTS_TABLE();
+		DECLARE_GILVIEWER_METHODS_FOR_EVENTS_TABLE();
 		DECLARE_EVENT_TABLE();
 };
 
