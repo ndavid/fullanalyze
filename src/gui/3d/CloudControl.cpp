@@ -201,7 +201,7 @@ EVT_CHAR(CloudControl::OnChar)
 END_EVENT_TABLE()
 
 CloudControl::CloudControl(wxWindow *parent, PointCloudCanvas* ptCloudCanvas, boost::function<void()> notifyRefresh): //, boost::function<void(double, double, double)> setTranslation) :
-	wxFrame(parent, wxID_ANY, _("Cloud control !")),
+	wxFrame(parent, wxID_ANY, _("Cloud control")),
 	m_pointCloudCanvas(ptCloudCanvas),
 	m_numberOfClouds(0),
 	m_notifyRefresh(notifyRefresh),

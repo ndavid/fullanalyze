@@ -188,7 +188,8 @@ void MainFrame::InitToolBars()
 	// Creating an image list storing the toolbar icons
 	const wxSize imageSize(16,16);
 
-	m_faToolBar->AddTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, _("SHCC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
+	m_faToolBar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHCC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
+	m_faToolBar->AddTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, _("SHCC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide cloud control"));
 	m_faToolBar->Realize();
 	m_faToolBar->EnableTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, false);
 
@@ -204,7 +205,7 @@ void MainFrame::InitToolBars()
 //	paneInfoToolbarMainViewer.ToolbarPane();
 //	paneInfoToolbarMainViewer.Caption( _("Toolbar Viewer Ortho") );
 //	paneInfoToolbarMainViewer.Top();
-//	m_dockManager.AddPane(m_panelViewerMain->GetToolBar(), paneInfoToolbarMainViewer);
+//	m_dockManager.AddPane(m_panelViewerMain->GetToolBar(this), paneInfoToolbarMainViewer);
 
 
 	m_dockManager.Update();
@@ -245,8 +246,8 @@ void MainFrame::InitFenetres()
 	m_dockManager.AddPane( m_panelViewerSensor, paneInfoViewerSensor );
 
 
-	m_statusBar->SetStatusText( _("FullAnalyze - Adrien Chauve") );
-	// tell the manager to "commit" all the changes just made
+	m_statusBar->SetStatusText( _("FullAnalyze") );
+
 	m_dockManager.Update();
 
 
@@ -346,11 +347,11 @@ void MainFrame::OnMenuClickWindows( wxCommandEvent &event )
 
 
 
-//IMPLEMENTS_ITKVIEWER_METHODS_FOR_EVENTS_TABLE(MainFrame,m_panelViewerMain)
+IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(MainFrame,m_panelViewerMain)
 
 BEGIN_EVENT_TABLE(MainFrame, BasicViewerFrame)
 
-	//ADD_ITKVIEWER_EVENTS_TO_TABLE(MainFrame)
+	ADD_GILVIEWER_EVENTS_TO_TABLE(MainFrame)
 
 	/////////////MENUS
 	//Ouverture d'un menu -> lance la maj du menu windows
@@ -359,5 +360,5 @@ BEGIN_EVENT_TABLE(MainFrame, BasicViewerFrame)
 	EVT_MENU_RANGE(menu_WindowsDockAll, menu_WindowsDockAll+100, MainFrame::OnMenuClickWindows)
 	//Autres menus : lance la fonction concernée
 	EVT_MENU(menu_options, MainFrame::OnAfficheOptions)
-//	EVT_MENU(menu_about, MainFrame::OnAbout)
+	EVT_MENU(menu_about, MainFrame::OnAbout)
 END_EVENT_TABLE()
