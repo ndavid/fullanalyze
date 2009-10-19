@@ -193,10 +193,10 @@ void MainFrame::InitToolBars()
 	m_orthoToolBar->AddControl(textOrthoToolBar);
 	m_orthoToolBar->AddTool(ID_FA_ORTHO_NAVIGATE, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigate in the window"));
 	m_orthoToolBar->AddTool(ID_FA_ORTHO_MOVE_SELECTION, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Move selection"));
-//	m_orthoToolBar->AddTool(ID_FA_ORTHO_RECTANGLE_SELECTION, _("SHCC"), wxXmlResource::Get()->LoadBitmap( wxT("RECTANGLE_16x16") ), wxNullBitmap, wxITEM_RADIO, _("Rectangular selection"));
-//	m_orthoToolBar->AddTool(ID_FA_ORTHO_CIRCLE_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_BROWSER_22x22")), wxNullBitmap, wxITEM_RADIO, _("Circular selection"));
-	m_orthoToolBar->AddTool(ID_FA_ORTHO_RECTANGLE_SELECTION, _("SHCC"), wxXmlResource::Get()->LoadBitmap( wxT("PROCESS-STOP_16x16") ), wxNullBitmap, wxITEM_RADIO, _("Rectangular selection"));
-	m_orthoToolBar->AddTool(ID_FA_ORTHO_CIRCLE_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_RADIO, _("Circular selection"));
+	m_orthoToolBar->AddTool(ID_FA_ORTHO_RECTANGLE_SELECTION, _("SHCC"), wxXmlResource::Get()->LoadBitmap( wxT("RECTANGLE_16x16") ), wxNullBitmap, wxITEM_RADIO, _("Rectangular selection"));
+	m_orthoToolBar->AddTool(ID_FA_ORTHO_CIRCLE_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_BROWSER_22x22")), wxNullBitmap, wxITEM_RADIO, _("Circular selection"));
+//	m_orthoToolBar->AddTool(ID_FA_ORTHO_RECTANGLE_SELECTION, _("SHCC"), wxXmlResource::Get()->LoadBitmap( wxT("PROCESS-STOP_16x16") ), wxNullBitmap, wxITEM_RADIO, _("Rectangular selection"));
+//	m_orthoToolBar->AddTool(ID_FA_ORTHO_CIRCLE_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_RADIO, _("Circular selection"));
 	m_orthoToolBar->AddTool(ID_FA_ORTHO_NO_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_NORMAL, _("No selection"));
 
 	m_orthoToolBar->Realize();
