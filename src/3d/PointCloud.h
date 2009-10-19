@@ -48,7 +48,6 @@ using boost::shared_ptr;
 
 #include "Cloud.h"
 
-///debug
 #include "layers/VectorLayer.hpp"
 
 namespace Lidar
@@ -100,7 +99,8 @@ class PointCloud: public Cloud
 		const unsigned int ssEchantillonnage() const { return m_ssEchantillonnage; }
 		void ssEchantillonnage(const unsigned int ssEch) { m_ssEchantillonnage = ssEch; }
 
-		void updateFromCrop(const RegionOfInterest2D& region);
+		virtual void updateFromCrop(const RegionOfInterest2D& region);
+		virtual void updateVisuCrop();
 
 		///Texture matrice
 		float m_textureMat[16];
@@ -110,7 +110,7 @@ class PointCloud: public Cloud
 		shared_ptr<Lidar::LidarDataContainer> m_referenceLidarContainer;
 		const Lidar::LidarCenteringTransfo m_transfo;
 
-		///debug
+		///Point cloud footprints
 		Layer::ptrLayerType m_layerPoints;
 
 		///texture

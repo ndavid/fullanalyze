@@ -49,6 +49,8 @@ using boost::shared_ptr;
 
 #include "3d/Cloud.h"
 
+#include "layers/VectorLayer.hpp"
+
 
 namespace Lidar
 {
@@ -81,6 +83,7 @@ class FullwaveCloud : public Cloud
 
 		virtual void draw();
 		virtual void updateFromCrop(const RegionOfInterest2D& region);
+		virtual void updateVisuCrop();
 
 
 		void colorMode(const ColorMode mode);
@@ -125,6 +128,9 @@ class FullwaveCloud : public Cloud
 		//ratio amplitude de l'onde/taille suivant la (une) normale
 		double m_ratioAmplitude;
 		unsigned char m_sphereDetails;
+
+		///FW cloud footprints
+		Layer::ptrLayerType m_layerFootprints;
 
 
 		void initCentering();

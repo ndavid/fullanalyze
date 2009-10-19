@@ -72,6 +72,7 @@ public:
 
 	///Callback pour updater la visu des nuages après un crop
 	virtual void updateFromCrop(const RegionOfInterest2D& region)=0;
+	virtual void updateVisuCrop()=0;
 
 
 
