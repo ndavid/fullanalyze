@@ -140,6 +140,12 @@ void PointCloudCanvas::setRotationScale(const double rotation)
 	ROTATION_SCALE = rotation;
 }
 
+void PointCloudCanvas::resetCanvas()
+{
+	reset();
+	DoResize();
+}
+
 
 void PointCloudCanvas::DoResize()
 {

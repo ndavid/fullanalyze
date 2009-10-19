@@ -98,6 +98,13 @@ class MainFrame : public BasicViewerFrame
 
 		void onLidarDisplayProjectedPoints(wxCommandEvent &event);
 
+		void onOrthoNavigate(wxCommandEvent &event);
+		void onOrthoMoveSelection(wxCommandEvent &event);
+		void onOrthoRectangleSelection(wxCommandEvent &event);
+		void onOrthoCircleSelection(wxCommandEvent &event);
+		void onOrthoNoSelection(wxCommandEvent &event);
+
+
 
 		///car bug avec gtk si le panel est créé au démarrage de l'appli...
 		void notifyGLPanelCreated();
@@ -128,8 +135,10 @@ class MainFrame : public BasicViewerFrame
 		GLPanel *m_panel3D;
 
 
-
+		///Main FA toolbar
 		wxToolBar *m_faToolBar;
+		///Ortho view toolbar
+		wxToolBar *m_orthoToolBar;
 
 		/////////////////////////////
 		///MENUS

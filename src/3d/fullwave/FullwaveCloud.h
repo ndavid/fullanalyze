@@ -84,6 +84,7 @@ class FullwaveCloud : public Cloud
 		virtual void draw();
 		virtual void updateFromCrop(const RegionOfInterest2D& region);
 		virtual void updateVisuCrop();
+		virtual void resetCrop();
 
 
 		void colorMode(const ColorMode mode);

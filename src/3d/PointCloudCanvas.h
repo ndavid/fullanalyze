@@ -65,6 +65,8 @@ class PointCloudCanvas : public OpenGLCanvas
 		void setZoom(const double zoom);
 		void setRotationScale(const double rotation);
 
+		void resetCanvas();
+
 	protected:
 
 		virtual void DoResize();
