@@ -189,6 +189,8 @@ void MainFrame::InitToolBars()
 	const wxSize imageSize(16,16);
 
 	m_faToolBar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHCC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
+	m_faToolBar->AddTool(ID_FA_LIDAR_DISPLAY_PROJECTED_POINTS, _("SHCC"), wxXmlResource::Get()->LoadBitmap( wxT("POINTS_16x16") ), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide lidar projected points"));
+
 	m_faToolBar->AddTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, _("SHCC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide cloud control"));
 	m_faToolBar->Realize();
 	m_faToolBar->EnableTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, false);
@@ -345,6 +347,11 @@ void MainFrame::OnMenuClickWindows( wxCommandEvent &event )
 
 }
 
+void MainFrame::onLidarDisplayProjectedPoints(wxCommandEvent &event)
+{
+	FAEventHandler::Instance()->lidarDisplayProjectedPoints(!FAEventHandler::Instance()->lidarDisplayProjectedPoints());
+}
+
 
 
 IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(MainFrame,m_panelViewerMain)
@@ -361,4 +368,6 @@ BEGIN_EVENT_TABLE(MainFrame, BasicViewerFrame)
 	//Autres menus : lance la fonction concernée
 	EVT_MENU(menu_options, MainFrame::OnAfficheOptions)
 	EVT_MENU(menu_about, MainFrame::OnAbout)
+
+	EVT_TOOL(ID_FA_LIDAR_DISPLAY_PROJECTED_POINTS, MainFrame::onLidarDisplayProjectedPoints)
 END_EVENT_TABLE()

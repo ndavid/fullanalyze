@@ -365,6 +365,14 @@ void CloudControl::updateFromCrop(const RegionOfInterest2D& region)
 	m_notifyRefresh();
 }
 
+void CloudControl::updateVisuCrop()
+{
+	for(iterator it = begin(); it != end(); ++it)
+	{
+		(*it)->updateVisuCrop();
+	}
+}
+
 void CloudControl::OnInfoButton(wxCommandEvent& event)
 {
 	// Get layer index

@@ -105,8 +105,9 @@ class FAEventHandler : public PatternSingleton<FAEventHandler>
 
 
 
-
-
+		///Application parameters (need to be refractred in a specific class)
+		bool lidarDisplayProjectedPoints() const;
+		void lidarDisplayProjectedPoints(const bool display);
 
 
 

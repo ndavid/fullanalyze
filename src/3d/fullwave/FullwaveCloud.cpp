@@ -56,6 +56,15 @@ Author:
 #include "fullwave/format/FullwaveLidarDataContainer.h"
 #include "fullwave/algorithms/FullwaveSpatialIndexation.h"
 
+///projection points
+#include "gui/PanelManager.h"
+#include "layers/VectorLayer.hpp"
+#include "layers/ImageLayer.hpp"
+#include "layers/VectorLayerContent.hpp"
+
+#include "core/modules/FAEventHandler.h"
+
+
 
 #include "FullwaveCloud.h"
 
@@ -73,6 +82,8 @@ FullwaveCloud::FullwaveCloud(const shared_ptr<const Lidar::FullwaveLidarDataCont
 
 	name(cloudName);
 	initCentering();
+
+	m_layerFootprints = VectorLayer::CreateVectorLayer( "fw_cloud_" + name(), SHPT_ARC, CARTOGRAPHIC_COORDINATES , false );
 
 }
 
@@ -98,8 +109,6 @@ void FullwaveCloud::drawCloudSegment() const
 	const LidarConstIteratorEcho itBegin = m_fwContainer->beginEcho();
 
 	const LidarConstIteratorEcho ite = m_fwContainer->endEcho();
-
-	BasicWaveformConstIteratorType itbW = m_fwContainer->getBasicWaveformContainer().begin();
 
 
 	if(m_spatialIndexationIsSet)
@@ -331,6 +340,8 @@ void FullwaveCloud::updateFromCrop(const RegionOfInterest2D& region)
 		m_spatialIndexation->indexData();
 
 		m_spatialIndexationIsSet = true;
+
+		PanelManager::Instance()->GetPanelsList()[0]->AddLayer(m_layerFootprints);
 	}
 
 	region.getListNeighborhood(m_listPoints, *m_spatialIndexation, m_transfo);
@@ -338,6 +349,51 @@ void FullwaveCloud::updateFromCrop(const RegionOfInterest2D& region)
 	m_listPoints.erase( std::unique(m_listPoints.begin(), m_listPoints.end()), m_listPoints.end());
 
 	initCentering();
+	updateVisuCrop();
+
+}
+
+void FullwaveCloud::updateVisuCrop()
+{
+	m_layerFootprints->Clear();
+
+	//	///Projection des points dans le panel pour checker les crops
+	if(FAEventHandler::Instance()->lidarDisplayProjectedPoints() && isVisible())
+	{
+		boost::shared_ptr<VectorLayer> vectorLayerArcs = boost::dynamic_pointer_cast<VectorLayer>(m_layerFootprints);
+
+		LidarConstIteratorEcho itb = m_fwContainer->beginEcho();
+		const LidarConstIteratorEcho itBegin = m_fwContainer->beginEcho();
+
+		const LidarConstIteratorEcho ite = m_fwContainer->endEcho();
+
+		if(m_spatialIndexationIsSet)
+		{
+
+			for(ListePointsType::const_iterator it=m_listPoints.begin(); it < m_listPoints.end(); it += m_ssEchantillonnage)
+			{
+				itb = itBegin + *it;
+
+				for(unsigned int i=1; i<=2; ++i)
+				{
+					if(m_fwHelper.hasBackscatteredNthSequence(itb,i))
+					{
+						const TPoint2D<double> ptOrigin = m_transfo.applyTransfo(TPoint2D<float>(m_fwHelper.originXNthSequence(itb, i), m_fwHelper.originYNthSequence(itb, i)));
+						const TPoint2D<double> ptEnd = m_transfo.applyTransfo(TPoint2D<float>(m_fwHelper.endXNthSequence(itb, i), m_fwHelper.endYNthSequence(itb, i)));
+
+						vectorLayerArcs->AddLine(ptOrigin.x, ptOrigin.y, ptEnd.x, ptEnd.y);
+					}
+					else
+						break;
+
+				}
+			}
+
+		}
+
+	}
+
+	PanelManager::Instance()->GetPanelsList()[0]->Refresh();
 }
 
 

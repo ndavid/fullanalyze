@@ -96,6 +96,8 @@ class MainFrame : public BasicViewerFrame
 		void OnMenuClickWindows(wxCommandEvent &event);
 		void OnAfficheOptions(wxCommandEvent &event);
 
+		void onLidarDisplayProjectedPoints(wxCommandEvent &event);
+
 
 		///car bug avec gtk si le panel est créé au démarrage de l'appli...
 		void notifyGLPanelCreated();

@@ -55,11 +55,13 @@ Author:
 #include "LidarFormat/geometry/RegionOfInterest2D.h"
 #include "LidarFormat/geometry/LidarSpatialIndexation2D.h"
 
-///Debug projection points
+///projection points
 #include "gui/PanelManager.h"
 #include "layers/VectorLayer.hpp"
 #include "layers/ImageLayer.hpp"
 #include "layers/VectorLayerContent.hpp"
+
+#include "core/modules/FAEventHandler.h"
 
 #include "PointCloud.h"
 
@@ -76,8 +78,7 @@ PointCloud::PointCloud(const shared_ptr<LidarDataContainer>& lidarContainer, con
 	name(cloudName);
 	initCentering();
 
-	///debug
-	m_layerPoints = VectorLayer::CreateVectorLayer( "test_crop", SHPT_POINT, CARTOGRAPHIC_COORDINATES , false );
+	m_layerPoints = VectorLayer::CreateVectorLayer( "point_cloud_" + name(), SHPT_POINT, CARTOGRAPHIC_COORDINATES , false );
 
 }
 
@@ -98,7 +99,6 @@ void PointCloud::updateFromCrop(const RegionOfInterest2D& region)
 
 		m_spatialIndexationIsSet = true;
 
-		///debug
 		PanelManager::Instance()->GetPanelsList()[0]->AddLayer(m_layerPoints);
 	}
 
@@ -106,17 +106,27 @@ void PointCloud::updateFromCrop(const RegionOfInterest2D& region)
 
 	initCentering();
 
-//	///Projection des points dans le panel pour checker les crops
-	boost::shared_ptr<VectorLayer> vectorLayerPoints = boost::dynamic_pointer_cast<VectorLayer>(m_layerPoints);
-	vectorLayerPoints->Clear();
+	updateVisuCrop();
 
-	LidarConstIteratorXYZ<float> itb = m_lidarContainer->beginXYZ<float>();
-	const LidarConstIteratorXYZ<float> ite = m_lidarContainer->endXYZ<float>();
+}
 
-	for (; itb != ite; ++itb)
+void PointCloud::updateVisuCrop()
+{
+	m_layerPoints->Clear();
+
+	//	///Projection des points dans le panel pour checker les crops
+	if(FAEventHandler::Instance()->lidarDisplayProjectedPoints() && isVisible())
 	{
-		const TPoint2D<double> pt = m_transfo.applyTransfo(itb.xy());
-		vectorLayerPoints->AddPoint(pt.x, pt.y);
+		boost::shared_ptr<VectorLayer> vectorLayerPoints = boost::dynamic_pointer_cast<VectorLayer>(m_layerPoints);
+
+		LidarConstIteratorXYZ<float> itb = m_lidarContainer->beginXYZ<float>();
+		const LidarConstIteratorXYZ<float> ite = m_lidarContainer->endXYZ<float>();
+
+		for (; itb != ite; ++itb)
+		{
+			const TPoint2D<double> pt = m_transfo.applyTransfo(itb.xy());
+			vectorLayerPoints->AddPoint(pt.x, pt.y);
+		}
 	}
 
 	PanelManager::Instance()->GetPanelsList()[0]->Refresh();

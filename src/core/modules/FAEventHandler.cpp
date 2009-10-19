@@ -103,10 +103,15 @@ struct FAEventHandler::Impl
 	shared_ptr<PlotFullwave> m_plotFW;
 #endif
 	shared_ptr<PlotSignal> m_plotSignal;
+
+
+	///Application parameters
+	bool m_lidarDisplayProjectedPoints;
 };
 
 FAEventHandler::Impl::Impl():
-m_parent(0), m_panelViewerMain(0), m_panelViewerSensor(0),m_panelMainFiles(0), m_panel3D(0), m_plotPanel(0)
+		m_parent(0), m_panelViewerMain(0), m_panelViewerSensor(0),m_panelMainFiles(0), m_panel3D(0), m_plotPanel(0),
+		m_lidarDisplayProjectedPoints(false)
 {
 
 }
@@ -225,6 +230,17 @@ void FAEventHandler::guiParseFiles()
 void FAEventHandler::registerAction(const Action& action)
 {
 	m_actions.push_back(action);
+}
+
+bool FAEventHandler::lidarDisplayProjectedPoints() const
+{
+	return m_pimpl->m_lidarDisplayProjectedPoints;
+}
+
+void FAEventHandler::lidarDisplayProjectedPoints(const bool display)
+{
+	m_pimpl->m_lidarDisplayProjectedPoints = display;
+	m_pimpl->m_panel3D->getCloudControl()->updateVisuCrop();
 }
 
 
