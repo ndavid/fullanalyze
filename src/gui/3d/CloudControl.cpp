@@ -373,6 +373,17 @@ void CloudControl::updateVisuCrop()
 	}
 }
 
+void CloudControl::resetCrop()
+{
+	for(iterator it = begin(); it != end(); ++it)
+	{
+		(*it)->resetCrop();
+	}
+
+	m_pointCloudCanvas->resetCanvas();
+	centreScene();
+}
+
 void CloudControl::OnInfoButton(wxCommandEvent& event)
 {
 	// Get layer index
@@ -484,7 +495,7 @@ void CloudControl::OnReset(wxCommandEvent& event)
 		m_rows[i]->m_visibilityCheckBox->SetValue(true);
 	}
 
-	m_pointCloudCanvas->reset();
+	m_pointCloudCanvas->resetCanvas();
 
 	// On refresh le tout ...
 	m_notifyRefresh();

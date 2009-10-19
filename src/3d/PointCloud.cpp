@@ -93,13 +93,17 @@ void PointCloud::updateFromCrop(const RegionOfInterest2D& region)
 	//calcul de l'indexation si elle n'existe pas encore
 	if(!m_spatialIndexationIsSet)
 	{
-		m_spatialIndexation = shared_ptr<LidarSpatialIndexation2D>(new LidarSpatialIndexation2D(*m_referenceLidarContainer));
-		m_spatialIndexation->setResolution(0.25); //1m //TODO pouvoir ajuster entre aéroporté et terrestre !!
-		m_spatialIndexation->indexData();
+		if(!m_spatialIndexation.get())
+		{
+			m_spatialIndexation = shared_ptr<LidarSpatialIndexation2D>(new LidarSpatialIndexation2D(*m_referenceLidarContainer));
+			m_spatialIndexation->setResolution(0.25); //1m //TODO pouvoir ajuster entre aéroporté et terrestre !!
+			m_spatialIndexation->indexData();
+
+			PanelManager::Instance()->GetPanelsList()[0]->AddLayer(m_layerPoints);
+		}
 
 		m_spatialIndexationIsSet = true;
 
-		PanelManager::Instance()->GetPanelsList()[0]->AddLayer(m_layerPoints);
 	}
 
 	m_lidarContainer = region.cropLidarData(*m_referenceLidarContainer, *m_spatialIndexation, m_transfo);
@@ -133,6 +137,16 @@ void PointCloud::updateVisuCrop()
 }
 
 
+void PointCloud::resetCrop()
+{
+	m_spatialIndexationIsSet = false;
+	*m_lidarContainer = *m_referenceLidarContainer;
+
+	initCentering();
+	updateVisuCrop();
+}
+
+
 template<EnumLidarDataType TAttributeType>
 struct FunctorMinMax
 {
@@ -161,7 +175,7 @@ void PointCloud::generateTexture(const std::string& fileLUTName)
 	glGenTextures(1, &m_texName);
 	glBindTexture(GL_TEXTURE_1D, m_texName);
 
-	std::cout << "generation texture from file : " << fileLUTName << std::endl;
+//	std::cout << "generation texture from file : " << fileLUTName << std::endl;
 
 
 	ColorLookupTable cLUT;

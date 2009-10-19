@@ -83,6 +83,7 @@ void OpenGLCanvas::reset()
 	for (int i = 0; i < 16; i++)
 		rotation[i] = 0.0;
 	rotation[0] = rotation[5] = rotation[10] = rotation[15] = 1.0;
+
 }
 
 BEGIN_EVENT_TABLE(OpenGLCanvas, wxGLCanvas)

@@ -101,6 +101,7 @@ class PointCloud: public Cloud
 
 		virtual void updateFromCrop(const RegionOfInterest2D& region);
 		virtual void updateVisuCrop();
+		virtual void resetCrop();
 
 		///Texture matrice
 		float m_textureMat[16];

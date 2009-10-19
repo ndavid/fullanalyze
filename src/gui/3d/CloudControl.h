@@ -135,6 +135,7 @@ public:
 	///Callback pour updater la visu des nuages après un crop
 	void updateFromCrop(const RegionOfInterest2D& region);
 	void updateVisuCrop();
+	void resetCrop();
 
 	// Iterateurs pour acceder aux clouds
 	typedef std::vector <shared_ptr<Cloud> > CloudContainerType;

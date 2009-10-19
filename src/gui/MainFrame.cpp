@@ -42,9 +42,11 @@ Author:
 #include <wx/filename.h>
 #include <wx/config.h>
 #include <wx/xrc/xmlres.h>
+#include <wx/stattext.h>
 
 
 #include "gui/3d/define_id_FA3D.h"
+#include "gui/3d/CloudControl.h"
 #include "gui/ApplicationSettings.hpp"
 #include "gui/LayerControl.hpp"
 
@@ -59,6 +61,9 @@ Author:
 #include "gui/images/PanelViewerFWOrtho.h"
 
 #include "gui/files/FilesPanel.h"
+
+#include "gui/icones/geometry_moving_16x16.xpm"
+#include "gui/icones/icone_move16_16.xpm"
 
 
 #include "MainFrame.h"
@@ -183,6 +188,27 @@ void MainFrame::notifyShowPanelSensorViewer()
 
 void MainFrame::InitToolBars()
 {
+	m_orthoToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
+	wxStaticText *textOrthoToolBar = new wxStaticText(m_orthoToolBar,wxID_ANY, _(" Ortho "));
+	m_orthoToolBar->AddControl(textOrthoToolBar);
+	m_orthoToolBar->AddTool(ID_FA_ORTHO_NAVIGATE, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigate in the window"));
+	m_orthoToolBar->AddTool(ID_FA_ORTHO_MOVE_SELECTION, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Move selection"));
+//	m_orthoToolBar->AddTool(ID_FA_ORTHO_RECTANGLE_SELECTION, _("SHCC"), wxXmlResource::Get()->LoadBitmap( wxT("RECTANGLE_16x16") ), wxNullBitmap, wxITEM_RADIO, _("Rectangular selection"));
+//	m_orthoToolBar->AddTool(ID_FA_ORTHO_CIRCLE_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_BROWSER_22x22")), wxNullBitmap, wxITEM_RADIO, _("Circular selection"));
+	m_orthoToolBar->AddTool(ID_FA_ORTHO_RECTANGLE_SELECTION, _("SHCC"), wxXmlResource::Get()->LoadBitmap( wxT("PROCESS-STOP_16x16") ), wxNullBitmap, wxITEM_RADIO, _("Rectangular selection"));
+	m_orthoToolBar->AddTool(ID_FA_ORTHO_CIRCLE_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_RADIO, _("Circular selection"));
+	m_orthoToolBar->AddTool(ID_FA_ORTHO_NO_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_NORMAL, _("No selection"));
+
+	m_orthoToolBar->Realize();
+
+	wxAuiPaneInfo paneInfoToolbarMainViewer;
+	paneInfoToolbarMainViewer.ToolbarPane();
+	paneInfoToolbarMainViewer.Caption( _("Toolbar Viewer Ortho") );
+	paneInfoToolbarMainViewer.Top();
+	m_dockManager.AddPane(m_orthoToolBar, paneInfoToolbarMainViewer);
+
+
+
 	m_faToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 
 	// Creating an image list storing the toolbar icons
@@ -202,12 +228,15 @@ void MainFrame::InitToolBars()
 	m_dockManager.AddPane(m_faToolBar, paneInfoFAToolbar);
 
 
-//	/////// Toolbar
-//	wxAuiPaneInfo paneInfoToolbarMainViewer;
-//	paneInfoToolbarMainViewer.ToolbarPane();
-//	paneInfoToolbarMainViewer.Caption( _("Toolbar Viewer Ortho") );
-//	paneInfoToolbarMainViewer.Top();
-//	m_dockManager.AddPane(m_panelViewerMain->GetToolBar(this), paneInfoToolbarMainViewer);
+	///Shortcuts
+	wxAcceleratorEntry entries[5];
+	entries[0].Set(wxACCEL_NORMAL, WXK_F2, ID_FA_ORTHO_NAVIGATE);
+	entries[1].Set(wxACCEL_NORMAL, WXK_F3, ID_FA_ORTHO_MOVE_SELECTION);
+	entries[2].Set(wxACCEL_NORMAL, WXK_F4, ID_FA_ORTHO_RECTANGLE_SELECTION);
+	entries[3].Set(wxACCEL_NORMAL, WXK_F5, ID_FA_ORTHO_CIRCLE_SELECTION);
+	entries[4].Set(wxACCEL_NORMAL, WXK_F6, ID_FA_ORTHO_NO_SELECTION);
+	wxAcceleratorTable acceleratorTable(5, entries);
+	SetAcceleratorTable(acceleratorTable);
 
 
 	m_dockManager.Update();
@@ -353,6 +382,37 @@ void MainFrame::onLidarDisplayProjectedPoints(wxCommandEvent &event)
 }
 
 
+void MainFrame::onOrthoNavigate(wxCommandEvent &event)
+{
+	m_panelViewerMain->SetModeNavigation();
+}
+
+void MainFrame::onOrthoMoveSelection(wxCommandEvent &event)
+{
+	m_panelViewerMain->SetModeGeometryMoving();
+}
+
+void MainFrame::onOrthoRectangleSelection(wxCommandEvent &event)
+{
+	m_panelViewerMain->SetModeCapture();
+	m_panelViewerMain->SetGeometryRectangle();
+}
+
+void MainFrame::onOrthoCircleSelection(wxCommandEvent &event)
+{
+	m_panelViewerMain->SetModeCapture();
+	m_panelViewerMain->SetGeometryCircle();
+}
+
+void MainFrame::onOrthoNoSelection(wxCommandEvent &event)
+{
+	m_panelViewerMain->SetGeometryNull();
+	m_panelViewerMain->SetModeNavigation();
+	if(m_panel3D)
+		m_panel3D->getCloudControl()->resetCrop();
+}
+
+
 
 IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(MainFrame,m_panelViewerMain)
 
@@ -370,4 +430,9 @@ BEGIN_EVENT_TABLE(MainFrame, BasicViewerFrame)
 	EVT_MENU(menu_about, MainFrame::OnAbout)
 
 	EVT_TOOL(ID_FA_LIDAR_DISPLAY_PROJECTED_POINTS, MainFrame::onLidarDisplayProjectedPoints)
+	EVT_TOOL(ID_FA_ORTHO_NAVIGATE, MainFrame::onOrthoNavigate)
+	EVT_TOOL(ID_FA_ORTHO_MOVE_SELECTION, MainFrame::onOrthoMoveSelection)
+	EVT_TOOL(ID_FA_ORTHO_RECTANGLE_SELECTION, MainFrame::onOrthoRectangleSelection)
+	EVT_TOOL(ID_FA_ORTHO_CIRCLE_SELECTION, MainFrame::onOrthoCircleSelection)
+	EVT_TOOL(ID_FA_ORTHO_NO_SELECTION, MainFrame::onOrthoNoSelection)
 END_EVENT_TABLE()
