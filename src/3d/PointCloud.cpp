@@ -140,7 +140,7 @@ void PointCloud::updateVisuCrop()
 void PointCloud::resetCrop()
 {
 	m_spatialIndexationIsSet = false;
-	*m_lidarContainer = *m_referenceLidarContainer;
+	m_lidarContainer = m_referenceLidarContainer;
 
 	initCentering();
 	updateVisuCrop();
