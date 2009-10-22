@@ -96,7 +96,7 @@ void PointCloud::updateFromCrop(const RegionOfInterest2D& region)
 		if(!m_spatialIndexation.get())
 		{
 			m_spatialIndexation = shared_ptr<LidarSpatialIndexation2D>(new LidarSpatialIndexation2D(*m_referenceLidarContainer));
-			m_spatialIndexation->setResolution(0.25); //1m //TODO pouvoir ajuster entre aéroporté et terrestre !!
+			m_spatialIndexation->setResolution(0.5); //1m //TODO pouvoir ajuster entre aéroporté et terrestre !!
 			m_spatialIndexation->indexData();
 
 			PanelManager::Instance()->GetPanelsList()[0]->AddLayer(m_layerPoints);

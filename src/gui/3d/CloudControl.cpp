@@ -502,9 +502,6 @@ void CloudControl::OnReset(wxCommandEvent& event)
 }
 
 
-#include <boost/lambda/lambda.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
-
 
 void CloudControl::AddCloud(const shared_ptr<Cloud> &cloud)
 {

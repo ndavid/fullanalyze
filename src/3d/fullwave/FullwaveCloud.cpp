@@ -338,7 +338,7 @@ void FullwaveCloud::updateFromCrop(const RegionOfInterest2D& region)
 		if(!m_spatialIndexation.get())
 		{
 			m_spatialIndexation = shared_ptr<FullwaveSpatialIndexation>(new FullwaveSpatialIndexation(m_fwContainer, FullwaveSpatialIndexation::MAXIMUM));
-			m_spatialIndexation->setResolution(0.25); //1m //TODO arranger ça !
+			m_spatialIndexation->setResolution(0.5); //1m //TODO arranger ça !
 			m_spatialIndexation->indexData();
 
 			PanelManager::Instance()->GetPanelsList()[0]->AddLayer(m_layerFootprints);
