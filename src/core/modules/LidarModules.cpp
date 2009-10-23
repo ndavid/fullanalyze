@@ -205,6 +205,9 @@ void Module_lidar_custom_centering::run()
 			return;
 		}
 	}
+	else
+		return;
+
 	wxTextEntryDialog dialogY(FAEventHandler::Instance()->getMainFrame(), _("Transfo y"), _("Please enter text"), _("0."));
 	if (dialogY.ShowModal() == wxID_OK)
 	{
@@ -215,6 +218,9 @@ void Module_lidar_custom_centering::run()
 			return;
 		}
 	}
+	else
+		return;
+
 
 	LidarCenteringTransfo transfo;
 	transfo.setTransfo(x,y);
@@ -247,6 +253,8 @@ void Module_lidar_simple_mns::run()
 			return;
 		}
 	}
+	else
+		return;
 
 	const float blankValue = -999;
 	Lidar::LidarOrthoImage<> mns;
@@ -286,6 +294,8 @@ void Module_lidar_point_density::run()
 			return;
 		}
 	}
+	else
+		return;
 
 	Lidar::LidarOrthoImage<> density_image;
 	shared_ptr<gil::gray32F_image_t> result = density_image(lidarData.m_container, lidarData.m_transfo, r, Lidar::FonctorDensityImage(), 0);
