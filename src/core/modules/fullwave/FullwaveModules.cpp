@@ -122,6 +122,8 @@ void Module_fullwave_correct_intensity::run()
 			return;
 		}
 	}
+	else
+		return;
 
 	fullwaveCorrectEnergy(fwData.m_container, normalisationValue);
 
@@ -152,6 +154,9 @@ void Module_fullwave_center::run()
 			return;
 		}
 	}
+	else
+		return;
+
 	wxTextEntryDialog dialogY(FAEventHandler::Instance()->getMainFrame(), _("Transfo y"), _("Please enter text"), _("0."));
 	if (dialogY.ShowModal() == wxID_OK)
 	{
@@ -162,6 +167,8 @@ void Module_fullwave_center::run()
 			return;
 		}
 	}
+	else
+		return;
 
 	LidarCenteringTransfo transfo;
 	transfo.setTransfo(x,y);
