@@ -152,7 +152,7 @@ void PanelViewerFWOrtho::showStrip(const std::vector<double>& stripX, const std:
 	Layer::ptrLayerType layerArc = VectorLayer::CreateVectorLayer( stripName, SHPT_ARC, CARTOGRAPHIC_COORDINATES, false );
 	AddLayer( layerArc );
 
-	std::cout << "size x=" << stripX.size() << " ; size y=" << stripY.size() << "\n";
+	//std::cout << "size x=" << stripX.size() << " ; size y=" << stripY.size() << "\n";
 
 	boost::shared_ptr<VectorLayer> vectorLayerArc = boost::dynamic_pointer_cast<VectorLayer>(layerArc);
 
