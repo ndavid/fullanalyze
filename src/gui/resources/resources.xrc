@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<resource version="2.3.0.1">
-	<object class="wxBitmap" name="LOGO_FA_55_55">logo55*55.png</object>	
-	<object class="wxBitmap" name="CIRCLE_32_32">circle.png</object>	
-		
-</resource>

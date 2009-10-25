@@ -35,6 +35,7 @@ Author:
  
 ***********************************************************************/
 
+#include <wx/menu.h>
 
 
 #include "PanelViewerFW.h"
@@ -48,7 +49,8 @@ END_EVENT_TABLE()
 PanelViewerFW::PanelViewerFW(wxFrame *parent):
 	PanelViewer(parent)
 {
-
+	//trick to remove the popupmenu; to be cleaned
+	m_menuMain = NULL;
 }
 
 PanelViewerFW::~PanelViewerFW()
