@@ -58,7 +58,6 @@ IF( BUILD_PLUGINS )
 ENDIF()
 
 
-
 SET(ALL_SRC
        ${SRC_3D}
        ${SRC_3D_FULLWAVE}
@@ -83,6 +82,20 @@ SET(ALL_SRC
        
        ${SRC_PLUGINS}
     )
+    
+    
+### Generation du fichier de resources
+if( WIN32 )
+	add_custom_command( OUTPUT ${SRC_DIR}/gui/resources/resources.cpp
+		                COMMAND ${wxWidgets_wxrc_EXECUTABLE}${SRC_DIR}/gui/resources/resources.xrc -c -o ${SRC_DIR}/gui/resources/resources.cpp
+			            DEPENDS ${SRC_DIR}/gui/resources/resources.xrc )
+else()
+	add_custom_command( OUTPUT ${SRC_DIR}/gui/resources/resources.cpp
+		                COMMAND wxrc ${SRC_DIR}/gui/resources/resources.xrc -c -o ${SRC_DIR}/gui/resources/resources.cpp
+			            DEPENDS ${SRC_DIR}/gui/resources/resources.xrc )
+endif()
+
+SET( ALL_SRC ${ALL_SRC} ${SRC_DIR}/gui/resources/resources.cpp )
 
 
 INCLUDE_DIRECTORIES(${SRC_DIR})
