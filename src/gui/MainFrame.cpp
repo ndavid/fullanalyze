@@ -62,8 +62,9 @@ Author:
 
 #include "gui/files/FilesPanel.h"
 
-#include "gui/icones/geometry_moving_16x16.xpm"
-#include "gui/icones/icone_move16_16.xpm"
+#include "gui/resources/geometry_moving_16x16.xpm"
+#include "gui/resources/icone_move16_16.xpm"
+#include "gui/resources/logo_fa.xpm"
 
 
 #include "MainFrame.h"
@@ -72,7 +73,7 @@ MainFrame::MainFrame() :
 	BasicViewerFrame( NULL, -1, _("FullAnalyze"), wxDefaultPosition, wxSize( 1280, 1024 ), wxDEFAULT_FRAME_STYLE)
 {
 
-
+	SetIcon(logo_fa);
 
 	InitMenus();
 	InitFenetres();
@@ -194,9 +195,7 @@ void MainFrame::InitToolBars()
 	m_orthoToolBar->AddTool(ID_FA_ORTHO_NAVIGATE, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigate in the window"));
 	m_orthoToolBar->AddTool(ID_FA_ORTHO_MOVE_SELECTION, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Move selection"));
 	m_orthoToolBar->AddTool(ID_FA_ORTHO_RECTANGLE_SELECTION, _("SHCC"), wxXmlResource::Get()->LoadBitmap( wxT("RECTANGLE_16x16") ), wxNullBitmap, wxITEM_RADIO, _("Rectangular selection"));
-	m_orthoToolBar->AddTool(ID_FA_ORTHO_CIRCLE_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("HELP_BROWSER_22x22")), wxNullBitmap, wxITEM_RADIO, _("Circular selection"));
-//	m_orthoToolBar->AddTool(ID_FA_ORTHO_RECTANGLE_SELECTION, _("SHCC"), wxXmlResource::Get()->LoadBitmap( wxT("PROCESS-STOP_16x16") ), wxNullBitmap, wxITEM_RADIO, _("Rectangular selection"));
-//	m_orthoToolBar->AddTool(ID_FA_ORTHO_CIRCLE_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_RADIO, _("Circular selection"));
+	m_orthoToolBar->AddTool(ID_FA_ORTHO_CIRCLE_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("CIRCLE_16x16")), wxNullBitmap, wxITEM_RADIO, _("Circular selection"));
 	m_orthoToolBar->AddTool(ID_FA_ORTHO_NO_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("PROCESS-STOP_16x16")), wxNullBitmap, wxITEM_NORMAL, _("No selection"));
 
 	m_orthoToolBar->Realize();
@@ -408,6 +407,7 @@ void MainFrame::onOrthoNoSelection(wxCommandEvent &event)
 {
 	m_panelViewerMain->SetGeometryNull();
 	m_panelViewerMain->SetModeNavigation();
+	m_orthoToolBar->ToggleTool(ID_FA_ORTHO_NAVIGATE, true);
 	if(m_panel3D)
 		m_panel3D->getCloudControl()->resetCrop();
 }
