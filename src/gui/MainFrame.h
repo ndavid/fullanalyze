@@ -139,7 +139,7 @@ class MainFrame : public BasicViewerFrame
 
 
 		///Main FA toolbar
-		wxToolBar *m_faToolBar;
+		wxToolBar *m_3dToolBar;
 		///Ortho view toolbar
 		wxToolBar *m_orthoToolBar;
 		wxToolBar *m_sensorToolBar;
