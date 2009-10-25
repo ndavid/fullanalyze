@@ -104,6 +104,9 @@ class MainFrame : public BasicViewerFrame
 		void onOrthoCircleSelection(wxCommandEvent &event);
 		void onOrthoNoSelection(wxCommandEvent &event);
 
+		void onSensorNavigate(wxCommandEvent &event);
+		void onSensorMovePoint(wxCommandEvent &event);
+
 
 
 		///car bug avec gtk si le panel est créé au démarrage de l'appli...
@@ -139,6 +142,7 @@ class MainFrame : public BasicViewerFrame
 		wxToolBar *m_faToolBar;
 		///Ortho view toolbar
 		wxToolBar *m_orthoToolBar;
+		wxToolBar *m_sensorToolBar;
 
 		/////////////////////////////
 		///MENUS

@@ -189,10 +189,26 @@ void MainFrame::notifyShowPanelSensorViewer()
 
 void MainFrame::InitToolBars()
 {
+
+	m_sensorToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
+	wxStaticText *textSensorToolBar = new wxStaticText(m_sensorToolBar,wxID_ANY, _(" Sensor "));
+	m_sensorToolBar->AddControl(textSensorToolBar);
+	m_sensorToolBar->AddTool(ID_FA_SENSOR_NAVIGATE, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigate"));
+	m_sensorToolBar->AddTool(ID_FA_SENSOR_MOVE_POINT, _("MN"),  wxXmlResource::Get()->LoadBitmap( wxT("POINTS_16x16") ), wxNullBitmap, wxITEM_RADIO, _("Move point"));
+
+	m_sensorToolBar->Realize();
+
+	wxAuiPaneInfo paneInfoToolbarViewerSensor;
+	paneInfoToolbarViewerSensor.ToolbarPane();
+	paneInfoToolbarViewerSensor.Caption( _("Toolbar Viewer Sensor") );
+	paneInfoToolbarViewerSensor.Top();
+	m_dockManager.AddPane(m_sensorToolBar, paneInfoToolbarViewerSensor);
+
+
 	m_orthoToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 	wxStaticText *textOrthoToolBar = new wxStaticText(m_orthoToolBar,wxID_ANY, _(" Ortho "));
 	m_orthoToolBar->AddControl(textOrthoToolBar);
-	m_orthoToolBar->AddTool(ID_FA_ORTHO_NAVIGATE, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigate in the window"));
+	m_orthoToolBar->AddTool(ID_FA_ORTHO_NAVIGATE, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigate"));
 	m_orthoToolBar->AddTool(ID_FA_ORTHO_MOVE_SELECTION, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Move selection"));
 	m_orthoToolBar->AddTool(ID_FA_ORTHO_RECTANGLE_SELECTION, _("SHCC"), wxXmlResource::Get()->LoadBitmap( wxT("RECTANGLE_16x16") ), wxNullBitmap, wxITEM_RADIO, _("Rectangular selection"));
 	m_orthoToolBar->AddTool(ID_FA_ORTHO_CIRCLE_SELECTION, _("MN"), wxXmlResource::Get()->LoadBitmap(wxT("CIRCLE_16x16")), wxNullBitmap, wxITEM_RADIO, _("Circular selection"));
@@ -413,6 +429,19 @@ void MainFrame::onOrthoNoSelection(wxCommandEvent &event)
 }
 
 
+void MainFrame::onSensorNavigate(wxCommandEvent &event)
+{
+	m_panelViewerSensor->SetModeNavigation();
+}
+
+void MainFrame::onSensorMovePoint(wxCommandEvent &event)
+{
+	m_panelViewerSensor->SetGeometryPoint();
+	m_panelViewerSensor->SetModeGeometryMoving();
+
+}
+
+
 
 IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(MainFrame,m_panelViewerMain)
 
@@ -435,4 +464,7 @@ BEGIN_EVENT_TABLE(MainFrame, BasicViewerFrame)
 	EVT_TOOL(ID_FA_ORTHO_RECTANGLE_SELECTION, MainFrame::onOrthoRectangleSelection)
 	EVT_TOOL(ID_FA_ORTHO_CIRCLE_SELECTION, MainFrame::onOrthoCircleSelection)
 	EVT_TOOL(ID_FA_ORTHO_NO_SELECTION, MainFrame::onOrthoNoSelection)
+
+	EVT_TOOL(ID_FA_SENSOR_NAVIGATE, MainFrame::onSensorNavigate)
+	EVT_TOOL(ID_FA_SENSOR_MOVE_POINT, MainFrame::onSensorMovePoint)
 END_EVENT_TABLE()
