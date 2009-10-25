@@ -77,7 +77,7 @@ namespace gil = boost::gil;
 
 /*** Display 3d module ***/
 
-REGISTER_MODULE(lidar_display3d, "Display 3D", Action::LIDAR)
+REGISTER_MODULE(lidar_display3d, "Display point cloud in 3D", Action::LIDAR)
 
 void Module_lidar_display3d::run()
 {
@@ -89,44 +89,89 @@ void Module_lidar_display3d::run()
 
 
 
-/*** Print first echoes module ***/
 
-REGISTER_MODULE(lidar_print_echoes, "Print first 10 echoes", Action::LIDAR)
 
-void Module_lidar_print_echoes::run()
+/*** MNS module ***/
+
+REGISTER_MODULE(lidar_simple_mns, "Compute basic MNS", Action::LIDAR)
+
+void Module_lidar_simple_mns::run()
 {
-	shared_ptr<SelectedLidarData> selectedData;
-
-	try{
-		selectedData = getSelectedLidarData();
-	}
-	catch(const std::exception& e)
-	{
-		std::ostringstream message;
-        message << "Error while loading lidar data ";
-        message << "\n" << e.what();
-		::wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
-//		::wxLogWindow::;
-		return;
-	}
-	
+	shared_ptr<SelectedLidarData> selectedData = getSelectedLidarData();
 	const SelectedLidarData::LidarData& lidarData = selectedData->front();
 
-	//lidarData.m_container->printHeader(std::cout);
-	//std::cout.precision(12);
+	double r=1.;
+	wxTextEntryDialog dialogResolution(FAEventHandler::Instance()->getMainFrame(), _("Raster resolution"), _("Please enter the raster resolution (m)"), _("1."));
+	if (dialogResolution.ShowModal() == wxID_OK)
+	{
+		wxString result = dialogResolution.GetValue();
+		if(!result.ToDouble(&r))
+		{
+			wxMessageBox(_("Bad resolution value !"));
+			return;
+		}
+	}
+	else
+		return;
 
-	std::ostringstream message;
-	message.precision(12);
-	lidarData.m_container->printHeader(message);
+	const float blankValue = -999;
+	Lidar::LidarOrthoImage<> mns;
+	shared_ptr<gil::gray32F_image_t> result = mns(lidarData.m_container, lidarData.m_transfo, r, Lidar::FonctorSimpleMNS(), blankValue);
 
-	message << "Printing first 10 echoes:\n";
+	wxConfigBase *pConfig = wxConfigBase::Get();
+	wxString imagesDir;
+	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
 
-	for(Lidar::LidarIteratorEcho it = lidarData.m_container->begin(); it != lidarData.m_container->begin()+10 && it < lidarData.m_container->end(); ++it)
-		message << LidarEcho(*it) << std::endl;
-		//std::cout << LidarEcho(*it) << std::endl;
+	using namespace boost::filesystem;
+	gil::tiff_write_view( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-basic-mns.tif")).string() , gil::view(*result));
 
-	wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
+	Lidar::Orientation2D ori = mns.getOri();
+	ori.SaveOriToFile( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-basic-mns.ori")).string() );
+
 }
+
+
+
+/*** Image density module ***/
+
+REGISTER_MODULE(lidar_point_density, "Compute point density image", Action::LIDAR)
+
+void Module_lidar_point_density::run()
+{
+	shared_ptr<SelectedLidarData> selectedData = getSelectedLidarData();
+	const SelectedLidarData::LidarData& lidarData = selectedData->front();
+
+	double r=1.;
+	wxTextEntryDialog dialogResolution(FAEventHandler::Instance()->getMainFrame(), _("Raster resolution"), _("Please enter the raster resolution (m)"), _("1."));
+	if (dialogResolution.ShowModal() == wxID_OK)
+	{
+		wxString result = dialogResolution.GetValue();
+		if(!result.ToDouble(&r))
+		{
+			wxMessageBox(_("Bad resolution value !"));
+			return;
+		}
+	}
+	else
+		return;
+
+	Lidar::LidarOrthoImage<> density_image;
+	shared_ptr<gil::gray32F_image_t> result = density_image(lidarData.m_container, lidarData.m_transfo, r, Lidar::FonctorDensityImage(), 0);
+
+	std::cout << "Total number of points: " << std::accumulate(gil::view(*result).begin(), gil::view(*result).end(), 0.) << std::endl;
+
+	wxConfigBase *pConfig = wxConfigBase::Get();
+	wxString imagesDir;
+	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
+
+	using namespace boost::filesystem;
+	gil::tiff_write_view( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-density.tif")).string() , gil::view(*result));
+
+	Lidar::Orientation2D ori = density_image.getOri();
+	ori.SaveOriToFile( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-density.ori")).string() );
+
+}
+
 
 
 
@@ -165,10 +210,9 @@ void Module_lidar_save_as_ascii::run()
 }
 
 
-
 /*** Centering module ***/
 
-REGISTER_MODULE(lidar_centering, "Point cloud centering", Action::LIDAR)
+REGISTER_MODULE(lidar_centering, "Center point cloud (auto)", Action::LIDAR)
 
 void Module_lidar_centering::run()
 {
@@ -187,7 +231,7 @@ void Module_lidar_centering::run()
 /*** Custom centering module ***/
 //TODO fusionner le code avec le module precedent
 
-REGISTER_MODULE(lidar_custom_centering, "Custom point cloud centering", Action::LIDAR)
+REGISTER_MODULE(lidar_custom_centering, "Center point cloud (custom)", Action::LIDAR)
 
 void Module_lidar_custom_centering::run()
 {
@@ -232,85 +276,46 @@ void Module_lidar_custom_centering::run()
 }
 
 
+/*** Print first echoes module ***/
 
-/*** MNS module ***/
+REGISTER_MODULE(lidar_print_echoes, "Print first 10 echoes to log", Action::LIDAR)
 
-REGISTER_MODULE(lidar_simple_mns, "Compute MNS (basic algo)", Action::LIDAR)
-
-void Module_lidar_simple_mns::run()
+void Module_lidar_print_echoes::run()
 {
-	shared_ptr<SelectedLidarData> selectedData = getSelectedLidarData();
+	shared_ptr<SelectedLidarData> selectedData;
+
+	try{
+		selectedData = getSelectedLidarData();
+	}
+	catch(const std::exception& e)
+	{
+		std::ostringstream message;
+        message << "Error while loading lidar data ";
+        message << "\n" << e.what();
+		::wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
+//		::wxLogWindow::;
+		return;
+	}
+
 	const SelectedLidarData::LidarData& lidarData = selectedData->front();
 
-	double r=1.;
-	wxTextEntryDialog dialogResolution(FAEventHandler::Instance()->getMainFrame(), _("Raster resolution"), _("Please enter the raster resolution (m)"), _("1."));
-	if (dialogResolution.ShowModal() == wxID_OK)
-	{
-		wxString result = dialogResolution.GetValue();
-		if(!result.ToDouble(&r))
-		{
-			wxMessageBox(_("Bad resolution value !"));
-			return;
-		}
-	}
-	else
-		return;
+	//lidarData.m_container->printHeader(std::cout);
+	//std::cout.precision(12);
 
-	const float blankValue = -999;
-	Lidar::LidarOrthoImage<> mns;
-	shared_ptr<gil::gray32F_image_t> result = mns(lidarData.m_container, lidarData.m_transfo, r, Lidar::FonctorSimpleMNS(), blankValue);
+	std::ostringstream message;
+	message.precision(12);
+	lidarData.m_container->printHeader(message);
 
-	wxConfigBase *pConfig = wxConfigBase::Get();
-	wxString imagesDir;
-	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
+	message << "Printing first 10 echoes:\n";
 
-	using namespace boost::filesystem;
-	gil::tiff_write_view( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-basic-mns.tif")).string() , gil::view(*result));
+	for(Lidar::LidarIteratorEcho it = lidarData.m_container->begin(); it != lidarData.m_container->begin()+10 && it < lidarData.m_container->end(); ++it)
+		message << LidarEcho(*it) << std::endl;
+		//std::cout << LidarEcho(*it) << std::endl;
 
-	Lidar::Orientation2D ori = mns.getOri();
-	ori.SaveOriToFile( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-basic-mns.ori")).string() );
-
+	wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
 }
 
 
 
-/*** Image density module ***/
 
-REGISTER_MODULE(lidar_point_density, "Compute point density", Action::LIDAR)
-
-void Module_lidar_point_density::run()
-{
-	shared_ptr<SelectedLidarData> selectedData = getSelectedLidarData();
-	const SelectedLidarData::LidarData& lidarData = selectedData->front();
-
-	double r=1.;
-	wxTextEntryDialog dialogResolution(FAEventHandler::Instance()->getMainFrame(), _("Raster resolution"), _("Please enter the raster resolution (m)"), _("1."));
-	if (dialogResolution.ShowModal() == wxID_OK)
-	{
-		wxString result = dialogResolution.GetValue();
-		if(!result.ToDouble(&r))
-		{
-			wxMessageBox(_("Bad resolution value !"));
-			return;
-		}
-	}
-	else
-		return;
-
-	Lidar::LidarOrthoImage<> density_image;
-	shared_ptr<gil::gray32F_image_t> result = density_image(lidarData.m_container, lidarData.m_transfo, r, Lidar::FonctorDensityImage(), 0);
-
-	std::cout << "Total number of points: " << std::accumulate(gil::view(*result).begin(), gil::view(*result).end(), 0.) << std::endl;
-
-	wxConfigBase *pConfig = wxConfigBase::Get();
-	wxString imagesDir;
-	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
-
-	using namespace boost::filesystem;
-	gil::tiff_write_view( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-density.tif")).string() , gil::view(*result));
-
-	Lidar::Orientation2D ori = density_image.getOri();
-	ori.SaveOriToFile( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-density.ori")).string() );
-
-}
 

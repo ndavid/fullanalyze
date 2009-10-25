@@ -102,7 +102,7 @@ void Module_fullwave_display1d::run()
 
 /*** Correct intensity ***/
 
-REGISTER_MODULE(fullwave_correct_intensity, "Correct intensity", Action::FULLWAVE)
+REGISTER_MODULE(fullwave_correct_intensity, "Correct intensity from laser fluctuations", Action::FULLWAVE)
 
 void Module_fullwave_correct_intensity::run()
 {
@@ -187,7 +187,7 @@ void Module_fullwave_center::run()
 
 /*** Display strip module ***/
 
-REGISTER_MODULE(fullwave_display_strip, "Display strip", Action::FULLWAVE)
+REGISTER_MODULE(fullwave_display_strip, "Display strip on ortho view", Action::FULLWAVE)
 
 void Module_fullwave_display_strip::run()
 {
@@ -203,7 +203,7 @@ void Module_fullwave_display_strip::run()
 
 /*** Print waveforms module ***/
 
-REGISTER_MODULE(fullwave_print, "Print first waveforms", Action::FULLWAVE)
+REGISTER_MODULE(fullwave_print, "Print first waveforms to log", Action::FULLWAVE)
 
 void Module_fullwave_print::run()
 {

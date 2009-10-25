@@ -130,7 +130,7 @@ wxAboutDialogInfo MainFrame::getAboutInfo() const
 	info.AddDeveloper(_("Olivier Tournaire (GilViewer)"));
 	info.AddDeveloper(_("Nicolas David (CMake master)"));
 	info.SetName(_("FullAnalyze"));
-	info.SetVersion(_("0.1.0"));
+	info.SetVersion(_("0.1.1"));
 	info.SetWebSite(_("http://fullanalyze.sourceforge.net") );
 	info.SetDescription(_("Handling, processing and visualizing lidar data (waveforms and point clouds)"));
 	info.SetCopyright(_("adrien.chauve@gmail.com  - IGN/CEMAGREF"));
