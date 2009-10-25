@@ -158,7 +158,7 @@ void MainFrame::notifyGLPanelCreated()
 	m_dockManager.AddPane( m_panel3D, paneInfo3D );
 	m_dockManager.Update();
 
-	m_faToolBar->EnableTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, true);
+	m_3dToolBar->EnableTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, true);
 
 
 	Connect(ID_FA_SHOW_HIDE_CLOUD_CONTROL, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(GLPanel::OnShowCloudControl), NULL, m_panel3D);
@@ -190,6 +190,9 @@ void MainFrame::notifyShowPanelSensorViewer()
 void MainFrame::InitToolBars()
 {
 
+	// Creating an image list storing the toolbar icons
+	const wxSize imageSize(16,16);
+
 	m_sensorToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 	wxStaticText *textSensorToolBar = new wxStaticText(m_sensorToolBar,wxID_ANY, _(" Sensor "));
 	m_sensorToolBar->AddControl(textSensorToolBar);
@@ -208,6 +211,9 @@ void MainFrame::InitToolBars()
 	m_orthoToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
 	wxStaticText *textOrthoToolBar = new wxStaticText(m_orthoToolBar,wxID_ANY, _(" Ortho "));
 	m_orthoToolBar->AddControl(textOrthoToolBar);
+	m_orthoToolBar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHCC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
+	m_orthoToolBar->AddTool(ID_FA_LIDAR_DISPLAY_PROJECTED_POINTS, _("SHCC"), wxXmlResource::Get()->LoadBitmap( wxT("POINTS_16x16") ), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide lidar projected points"));
+	m_orthoToolBar->AddSeparator();
 	m_orthoToolBar->AddTool(ID_FA_ORTHO_NAVIGATE, _("MN"), wxBitmap(icone_move16_16_xpm), wxNullBitmap, wxITEM_RADIO, _("Navigate"));
 	m_orthoToolBar->AddTool(ID_FA_ORTHO_MOVE_SELECTION, _("MN"), wxBitmap(geometry_moving_16x16_xpm), wxNullBitmap, wxITEM_RADIO, _("Move selection"));
 	m_orthoToolBar->AddTool(ID_FA_ORTHO_RECTANGLE_SELECTION, _("SHCC"), wxXmlResource::Get()->LoadBitmap( wxT("RECTANGLE_16x16") ), wxNullBitmap, wxITEM_RADIO, _("Rectangular selection"));
@@ -224,23 +230,18 @@ void MainFrame::InitToolBars()
 
 
 
-	m_faToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
-
-	// Creating an image list storing the toolbar icons
-	const wxSize imageSize(16,16);
-
-	m_faToolBar->AddTool(ID_SHOW_HIDE_LAYER_CONTROL, _("SHCC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide layer control"));
-	m_faToolBar->AddTool(ID_FA_LIDAR_DISPLAY_PROJECTED_POINTS, _("SHCC"), wxXmlResource::Get()->LoadBitmap( wxT("POINTS_16x16") ), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide lidar projected points"));
-
-	m_faToolBar->AddTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, _("SHCC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide cloud control"));
-	m_faToolBar->Realize();
-	m_faToolBar->EnableTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, false);
+	m_3dToolBar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER | wxTB_HORIZONTAL);
+	wxStaticText *text3DToolBar = new wxStaticText(m_3dToolBar,wxID_ANY, _(" 3D "));
+	m_3dToolBar->AddControl(text3DToolBar);
+	m_3dToolBar->AddTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, _("SHCC"), wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_TOOLBAR, imageSize), wxNullBitmap, wxITEM_NORMAL, _("Show / Hide cloud control"));
+	m_3dToolBar->Realize();
+	m_3dToolBar->EnableTool(ID_FA_SHOW_HIDE_CLOUD_CONTROL, false);
 
 	wxAuiPaneInfo paneInfoFAToolbar;
 	paneInfoFAToolbar.ToolbarPane();
 	paneInfoFAToolbar.Top();
 	paneInfoFAToolbar.Caption( _("Toolbar 3D") );
-	m_dockManager.AddPane(m_faToolBar, paneInfoFAToolbar);
+	m_dockManager.AddPane(m_3dToolBar, paneInfoFAToolbar);
 
 
 	///Shortcuts
