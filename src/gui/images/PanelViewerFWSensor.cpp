@@ -57,6 +57,7 @@ Author:
 PanelViewerFWSensor::PanelViewerFWSensor(wxFrame *parent) :
 	PanelViewerFW(parent)
 {
+	GeometryAddPoint(wxPoint(0,0));
 }
 
 PanelViewerFWSensor::~PanelViewerFWSensor()
