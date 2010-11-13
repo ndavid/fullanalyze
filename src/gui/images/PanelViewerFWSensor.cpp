@@ -37,18 +37,18 @@ Author:
 
 #include <boost/bind.hpp>
 
-#include "layers/VectorLayerGhost.h"
+#include "layers/vector_layer_ghost.hpp"
 
 
 ////si GIL
-#include "layers/ImageLayer.hpp"
+#include "layers/image_layer.hpp"
 ////si ITK
 //#include "layers/NewImageLayer.h"
 
 #include "boost/gil/extension/matis/float_images.hpp"
 #include <boost/gil/extension/io/tiff_io.hpp>
 
-#include "gui/PanelManager.h"
+#include "gui/panel_manager.hpp"
 
 #include "LidarFormat/geometry/RegionOfInterest2D.h"
 
@@ -119,7 +119,7 @@ PanelViewerFWSensor* createPanelViewerFWSensor(wxFrame* parent)
 
 void PanelViewerFWSensor::Register(wxFrame* parent)
 {
-	PanelManager::Instance()->Register("PanelViewerFWSensor", boost::bind(createPanelViewerFWSensor, parent));
+	panel_manager::Instance()->Register("PanelViewerFWSensor", boost::bind(createPanelViewerFWSensor, parent));
 }
 
 
