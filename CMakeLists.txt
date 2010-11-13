@@ -9,7 +9,25 @@ if(UNIX)
 	string( SUBSTRING ${GCC_VERSION} 0 3 GOOD_GCC_VERSION )
     include_directories( /usr/include/c++/${GOOD_GCC_VERSION} )
 endif()
-
+if(WIN32)
+    if(MSVC)
+		# Remove gil iterator related warnings...
+        add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
+        add_definitions(-D_SCL_SECURE_NO_WARNINGS)
+        #message( STATUS "MSVC_VERSION: " ${MSVC_VERSION} )
+        #Visual C++, 32-bit, version 6.0         1200
+        #Visual C++, 32-bit, version .net 2002   1300
+        #Visual C++, 32-bit, version .net 2003   1310
+        #Visual C++, 32-bit, version 2005        1400 (vc80)
+        #Visual C++, 32-bit, version 2005 SP1    14?? (vc80_sp1)
+        #Visual C++, 32-bit, version 2008        1500 (vc90)
+		#MSVC90  (Visual C++ 2008 SP1) MSVC_VERSION=1500 (Compiler  Version 15.00.30729.01)
+		#MSVC100 (Visual C++ 2010) MSVC_VERSION=1600 (Compiler  Version 16.00.30319.01)
+        if(MSVC_VERSION EQUAL 1600)
+			add_definitions( -D_HAS_CPP0X=0)
+		endif()
+    endif(MSVC)
+endif(WIN32)
 
 #Main src directory
 SET(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
