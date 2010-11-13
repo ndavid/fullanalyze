@@ -46,7 +46,7 @@ using boost::shared_ptr;
 
 #include <boost/function.hpp>
 
-#include "tools/PatternSingleton.hpp"
+#include "tools/pattern_singleton.hpp"
 
 #include "core/modules/Actions.h"
 
