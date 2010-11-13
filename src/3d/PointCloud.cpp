@@ -48,7 +48,7 @@ Author:
 
 #include <boost/algorithm/minmax_element.hpp>
 
-#include "tools/ColorLookupTable.h"
+#include "tools/color_lookup_table.hpp"
 
 #include "LidarFormat/LidarDataContainer.h"
 #include "LidarFormat/apply.h"
@@ -56,10 +56,10 @@ Author:
 #include "LidarFormat/geometry/LidarSpatialIndexation2D.h"
 
 ///projection points
-#include "gui/PanelManager.h"
-#include "layers/VectorLayer.hpp"
-#include "layers/ImageLayer.hpp"
-#include "layers/VectorLayerContent.hpp"
+#include "gui/panel_manager.hpp"
+#include "layers/vector_layer.hpp"
+#include "layers/image_layer.hpp"
+//#include "layers/VectorLayerContent.hpp"
 
 #include "core/modules/FAEventHandler.h"
 
@@ -78,7 +78,7 @@ PointCloud::PointCloud(const shared_ptr<LidarDataContainer>& lidarContainer, con
 	name(cloudName);
 	initCentering();
 
-	m_layerPoints = VectorLayer::CreateVectorLayer( "point_cloud_" + name(), SHPT_POINT, CARTOGRAPHIC_COORDINATES , false );
+	m_layerPoints = vector_layer::CreateVectorLayer( "point_cloud_" + name(), SHPT_POINT, CARTOGRAPHIC_COORDINATES , false );
 
 }
 
@@ -99,7 +99,7 @@ void PointCloud::updateFromCrop(const RegionOfInterest2D& region)
 			m_spatialIndexation->setResolution(0.5); //1m //TODO pouvoir ajuster entre aéroporté et terrestre !!
 			m_spatialIndexation->indexData();
 
-			PanelManager::Instance()->GetPanelsList()[0]->AddLayer(m_layerPoints);
+			panel_manager::Instance()->GetPanelsList()[0]->AddLayer(m_layerPoints);
 		}
 
 		m_spatialIndexationIsSet = true;
@@ -121,7 +121,7 @@ void PointCloud::updateVisuCrop()
 	//	///Projection des points dans le panel pour checker les crops
 	if(FAEventHandler::Instance()->lidarDisplayProjectedPoints() && isVisible())
 	{
-		boost::shared_ptr<VectorLayer> vectorLayerPoints = boost::dynamic_pointer_cast<VectorLayer>(m_layerPoints);
+		boost::shared_ptr<vector_layer> vectorLayerPoints = boost::dynamic_pointer_cast<vector_layer>(m_layerPoints);
 
 		LidarConstIteratorXYZ<float> itb = m_lidarContainer->beginXYZ<float>();
 		const LidarConstIteratorXYZ<float> ite = m_lidarContainer->endXYZ<float>();
@@ -133,7 +133,7 @@ void PointCloud::updateVisuCrop()
 		}
 	}
 
-	PanelManager::Instance()->GetPanelsList()[0]->Refresh();
+	panel_manager::Instance()->GetPanelsList()[0]->Refresh();
 }
 
 
@@ -178,7 +178,7 @@ void PointCloud::generateTexture(const std::string& fileLUTName)
 //	std::cout << "generation texture from file : " << fileLUTName << std::endl;
 
 
-	ColorLookupTable cLUT;
+	color_lookup_table cLUT;
 	if(fileLUTName!="")
 		cLUT.LoadFromBinaryFile(fileLUTName);
 
