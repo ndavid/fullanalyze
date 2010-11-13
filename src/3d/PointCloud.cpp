@@ -58,6 +58,7 @@ Author:
 ///projection points
 #include "gui/panel_manager.hpp"
 #include "layers/vector_layer.hpp"
+#include "layers/simple_vector_layer.hpp"
 #include "layers/image_layer.hpp"
 //#include "layers/VectorLayerContent.hpp"
 
@@ -78,8 +79,8 @@ PointCloud::PointCloud(const shared_ptr<LidarDataContainer>& lidarContainer, con
 	name(cloudName);
 	initCentering();
 
-	m_layerPoints = vector_layer::CreateVectorLayer( "point_cloud_" + name(), SHPT_POINT, CARTOGRAPHIC_COORDINATES , false );
-
+	//m_layerPoints = vector_layer::CreateVectorLayer( "point_cloud_" + name(), SHPT_POINT, CARTOGRAPHIC_COORDINATES , false );
+	m_layerPoints = layer::ptrLayerType(new simple_vector_layer("point_cloud_" + name() ) );
 }
 
 void PointCloud::getAttributeList(std::vector<std::string>& liste)
@@ -99,7 +100,7 @@ void PointCloud::updateFromCrop(const RegionOfInterest2D& region)
 			m_spatialIndexation->setResolution(0.5); //1m //TODO pouvoir ajuster entre aéroporté et terrestre !!
 			m_spatialIndexation->indexData();
 
-			panel_manager::Instance()->GetPanelsList()[0]->AddLayer(m_layerPoints);
+			panel_manager::instance()->panels_list()[0]->add_layer(m_layerPoints);
 		}
 
 		m_spatialIndexationIsSet = true;
@@ -116,10 +117,10 @@ void PointCloud::updateFromCrop(const RegionOfInterest2D& region)
 
 void PointCloud::updateVisuCrop()
 {
-	m_layerPoints->Clear();
+	m_layerPoints->clear();
 
 	//	///Projection des points dans le panel pour checker les crops
-	if(FAEventHandler::Instance()->lidarDisplayProjectedPoints() && isVisible())
+	if(FAEventHandler::instance()->lidarDisplayProjectedPoints() && isVisible())
 	{
 		boost::shared_ptr<vector_layer> vectorLayerPoints = boost::dynamic_pointer_cast<vector_layer>(m_layerPoints);
 
@@ -129,11 +130,11 @@ void PointCloud::updateVisuCrop()
 		for (; itb != ite; ++itb)
 		{
 			const TPoint2D<double> pt = m_transfo.applyTransfo(itb.xy());
-			vectorLayerPoints->AddPoint(pt.x, pt.y);
+			vectorLayerPoints->add_point(pt.x, pt.y);
 		}
 	}
 
-	panel_manager::Instance()->GetPanelsList()[0]->Refresh();
+	panel_manager::instance()->panels_list()[0]->Refresh();
 }
 
 
@@ -180,9 +181,9 @@ void PointCloud::generateTexture(const std::string& fileLUTName)
 
 	color_lookup_table cLUT;
 	if(fileLUTName!="")
-		cLUT.LoadFromBinaryFile(fileLUTName);
+		cLUT.load_from_binary_file(fileLUTName);
 
-	const std::vector<unsigned char>& lutData=cLUT.getData();
+	const std::vector<unsigned char>& lutData=cLUT.get_data();
 
    for (int j = 0; j < 256; j++) {
 	   m_texture1D[3*j] = lutData[j];
