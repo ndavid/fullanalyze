@@ -40,7 +40,7 @@ Author:
 
 #include <wx/frame.h>
 
-#include "gui/PanelManager.h"
+#include "gui/panel_manager.hpp"
 
 
 #include "3d/GLPanel.h"
@@ -141,8 +141,8 @@ void FAEventHandler::Impl::init(wxFrame* parent)
 
 
 	///creating panels
-	m_panelViewerMain = static_cast<PanelViewerFWOrtho*>(PanelManager::Instance()->createObject("PanelViewerFWOrtho"));
-	m_panelViewerSensor = static_cast<PanelViewerFWSensor*>(PanelManager::Instance()->createObject("PanelViewerFWSensor"));
+	m_panelViewerMain = static_cast<PanelViewerFWOrtho*>(panel_manager::Instance()->createObject("PanelViewerFWOrtho"));
+	m_panelViewerSensor = static_cast<PanelViewerFWSensor*>(panel_manager::Instance()->createObject("PanelViewerFWSensor"));
 	m_panelMainFiles = new FilesPanel(m_parent);
 }
 
