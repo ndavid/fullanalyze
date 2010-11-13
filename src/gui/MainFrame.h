@@ -48,7 +48,7 @@ Author:
 #include <wx/aui/aui.h>
 #include <wx/aui/auibook.h>
 
-#include "gui/BasicViewerFrame.h"
+#include "gui/basic_viewer_frame.hpp"
 
 #include "LidarFormat/extern/matis/tpoint2d.h"
 
@@ -65,9 +65,9 @@ class FilesPanel;
 
 using boost::shared_ptr;
 
-#include "convenient/MacrosGilViewer.hpp"
+#include "convenient/macros_gilviewer.hpp"
 
-class MainFrame : public BasicViewerFrame
+class MainFrame : public basic_viewer_frame
 {
 	public:
 		MainFrame();

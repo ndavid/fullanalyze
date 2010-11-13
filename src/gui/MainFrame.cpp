@@ -47,8 +47,8 @@ Author:
 
 #include "gui/3d/define_id_FA3D.h"
 #include "gui/3d/CloudControl.h"
-#include "gui/ApplicationSettings.hpp"
-#include "gui/LayerControl.hpp"
+#include "gui/application_settings.hpp"
+#include "gui/layer_control.hpp"
 
 ///FA event handler (singleton)
 #include "core/modules/FAEventHandler.h"
@@ -70,7 +70,7 @@ Author:
 #include "MainFrame.h"
 
 MainFrame::MainFrame() :
-	BasicViewerFrame( NULL, -1, _("FullAnalyze"), wxDefaultPosition, wxSize( 1280, 1024 ), wxDEFAULT_FRAME_STYLE)
+	basic_viewer_frame( NULL, -1, _("FullAnalyze"), wxDefaultPosition, wxSize( 1280, 1024 ), wxDEFAULT_FRAME_STYLE)
 {
 
 	SetIcon(logo_fa);
@@ -446,7 +446,7 @@ void MainFrame::onSensorMovePoint(wxCommandEvent &event)
 
 IMPLEMENTS_GILVIEWER_METHODS_FOR_EVENTS_TABLE(MainFrame,m_panelViewerMain)
 
-BEGIN_EVENT_TABLE(MainFrame, BasicViewerFrame)
+BEGIN_EVENT_TABLE(MainFrame, basic_viewer_frame)
 
 	ADD_GILVIEWER_EVENTS_TO_TABLE(MainFrame)
 
