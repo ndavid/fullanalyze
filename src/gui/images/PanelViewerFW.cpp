@@ -42,12 +42,12 @@ Author:
 #include "layers/VectorLayerGhost.h"
 #include "gui/LayerControl.hpp"
 
-BEGIN_EVENT_TABLE(PanelViewerFW, PanelViewer)
+BEGIN_EVENT_TABLE(PanelViewerFW, panel_viewer)
 EVT_MOTION(PanelViewerFW::OnMouseMove)
 END_EVENT_TABLE()
 
 PanelViewerFW::PanelViewerFW(wxFrame *parent):
-	PanelViewer(parent)
+	panel_viewer(parent)
 {
 }
 

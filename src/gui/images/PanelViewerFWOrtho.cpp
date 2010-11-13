@@ -37,14 +37,14 @@ Author:
 
 #include <boost/bind.hpp>
 
-#include "gui/PanelManager.h"
+#include "gui/panel_manager.hpp"
 
 #include "boost/shared_ptr.hpp"
 
-#include "layers/VectorLayer.hpp"
+#include "layers/vector_layer.hpp"
 
 ////si GIL
-#include "layers/ImageLayer.hpp"
+#include "layers/image_layer.hpp"
 
 #include "boost/gil/extension/matis/float_images.hpp"
 #include <boost/gil/extension/io/tiff_io.hpp>
@@ -52,9 +52,9 @@ Author:
 //#include "layers/NewImageLayer.h"
 
 
-#include "layers/VectorLayerGhost.h"
-#include "layers/VectorLayerContent.hpp"
-#include "gui/LayerControl.hpp"
+#include "layers/vector_layer_ghost.hpp"
+#include "layers/vector_layer_content.hpp"
+#include "gui/layer_control.hpp"
 
 #include "LidarFormat/geometry/RegionOfInterest2D.h"
 

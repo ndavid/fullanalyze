@@ -41,11 +41,11 @@ Author:
 #include "LidarFormat/extern/matis/tpoint2d.h"
 
 //Panel de visu 2D de la lib ITKViewerLib
-#include "gui/PanelViewer.hpp"
+#include "gui/panel_viewer.hpp"
 
 class VectorLayerGhost;
 
-class PanelViewerFW : public PanelViewer
+class PanelViewerFW : public panel_viewer
 {
 	public:
 		virtual ~PanelViewerFW();
