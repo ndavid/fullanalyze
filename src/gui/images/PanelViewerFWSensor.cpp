@@ -73,10 +73,10 @@ void PanelViewerFWSensor::addSensorLayer(const shared_ptr<boost::gil::gray32F_im
 	////si ITK
 //	Layer::ptrLayerType layerSensor = Layers::NewImageLayer(fileName);
 
-	any_image_type any_sensorFW(*img);
+	boost::gil::any_image<all_image_types> any_sensorFW(*img);
+	
 	boost::shared_ptr<image_type> sensor_im(new image_type(any_sensorFW) );
-
-	//boost::shared_ptr<any_image_type> any_img(new any_image_type(*img));
+		//	boost::shared_ptr<any_image_type> any_img(new any_image_type(*img));
 	layer::ptrLayerType layerSensor = image_layer::create_image_layer(sensor_im);
 	add_layer( layerSensor);
 	

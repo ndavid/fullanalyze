@@ -36,6 +36,8 @@ Author:
 ***********************************************************************/
 
 #include <boost/bind.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "gui/panel_manager.hpp"
 
@@ -45,6 +47,8 @@ Author:
 
 ////si GIL
 #include "layers/image_layer.hpp"
+#include "io/gilviewer_io_factory.hpp"
+
 
 #include "boost/gil/extension/matis/float_images.hpp"
 #include <boost/gil/extension/io/tiff_io.hpp>
@@ -53,11 +57,11 @@ Author:
 
 
 #include "layers/vector_layer_ghost.hpp"
+#include "layers/simple_vector_layer.hpp"
 //#include "layers/vector_layer_content.hpp"
 #include "gui/layer_control.hpp"
-
+#include "tools/orientation_2d.hpp"
 #include "LidarFormat/geometry/RegionOfInterest2D.h"
-
 #include "PanelViewerFWOrtho.h"
 
 PanelViewerFWOrtho::PanelViewerFWOrtho(wxFrame *parent) :
@@ -73,11 +77,15 @@ PanelViewerFWOrtho::~PanelViewerFWOrtho()
 void PanelViewerFWOrtho::AddLayerCarto(const std::string &fileName)
 {
 	////si GIL
-	layer::ptrLayerType layerCarto = image_layer::CreateImageLayer(fileName);
-	////si ITK
-//	Layer::ptrLayerType layerCarto = Layers::NewImageLayer(fileName);
-
+	//layer::ptrLayerType layerCarto = image_layer::CreateImageLayer(fileName);
+	
+	std::string extension(boost::filesystem::extension(fileName));
+	extension = extension.substr(1,extension.size()-1);
+	boost::algorithm::to_lower(extension);
+	shared_ptr<gilviewer_file_io> file = gilviewer_io_factory::instance()->create_object(extension);
+	layer::ptrLayerType layerCarto = file->load(fileName) ;
 	add_layer( layerCarto );
+	
 	Refresh();
 }
 
@@ -96,10 +104,11 @@ void PanelViewerFWOrtho::setPointCallback(const boost::function<void(const TPoin
 void PanelViewerFWOrtho::executeModeGeometryMoving()
 {
 
-	Orientation2D ori;
-	if (GetLayerControl()->IsOriented())
+	boost::shared_ptr<orientation_2d> ori (new orientation_2d() );
+	//orientation_2d ori;
+	if (layercontrol()->oriented())
 	{
-		ori = GetLayerControl()->GetOrientation();
+		ori = layercontrol()->orientation();
 	}
 	else
 		throw std::logic_error( "L'ortho ne contient pas d'orientation !! dans PanelViewerFWOrtho::executeModeGeometryMoving \n" );
@@ -108,9 +117,9 @@ void PanelViewerFWOrtho::executeModeGeometryMoving()
 	//si la sélection est active
 	if (m_geometry == GEOMETRY_POINT)
 	{
-		TPoint2D<double> pt(m_ghostLayer.m_pointPosition.x, m_ghostLayer.m_pointPosition.y);
-		pt.x = ori.OriginX() + ori.Step() * pt.x;
-		pt.y = ori.OriginY() - ori.Step() * pt.y;
+		TPoint2D<double> pt(m_ghostLayer->m_pointPosition.x, m_ghostLayer->m_pointPosition.y);
+		pt.x = ori->origin_x() + ori->step() * pt.x;
+		pt.y = ori->origin_y() - ori->step() * pt.y;
 
 		if(m_pointCallback)
 			m_pointCallback(pt);
@@ -120,10 +129,10 @@ void PanelViewerFWOrtho::executeModeGeometryMoving()
 		std::pair<TPoint2D<double>,TPoint2D<double> > paire = GetSelection();
 
 		//on passe la sélection en coord carto :
-		paire.first.x = ori.OriginX() + ori.Step() * paire.first.x;
-		paire.first.y = ori.OriginY() - ori.Step() * paire.first.y;
-		paire.second.x = ori.OriginX() + ori.Step() * paire.second.x;
-		paire.second.y = ori.OriginY() - ori.Step() * paire.second.y;
+		paire.first.x = ori->origin_x() + ori->step() * paire.first.x;
+		paire.first.y = ori->origin_y() - ori->step() * paire.first.y;
+		paire.second.x = ori->origin_x() + ori->step() * paire.second.x;
+		paire.second.y = ori->origin_y() - ori->step() * paire.second.y;
 
 		//on lance le crop :
 		if(m_cropCallback)
@@ -132,15 +141,15 @@ void PanelViewerFWOrtho::executeModeGeometryMoving()
 	}
 	else if(m_geometry == GEOMETRY_CIRCLE)
 	{
-		TPoint2D<double> centre(m_ghostLayer.m_circle.first.x, m_ghostLayer.m_circle.first.y);
-		centre.x = ori.OriginX() + ori.Step() * centre.x;
-		centre.y = ori.OriginY() - ori.Step() * centre.y;
+		TPoint2D<double> centre(m_ghostLayer->m_circle.first.x, m_ghostLayer->m_circle.first.y);
+		centre.x = ori->origin_x() + ori->step() * centre.x;
+		centre.y = ori->origin_y() - ori->step() * centre.y;
 
 //		std::cout << "geometry moving cercle : " << centre << " ; rayon = " << m_ghostLayer.m_circle.second << std::endl;
 
 		//on lance le crop :
 		if(m_cropCallback)
-			m_cropCallback(CircularRegionOfInterest2D(centre, ori.Step() * m_ghostLayer.m_circle.second));
+			m_cropCallback(CircularRegionOfInterest2D(centre, ori->step() * m_ghostLayer->m_circle.second));
 
 	}
 }
@@ -149,15 +158,16 @@ void PanelViewerFWOrtho::executeModeGeometryMoving()
 
 void PanelViewerFWOrtho::showStrip(const std::vector<double>& stripX, const std::vector<double>& stripY, const std::string& stripName)
 {
-	Layer::ptrLayerType layerArc = VectorLayer::CreateVectorLayer( stripName, SHPT_ARC, CARTOGRAPHIC_COORDINATES, false );
+	//layer::ptrLayerType layerArc = VectorLayer::CreateVectorLayer( stripName, SHPT_ARC, CARTOGRAPHIC_COORDINATES, false );
+	layer::ptrLayerType layerArc = layer::ptrLayerType(new simple_vector_layer(stripName ) );
 	add_layer( layerArc );
 
 	//std::cout << "size x=" << stripX.size() << " ; size y=" << stripY.size() << "\n";
 
-	boost::shared_ptr<VectorLayer> vectorLayerArc = boost::dynamic_pointer_cast<VectorLayer>(layerArc);
-
-	VectorLayer& vect = *vectorLayerArc;
-	vect.AddPolyline(stripX, stripY);
+	//boost::shared_ptr<VectorLayer> vectorLayerArc = boost::dynamic_pointer_cast<VectorLayer>(layerArc);
+	//VectorLayer& vect = *vectorLayerArc;
+	
+	layerArc->add_polyline(stripX, stripY);
 //	vect.AddPolygon(stripX, stripY);
 
 	Refresh();
@@ -259,5 +269,5 @@ PanelViewerFWOrtho* createPanelViewerFWOrtho(wxFrame* parent)
 
 void PanelViewerFWOrtho::Register(wxFrame* parent)
 {
-	PanelManager::Instance()->Register("PanelViewerFWOrtho", boost::bind(createPanelViewerFWOrtho, parent));
+	panel_manager::instance()->Register("PanelViewerFWOrtho", boost::bind(createPanelViewerFWOrtho, parent));
 }
