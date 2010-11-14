@@ -51,6 +51,7 @@ using namespace boost::gil;
 struct SelectedImageData
 {
 	typedef any_image< boost::mpl::vector<rgb8_image_t, gray8_image_t , gray16_image_t , gray32_image_t, gray32F_image_t> > usable_images_t;
+	//typedef any_image< boost::mpl::vector<rgb8_image_t, gray8_image_t , gray16_image_t > > usable_images_t;
 	typedef std::vector<shared_ptr<usable_images_t> > DataContainerType;
 
 	DataContainerType m_data;

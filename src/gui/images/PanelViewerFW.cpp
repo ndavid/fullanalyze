@@ -39,8 +39,8 @@ Author:
 
 
 #include "PanelViewerFW.h"
-#include "layers/VectorLayerGhost.h"
-#include "gui/LayerControl.hpp"
+#include "layers/vector_layer_ghost.hpp"
+#include "gui/layer_control.hpp"
 
 BEGIN_EVENT_TABLE(PanelViewerFW, panel_viewer)
 EVT_MOTION(PanelViewerFW::OnMouseMove)
@@ -65,12 +65,12 @@ void PanelViewerFW::OnMouseMove(wxMouseEvent &event)
 void PanelViewerFW::SetRayonVoisinage( const double rayon )
 {
 	//voisinage par défaut = cercle
-	m_ghostLayer.m_circle.second = rayon;// + 0.5;
+	m_ghostLayer->m_circle.second = rayon;// + 0.5;
 }
 
 std::pair<TPoint2D<int>,TPoint2D<int> > PanelViewerFW::GetSelection()
 {
-	return std::make_pair( TPoint2D< int > ( m_ghostLayer.m_rectangleSelection.first.x, m_ghostLayer.m_rectangleSelection.first.y ), TPoint2D< int > ( m_ghostLayer.m_rectangleSelection.second.x, m_ghostLayer.m_rectangleSelection.second.y ) );
+	return std::make_pair( TPoint2D< int > ( m_ghostLayer->m_rectangleSelection.first.x, m_ghostLayer->m_rectangleSelection.first.y ), TPoint2D< int > ( m_ghostLayer->m_rectangleSelection.second.x, m_ghostLayer->m_rectangleSelection.second.y ) );
 }
 
 

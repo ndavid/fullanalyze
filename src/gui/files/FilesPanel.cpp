@@ -346,7 +346,7 @@ void FilesPanel::initPopupMenu()
 	//Menu Fullwave
 	m_popupMenuFullwave = new wxMenu;
 
-	std::vector<Action> actions = FAEventHandler::Instance()->getActions();
+	std::vector<Action> actions = FAEventHandler::instance()->getActions();
 
 	for(std::vector<Action>::const_iterator it = actions.begin(); it != actions.end(); ++it)
 	{
@@ -379,7 +379,7 @@ void FilesPanel::initPopupMenu()
 
 void FilesPanel::OnClickPopupMenu(wxCommandEvent &event)
 {
-	const Action& action = FAEventHandler::Instance()->getActions()[event.GetId()];
+	const Action& action = FAEventHandler::instance()->getActions()[event.GetId()];
 
 	action.m_callback();
 }

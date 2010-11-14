@@ -84,7 +84,7 @@ void Module_lidar_display3d::run()
 	shared_ptr<SelectedLidarData> selectedData = getSelectedLidarData();
 	const SelectedLidarData::LidarData& lidarData = selectedData->front();
 
-	FAEventHandler::Instance()->getPanel3D()->getCloudControl()->AddCloud( shared_ptr<Cloud>(new PointCloud(lidarData.m_container, lidarData.m_transfo, lidarData.m_basename )));
+	FAEventHandler::instance()->getPanel3D()->getCloudControl()->AddCloud( shared_ptr<Cloud>(new PointCloud(lidarData.m_container, lidarData.m_transfo, lidarData.m_basename )));
 }
 
 
@@ -101,7 +101,7 @@ void Module_lidar_simple_mns::run()
 	const SelectedLidarData::LidarData& lidarData = selectedData->front();
 
 	double r=1.;
-	wxTextEntryDialog dialogResolution(FAEventHandler::Instance()->getMainFrame(), _("Raster resolution"), _("Please enter the raster resolution (m)"), _("1."));
+	wxTextEntryDialog dialogResolution(FAEventHandler::instance()->getMainFrame(), _("Raster resolution"), _("Please enter the raster resolution (m)"), _("1."));
 	if (dialogResolution.ShowModal() == wxID_OK)
 	{
 		wxString result = dialogResolution.GetValue();
@@ -142,7 +142,7 @@ void Module_lidar_point_density::run()
 	const SelectedLidarData::LidarData& lidarData = selectedData->front();
 
 	double r=1.;
-	wxTextEntryDialog dialogResolution(FAEventHandler::Instance()->getMainFrame(), _("Raster resolution"), _("Please enter the raster resolution (m)"), _("1."));
+	wxTextEntryDialog dialogResolution(FAEventHandler::instance()->getMainFrame(), _("Raster resolution"), _("Please enter the raster resolution (m)"), _("1."));
 	if (dialogResolution.ShowModal() == wxID_OK)
 	{
 		wxString result = dialogResolution.GetValue();
@@ -239,7 +239,7 @@ void Module_lidar_custom_centering::run()
 	const SelectedLidarData::LidarData& lidarData = selectedData->front();
 
 	double x=0, y=0;
-	wxTextEntryDialog dialogX(FAEventHandler::Instance()->getMainFrame(), _("Transfo x"), _("Please enter text"), _("0."));
+	wxTextEntryDialog dialogX(FAEventHandler::instance()->getMainFrame(), _("Transfo x"), _("Please enter text"), _("0."));
 	if (dialogX.ShowModal() == wxID_OK)
 	{
 		wxString result = dialogX.GetValue();
@@ -252,7 +252,7 @@ void Module_lidar_custom_centering::run()
 	else
 		return;
 
-	wxTextEntryDialog dialogY(FAEventHandler::Instance()->getMainFrame(), _("Transfo y"), _("Please enter text"), _("0."));
+	wxTextEntryDialog dialogY(FAEventHandler::instance()->getMainFrame(), _("Transfo y"), _("Please enter text"), _("0."));
 	if (dialogY.ShowModal() == wxID_OK)
 	{
 		wxString result = dialogY.GetValue();

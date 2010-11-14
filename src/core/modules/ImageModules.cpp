@@ -60,7 +60,7 @@ REGISTER_MODULE(image_display, "Display", Action::IMAGE)
 void Module_image_display::run()
 {
 	assert(!getSelectedImageData()->m_fileNames.empty());
-	FAEventHandler::Instance()->getPanelFWOrtho()->AddLayerCarto(getSelectedImageData()->m_fileNames.front());
+	FAEventHandler::instance()->getPanelFWOrtho()->AddLayerCarto(getSelectedImageData()->m_fileNames.front());
 }
 
 

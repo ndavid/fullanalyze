@@ -149,7 +149,7 @@ void MainFrame::OnAfficheOptions( wxCommandEvent &event )
 void MainFrame::notifyGLPanelCreated()
 {
 	///// ajout du panneau 3D au dock
-	m_panel3D = FAEventHandler::Instance()->getPanel3D();
+	m_panel3D = FAEventHandler::instance()->getPanel3D();
 	wxAuiPaneInfo paneInfo3D;
 	paneInfo3D.Caption( _("Cloud view") );
 	paneInfo3D.Right();
@@ -168,7 +168,7 @@ void MainFrame::notifyGLPanelCreated()
 void MainFrame::notifyPlotPanelCreated()
 {
 	///// ajout du panneau 3D au dock
-	m_panelPlot = FAEventHandler::Instance()->getPlotPanel();
+	m_panelPlot = FAEventHandler::instance()->getPlotPanel();
 	wxAuiPaneInfo paneInfoPlot;
 	paneInfoPlot.Caption( _("Plot view") );
 	paneInfoPlot.Right();
@@ -176,7 +176,7 @@ void MainFrame::notifyPlotPanelCreated()
 	paneInfoPlot.MaximizeButton(true);
 	m_dockManager.AddPane( m_panelPlot, paneInfoPlot );
 
-	m_dockManager.GetPane(FAEventHandler::Instance()->getPlotPanel()).Show();
+	m_dockManager.GetPane(FAEventHandler::instance()->getPlotPanel()).Show();
 
 	m_dockManager.Update();
 }
@@ -262,20 +262,20 @@ void MainFrame::InitFenetres()
 {
 	////Création des panneaux principaux : visu ortho et gestion des fichiers
 
-	FAEventHandler::Instance()->init(this);
-	FAEventHandler::Instance()->setNotifyGLPanelCreated( boost::bind(&MainFrame::notifyGLPanelCreated, this) );
-	FAEventHandler::Instance()->setNotifyPlotPanelCreated( boost::bind(&MainFrame::notifyPlotPanelCreated, this) );
-	FAEventHandler::Instance()->setNotifyShowPanelSensorViewer( boost::bind(&MainFrame::notifyShowPanelSensorViewer, this) );
+	FAEventHandler::instance()->init(this);
+	FAEventHandler::instance()->setNotifyGLPanelCreated( boost::bind(&MainFrame::notifyGLPanelCreated, this) );
+	FAEventHandler::instance()->setNotifyPlotPanelCreated( boost::bind(&MainFrame::notifyPlotPanelCreated, this) );
+	FAEventHandler::instance()->setNotifyShowPanelSensorViewer( boost::bind(&MainFrame::notifyShowPanelSensorViewer, this) );
 
 	///panneau ortho
-	m_panelViewerMain = FAEventHandler::Instance()->getPanelFWOrtho();
+	m_panelViewerMain = FAEventHandler::instance()->getPanelFWOrtho();
 	wxAuiPaneInfo paneInfoViewerMain;
 	paneInfoViewerMain.Caption( _("Cartographic view") );
 	paneInfoViewerMain.Center();
 	m_dockManager.AddPane( m_panelViewerMain, paneInfoViewerMain );
 
 	//panel de sélection des fichiers
-	m_panelMainFiles = FAEventHandler::Instance()->getFilesPanel();
+	m_panelMainFiles = FAEventHandler::instance()->getFilesPanel();
 	wxAuiPaneInfo paneInfoMainFilesPanel;
 	paneInfoMainFilesPanel.Caption( _("Files") );
 	paneInfoMainFilesPanel.Left();
@@ -284,7 +284,7 @@ void MainFrame::InitFenetres()
 
 
 	///panneau sensor
-	m_panelViewerSensor = FAEventHandler::Instance()->getPanelFWSensor();
+	m_panelViewerSensor = FAEventHandler::instance()->getPanelFWSensor();
 	wxAuiPaneInfo paneInfoViewerSensor;
 	paneInfoViewerSensor.Caption( _("Sensor view") );
 	paneInfoViewerSensor.Right();
@@ -394,36 +394,36 @@ void MainFrame::OnMenuClickWindows( wxCommandEvent &event )
 
 void MainFrame::onLidarDisplayProjectedPoints(wxCommandEvent &event)
 {
-	FAEventHandler::Instance()->lidarDisplayProjectedPoints(!FAEventHandler::Instance()->lidarDisplayProjectedPoints());
+	FAEventHandler::instance()->lidarDisplayProjectedPoints(!FAEventHandler::instance()->lidarDisplayProjectedPoints());
 }
 
 
 void MainFrame::onOrthoNavigate(wxCommandEvent &event)
 {
-	m_panelViewerMain->SetModeNavigation();
+	m_panelViewerMain->mode_navigation();
 }
 
 void MainFrame::onOrthoMoveSelection(wxCommandEvent &event)
 {
-	m_panelViewerMain->SetModeGeometryMoving();
+	m_panelViewerMain->mode_geometry_moving();
 }
 
 void MainFrame::onOrthoRectangleSelection(wxCommandEvent &event)
 {
-	m_panelViewerMain->SetModeCapture();
-	m_panelViewerMain->SetGeometryRectangle();
+	m_panelViewerMain->mode_capture();
+	m_panelViewerMain->geometry_rectangle();
 }
 
 void MainFrame::onOrthoCircleSelection(wxCommandEvent &event)
 {
-	m_panelViewerMain->SetModeCapture();
-	m_panelViewerMain->SetGeometryCircle();
+	m_panelViewerMain->mode_capture();
+	m_panelViewerMain->geometry_circle();
 }
 
 void MainFrame::onOrthoNoSelection(wxCommandEvent &event)
 {
-	m_panelViewerMain->SetGeometryNull();
-	m_panelViewerMain->SetModeNavigation();
+	m_panelViewerMain->geometry_null();
+	m_panelViewerMain->mode_navigation();
 	m_orthoToolBar->ToggleTool(ID_FA_ORTHO_NAVIGATE, true);
 	if(m_panel3D)
 		m_panel3D->getCloudControl()->resetCrop();
@@ -432,13 +432,13 @@ void MainFrame::onOrthoNoSelection(wxCommandEvent &event)
 
 void MainFrame::onSensorNavigate(wxCommandEvent &event)
 {
-	m_panelViewerSensor->SetModeNavigation();
+	m_panelViewerSensor->mode_navigation();
 }
 
 void MainFrame::onSensorMovePoint(wxCommandEvent &event)
 {
-	m_panelViewerSensor->SetGeometryPoint();
-	m_panelViewerSensor->SetModeGeometryMoving();
+	m_panelViewerSensor->geometry_point();
+	m_panelViewerSensor->mode_geometry_moving();
 
 }
 
@@ -457,7 +457,7 @@ BEGIN_EVENT_TABLE(MainFrame, basic_viewer_frame)
 	EVT_MENU_RANGE(menu_WindowsDockAll, menu_WindowsDockAll+100, MainFrame::OnMenuClickWindows)
 	//Autres menus : lance la fonction concernée
 	EVT_MENU(menu_options, MainFrame::OnAfficheOptions)
-	EVT_MENU(menu_about, MainFrame::OnAbout)
+	EVT_MENU(menu_about, MainFrame::on_about)
 
 	EVT_TOOL(ID_FA_LIDAR_DISPLAY_PROJECTED_POINTS, MainFrame::onLidarDisplayProjectedPoints)
 	EVT_TOOL(ID_FA_ORTHO_NAVIGATE, MainFrame::onOrthoNavigate)

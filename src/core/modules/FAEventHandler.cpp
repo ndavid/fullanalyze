@@ -141,8 +141,8 @@ void FAEventHandler::Impl::init(wxFrame* parent)
 
 
 	///creating panels
-	m_panelViewerMain = static_cast<PanelViewerFWOrtho*>(panel_manager::Instance()->createObject("PanelViewerFWOrtho"));
-	m_panelViewerSensor = static_cast<PanelViewerFWSensor*>(panel_manager::Instance()->createObject("PanelViewerFWSensor"));
+	m_panelViewerMain = static_cast<PanelViewerFWOrtho*>(panel_manager::instance()->create_object("PanelViewerFWOrtho"));
+	m_panelViewerSensor = static_cast<PanelViewerFWSensor*>(panel_manager::instance()->create_object("PanelViewerFWSensor"));
 	m_panelMainFiles = new FilesPanel(m_parent);
 }
 
