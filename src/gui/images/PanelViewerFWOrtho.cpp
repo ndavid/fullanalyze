@@ -53,7 +53,7 @@ Author:
 
 
 #include "layers/vector_layer_ghost.hpp"
-#include "layers/vector_layer_content.hpp"
+//#include "layers/vector_layer_content.hpp"
 #include "gui/layer_control.hpp"
 
 #include "LidarFormat/geometry/RegionOfInterest2D.h"
@@ -73,11 +73,11 @@ PanelViewerFWOrtho::~PanelViewerFWOrtho()
 void PanelViewerFWOrtho::AddLayerCarto(const std::string &fileName)
 {
 	////si GIL
-	Layer::ptrLayerType layerCarto = ImageLayer::CreateImageLayer(fileName);
+	layer::ptrLayerType layerCarto = image_layer::CreateImageLayer(fileName);
 	////si ITK
 //	Layer::ptrLayerType layerCarto = Layers::NewImageLayer(fileName);
 
-	AddLayer( layerCarto );
+	add_layer( layerCarto );
 	Refresh();
 }
 
@@ -150,7 +150,7 @@ void PanelViewerFWOrtho::executeModeGeometryMoving()
 void PanelViewerFWOrtho::showStrip(const std::vector<double>& stripX, const std::vector<double>& stripY, const std::string& stripName)
 {
 	Layer::ptrLayerType layerArc = VectorLayer::CreateVectorLayer( stripName, SHPT_ARC, CARTOGRAPHIC_COORDINATES, false );
-	AddLayer( layerArc );
+	add_layer( layerArc );
 
 	//std::cout << "size x=" << stripX.size() << " ; size y=" << stripY.size() << "\n";
 

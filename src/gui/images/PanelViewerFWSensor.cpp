@@ -46,9 +46,11 @@ Author:
 //#include "layers/NewImageLayer.h"
 
 #include "boost/gil/extension/matis/float_images.hpp"
+//#include <boost/gil/extension/dynamic_image/any_image.hpp>
 #include <boost/gil/extension/io/tiff_io.hpp>
 
 #include "gui/panel_manager.hpp"
+#include "layers/image_types.hpp"
 
 #include "LidarFormat/geometry/RegionOfInterest2D.h"
 
@@ -57,7 +59,7 @@ Author:
 PanelViewerFWSensor::PanelViewerFWSensor(wxFrame *parent) :
 	PanelViewerFW(parent)
 {
-	GeometryAddPoint(wxPoint(0,0));
+	geometry_add_point(wxPoint(0,0));
 }
 
 PanelViewerFWSensor::~PanelViewerFWSensor()
@@ -71,7 +73,13 @@ void PanelViewerFWSensor::addSensorLayer(const shared_ptr<boost::gil::gray32F_im
 	////si ITK
 //	Layer::ptrLayerType layerSensor = Layers::NewImageLayer(fileName);
 
-	AddLayer( ImageLayer::CreateImageLayer(*img) );
+	any_image_type any_sensorFW(*img);
+	boost::shared_ptr<image_type> sensor_im(new image_type(any_sensorFW) );
+
+	//boost::shared_ptr<any_image_type> any_img(new any_image_type(*img));
+	layer::ptrLayerType layerSensor = image_layer::create_image_layer(sensor_im);
+	add_layer( layerSensor);
+	
 	Refresh();
 }
 
@@ -90,7 +98,7 @@ void PanelViewerFWSensor::executeModeGeometryMoving()
 	//position de la souris
 	if (m_geometry == GEOMETRY_POINT)
 	{
-		m_pointCallback(TPoint2D<int>(m_ghostLayer.m_pointPosition.x, m_ghostLayer.m_pointPosition.y));
+		m_pointCallback(TPoint2D<int>(m_ghostLayer->m_pointPosition.x, m_ghostLayer->m_pointPosition.y));
 	}
 //	else if (m_geometry == GEOMETRY_CIRCLE)
 //	{
@@ -119,7 +127,7 @@ PanelViewerFWSensor* createPanelViewerFWSensor(wxFrame* parent)
 
 void PanelViewerFWSensor::Register(wxFrame* parent)
 {
-	panel_manager::Instance()->Register("PanelViewerFWSensor", boost::bind(createPanelViewerFWSensor, parent));
+	panel_manager::instance()->Register("PanelViewerFWSensor", boost::bind(createPanelViewerFWSensor, parent));
 }
 
 

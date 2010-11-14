@@ -57,25 +57,25 @@ using boost::shared_ptr;
 		static bool registerModule()\
 		{\
 			Action action(ModuleTitle, ModuleType, boost::function<void()>(&Module_ ## ModuleName ::preRun));\
-			FAEventHandler::Instance()->registerAction(action);\
+			FAEventHandler::instance()->registerAction(action);\
 			return true;\
 		}\
 		static void preRun()\
 		{\
 			run();\
-			FAEventHandler::Instance()->guiParseFiles();\
+			FAEventHandler::instance()->guiParseFiles();\
 		}\
 		static shared_ptr<SelectedImageData> getSelectedImageData()\
 		{\
-			return FAEventHandler::Instance()->getSelectedImageData();\
+			return FAEventHandler::instance()->getSelectedImageData();\
 		}\
 		static shared_ptr<SelectedLidarData> getSelectedLidarData()\
 		{\
-			return FAEventHandler::Instance()->getSelectedLidarData();\
+			return FAEventHandler::instance()->getSelectedLidarData();\
 		}\
 		static shared_ptr<SelectedFullwaveData> getSelectedFullwaveData(const bool loadIntensities = false)\
 		{\
-			return FAEventHandler::Instance()->getSelectedFullwaveData(loadIntensities);\
+			return FAEventHandler::instance()->getSelectedFullwaveData(loadIntensities);\
 		}\
 	};\
 	bool Module_ ## ModuleName::m_registerModule = Module_ ## ModuleName ::registerModule();
@@ -90,21 +90,21 @@ using boost::shared_ptr;
 		static bool registerModule()\
 		{\
 			Action action(ModuleTitle, ModuleType, boost::function<void()>(&Module_ ## ModuleName ::preRun));\
-			FAEventHandler::Instance()->registerAction(action);\
+			FAEventHandler::instance()->registerAction(action);\
 			return true;\
 		}\
 		static void preRun()\
 		{\
 			run();\
-			FAEventHandler::Instance()->guiParseFiles();\
+			FAEventHandler::instance()->guiParseFiles();\
 		}\
 		static shared_ptr<SelectedImageData> getSelectedImageData()\
 		{\
-			return FAEventHandler::Instance()->getSelectedImageData();\
+			return FAEventHandler::instance()->getSelectedImageData();\
 		}\
 		static shared_ptr<SelectedLidarData> getSelectedLidarData()\
 		{\
-			return FAEventHandler::Instance()->getSelectedLidarData();\
+			return FAEventHandler::instance()->getSelectedLidarData();\
 		}\
 	};\
 	bool Module_ ## ModuleName::m_registerModule = Module_ ## ModuleName ::registerModule();
