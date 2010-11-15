@@ -46,8 +46,9 @@ Author:
 //#include "layers/NewImageLayer.h"
 
 #include "boost/gil/extension/matis/float_images.hpp"
-//#include <boost/gil/extension/dynamic_image/any_image.hpp>
-#include <boost/gil/extension/io/tiff_io.hpp>
+#include <boost/gil/extension/dynamic_image/apply_operation.hpp>
+#include <boost/gil/extension/dynamic_image/any_image.hpp>
+//#include <boost/gil/extension/io/tiff_io.hpp>
 
 #include "gui/panel_manager.hpp"
 #include "layers/image_types.hpp"
@@ -66,6 +67,10 @@ PanelViewerFWSensor::~PanelViewerFWSensor()
 {
 }
 
+typedef boost::mpl::vector<
+	boost::gil::gray32F_image_t
+> gray2_image_types;
+
 void PanelViewerFWSensor::addSensorLayer(const shared_ptr<boost::gil::gray32F_image_t>& img)
 {
 	////si GIL
@@ -73,10 +78,9 @@ void PanelViewerFWSensor::addSensorLayer(const shared_ptr<boost::gil::gray32F_im
 	////si ITK
 //	Layer::ptrLayerType layerSensor = Layers::NewImageLayer(fileName);
 
-	boost::gil::any_image<all_image_types> any_sensorFW(*img);
-	
+	boost::gil::any_image<all_image_types> any_sensorFW(img.get() );
 	boost::shared_ptr<image_type> sensor_im(new image_type(any_sensorFW) );
-		//	boost::shared_ptr<any_image_type> any_img(new any_image_type(*img));
+		
 	layer::ptrLayerType layerSensor = image_layer::create_image_layer(sensor_im);
 	add_layer( layerSensor);
 	

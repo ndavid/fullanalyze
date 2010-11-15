@@ -42,6 +42,9 @@ Author:
 using boost::shared_ptr;
 
 #include "boost/gil/extension/matis/float_images.hpp"
+#include <boost/gil/extension/dynamic_image/any_image.hpp>
+#include "layers/image_types.hpp"
+#include "layers/image_layer.hpp"
 
 #include "PanelViewerFW.h"
 
@@ -67,6 +70,9 @@ class PanelViewerFWSensor : public PanelViewerFW
 
 		boost::function<void(const RegionOfInterest2D&)> m_cropCallback;
 		boost::function<void(const TPoint2D<int>&)> m_pointCallback;
+		
 };
+
+
 
 #endif /*PANELVIEWERFWSENSOR_H_*/
