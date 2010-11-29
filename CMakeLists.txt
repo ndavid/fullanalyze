@@ -69,6 +69,29 @@ IF( BUILD_FULLWAVE_SUPPORT )
     ADD_DEFINITIONS(-DBUILD_FULLWAVE)
 ENDIF()
 
+# Headers
+file( GLOB ALL_HEADER_FILES ${SRC_DIR}/3d/*.h ${SRC_DIR}/3d/*.hpp
+                            ${SRC_DIR}/core/*.h ${SRC_DIR}/core/*.hpp
+                            ${SRC_DIR}/core/algorithms/image/*.h ${SRC_DIR}/core/algorithms/image/*.hpp
+                            ${SRC_DIR}/core/algorithms/lidar/*.h ${SRC_DIR}/core/algorithms/lidar/*.hpp
+                            ${SRC_DIR}/core/modules/*.h ${SRC_DIR}/core/modules/*.hpp
+                            ${SRC_DIR}/core/gui/*.h ${SRC_DIR}/core/gui/*.hpp
+                            ${SRC_DIR}/core/gui/3d/*.h ${SRC_DIR}/core/gui/3d/*.hpp
+                            ${SRC_DIR}/core/gui/3d/wxFB/*.h ${SRC_DIR}/core/gui/3d/wxFB/*.hpp
+                            ${SRC_DIR}/core/gui/files/*.h ${SRC_DIR}/core/gui/files/*.hpp
+                            ${SRC_DIR}/core/gui/files/wxFB/*.h ${SRC_DIR}/core/gui/files/wxFB/*.hpp
+                            ${SRC_DIR}/core/gui/images/*.h ${SRC_DIR}/core/gui/images/*.hpp
+                            ${SRC_DIR}/core/gui/plot/*.h ${SRC_DIR}/core/gui/plot/*.hpp
+                            ${SRC_DIR}/tools/files/*.h ${SRC_DIR}/tools/files/*.hpp
+                            ${SRC_DIR}/3d/fullwave/*.h ${SRC_DIR}/3d/fullwave/*.hpp
+                            ${SRC_DIR}/core/modules/fullwave/*.h ${SRC_DIR}/core/modules/fullwave/*.hpp
+                            ${SRC_DIR}/gui/plot/fullwave/*.h ${SRC_DIR}/gui/plot/fullwave/*.hpp
+                            ${SRC_DIR}/gui/3d/fullwave/*.h ${SRC_DIR}/gui/3d/fullwave/*.hpp
+                            ${SRC_DIR}/gui/3d/fullwave/wxFB/*.h ${SRC_DIR}/gui/3d/fullwave/wxFB/*.hpp
+                            ${SRC_DIR}/fullwave/algorithms/*.h ${SRC_DIR}/fullwave/algorithms/*.hpp
+                            ${SRC_DIR}/fullwave/format/*.h ${SRC_DIR}/fullwave/format/*.hpp
+)
+
 #plugins
 OPTION(BUILD_PLUGINS "Build plugins" OFF)
 IF( BUILD_PLUGINS )
@@ -187,12 +210,8 @@ else()
 	SET(EXECUTABLE_WIN32 WIN32)
 endif()
 
-ADD_EXECUTABLE(FullAnalyze ${EXECUTABLE_WIN32}
-					${ALL_SRC}
-			   )
+ADD_EXECUTABLE(FullAnalyze ${EXECUTABLE_WIN32} ${ALL_SRC} ${ALL_HEADER_FILES} )
 
-TARGET_LINK_LIBRARIES( FullAnalyze 
-							${FullAnalyze_LIBRAIRIES} LidarFormat GilViewer
-					 )
+TARGET_LINK_LIBRARIES( FullAnalyze ${FullAnalyze_LIBRAIRIES} LidarFormat GilViewer )
 					 
 INSTALL(TARGETS FullAnalyze DESTINATION bin)
