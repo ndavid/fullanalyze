@@ -43,7 +43,7 @@ Author:
 
 #include <boost/shared_ptr.hpp>
 #include "boost/gil/extension/matis/float_images.hpp"
-#include <boost/gil/extension/io/tiff_dynamic_io.hpp>
+#include <boost/gil/extension/io_new/tiff_all.hpp>
 
 using boost::shared_ptr;
 using namespace boost::gil;

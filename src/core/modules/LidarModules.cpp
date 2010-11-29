@@ -57,7 +57,7 @@ Author:
 //images
 #include "boost/gil/extension/matis/float_images.hpp"
 #include <boost/gil/gil_all.hpp>
-#include <boost/gil/extension/io/tiff_io.hpp>
+#include <boost/gil/extension/io_new/tiff_all.hpp>
 namespace gil = boost::gil;
 
 #ifdef WIN32
@@ -116,14 +116,17 @@ void Module_lidar_simple_mns::run()
 
 	const float blankValue = -999;
 	Lidar::LidarOrthoImage<> mns;
-	shared_ptr<gil::gray32F_image_t> result = mns(lidarData.m_container, lidarData.m_transfo, r, Lidar::FonctorSimpleMNS(), blankValue);
+        using namespace boost::gil;
+        shared_ptr<gray32F_image_t> result = mns(lidarData.m_container, lidarData.m_transfo, r, Lidar::FonctorSimpleMNS(), blankValue);
 
 	wxConfigBase *pConfig = wxConfigBase::Get();
 	wxString imagesDir;
 	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
 
-	using namespace boost::filesystem;
-	gil::tiff_write_view( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-basic-mns.tif")).string() , gil::view(*result));
+        using namespace boost::filesystem;
+        write_view( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-basic-mns.tif")).string(),
+                    view(*result),
+                    tiff_tag());
 
 	Lidar::Orientation2D ori = mns.getOri();
 	ori.SaveOriToFile( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-basic-mns.ori")).string() );
@@ -155,17 +158,20 @@ void Module_lidar_point_density::run()
 	else
 		return;
 
-	Lidar::LidarOrthoImage<> density_image;
-	shared_ptr<gil::gray32F_image_t> result = density_image(lidarData.m_container, lidarData.m_transfo, r, Lidar::FonctorDensityImage(), 0);
+        Lidar::LidarOrthoImage<> density_image;
+        using namespace boost::gil;
+        shared_ptr<gray32F_image_t> result = density_image(lidarData.m_container, lidarData.m_transfo, r, Lidar::FonctorDensityImage(), 0);
 
-	std::cout << "Total number of points: " << std::accumulate(gil::view(*result).begin(), gil::view(*result).end(), 0.) << std::endl;
+        std::cout << "Total number of points: " << std::accumulate(view(*result).begin(), view(*result).end(), 0.) << std::endl;
 
 	wxConfigBase *pConfig = wxConfigBase::Get();
 	wxString imagesDir;
 	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
 
 	using namespace boost::filesystem;
-	gil::tiff_write_view( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-density.tif")).string() , gil::view(*result));
+        write_view( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-density.tif")).string(),
+                    view(*result),
+                    tiff_tag());
 
 	Lidar::Orientation2D ori = density_image.getOri();
 	ori.SaveOriToFile( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-density.ori")).string() );
