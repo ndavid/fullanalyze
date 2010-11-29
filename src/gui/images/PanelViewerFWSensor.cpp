@@ -48,7 +48,7 @@ Author:
 #include "boost/gil/extension/matis/float_images.hpp"
 #include <boost/gil/extension/dynamic_image/apply_operation.hpp>
 #include <boost/gil/extension/dynamic_image/any_image.hpp>
-//#include <boost/gil/extension/io/tiff_io.hpp>
+//#include <boost/gil/extension/io_new/tiff_all.hpp>
 
 #include "gui/panel_manager.hpp"
 #include "layers/image_types.hpp"

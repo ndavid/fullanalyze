@@ -53,6 +53,8 @@ Author:
 
 #include "LidarFormat/tools/Orientation2D.h"
 
+#include <boost/gil/extension/io_new/tiff_all.hpp>
+
 /*** Display module ***/
 
 REGISTER_MODULE(image_display, "Display", Action::IMAGE)
@@ -75,7 +77,9 @@ void Module_image_shading::run()
 	const std::string fileName(getSelectedImageData()->m_fileNames.front());
 
 	shared_ptr<gray32F_image_t> imageIn (new gray32F_image_t);
-	tiff_read_image(fileName, *imageIn);
+        read_image(fileName,
+                   *imageIn,
+                   tiff_tag());
 
 	HillShade img(imageIn);
 	shared_ptr<gray32F_image_t> result = img.run();
@@ -84,7 +88,9 @@ void Module_image_shading::run()
 	wxString imagesDir;
 	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
 
-	tiff_write_view(std::string(imagesDir.fn_str()) + "/" + boost::filesystem::basename(fileName) + "-shaded.tif", view(*result));
+        write_view(std::string(imagesDir.fn_str()) + "/" + boost::filesystem::basename(fileName) + "-shaded.tif",
+                   view(*result),
+                   tiff_tag());
 
 	Lidar::Orientation2D ori;
 	ori.ReadOriFromImageFile(fileName);

@@ -59,7 +59,7 @@ Author:
 
 //images
 #include "boost/gil/extension/matis/float_images.hpp"
-#include <boost/gil/extension/io/tiff_io.hpp>
+#include <boost/gil/extension/io_new/tiff_all.hpp>
 namespace gil = boost::gil;
 
 //3d
