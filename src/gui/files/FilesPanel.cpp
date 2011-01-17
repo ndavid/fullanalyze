@@ -78,13 +78,41 @@ void getFileListExt(std::vector<std::string>& liste, const std::string dirName, 
 	sort(liste.begin(), liste.end());
 }
 
+void getFileListExts(std::vector<std::string>& liste, const std::string dirName, const std::vector<std::string>& extensionNames)
+{
+        liste.clear();
+
+        using namespace boost::filesystem;
+        using namespace std;
+
+        path dir(dirName);
+
+        if(is_directory(dir))
+        {
+                for (directory_iterator itr(dir); itr!=directory_iterator(); ++itr)
+                {
+                    unsigned int i;
+                    for(i=0;i<extensionNames.size();++i)
+                    {
+                        if(itr->path().extension() == extensionNames[i])
+                        {
+                                liste.push_back(itr->path().filename());
+                        }
+                    }
+                }
+
+        }
+
+        sort(liste.begin(), liste.end());
+}
+
 void FilesPanel::parseImageFiles()
 {
 	using namespace std;
 
 	std::string dirName (m_dirPickerImages->GetPath().fn_str());
 
-//	std::cout << "Image path : " << dirName << std::endl;
+        std::cout << "Image path : " << dirName << std::endl;
 
 
 	wxConfigBase *pConfig = wxConfigBase::Get();
@@ -92,9 +120,12 @@ void FilesPanel::parseImageFiles()
 
 	m_treeFiles->DeleteChildren(m_rootImages);
 
-	vector<string> fileList;
-	getFileListExt(fileList, dirName, ".tif");
-
+        vector<string> fileList, extensionList;
+        extensionList.push_back(".tif");
+        extensionList.push_back(".jpg");
+        extensionList.push_back(".png");
+        //        getFileListExt(fileList, dirName, ".tif");
+        getFileListExts(fileList, dirName, extensionList);
 
 	if(!fileList.empty())
 	{
