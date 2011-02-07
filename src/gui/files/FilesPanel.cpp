@@ -37,6 +37,7 @@ Author:
 
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 #include "boost/filesystem.hpp"
 
@@ -110,7 +111,7 @@ void FilesPanel::parseImageFiles()
 {
 	using namespace std;
 
-	std::string dirName (m_dirPickerImages->GetPath().fn_str());
+	std::string dirName ((const char*)m_dirPickerImages->GetPath().mb_str());
 
         std::cout << "Image path : " << dirName << std::endl;
 
@@ -220,7 +221,7 @@ void FilesPanel::parseLidarFiles()
 	using namespace boost::filesystem;
 	using namespace std;
 
-	string dirName ( m_dirPickerLidar->GetPath().fn_str());
+	string dirName ( (const char*)m_dirPickerLidar->GetPath().mb_str());
 
 
 	wxConfigBase *pConfig = wxConfigBase::Get();
@@ -418,22 +419,22 @@ void FilesPanel::OnClickPopupMenu(wxCommandEvent &event)
 
 std::string FilesPanel::getSelectedItemName() const
 {
-	return std::string(m_treeFiles->GetItemText(m_treeFiles->GetSelection()).fn_str());
+	return std::string((const char*)m_treeFiles->GetItemText(m_treeFiles->GetSelection()).mb_str());
 }
 
 std::string FilesPanel::getFullwaveSelectedItemName() const
 {
-	return ( boost::filesystem::path(m_dirPickerFullwave->GetPath().fn_str()) / getSelectedItemName()).string();
+	return ( boost::filesystem::path((const char*)m_dirPickerFullwave->GetPath().mb_str()) / getSelectedItemName()).string();
 }
 
 std::string FilesPanel::getLidarSelectedItemName() const
 {
-	return ( boost::filesystem::path(m_dirPickerLidar->GetPath().fn_str()) / getSelectedItemName()).string();
+	return ( boost::filesystem::path((const char*)m_dirPickerLidar->GetPath().mb_str()) / getSelectedItemName()).string();
 }
 
 std::string FilesPanel::getImagesSelectedItemName() const
 {
-	return ( boost::filesystem::path(m_dirPickerImages->GetPath().fn_str()) / getSelectedItemName()).string();
+	return ( boost::filesystem::path((const char*)m_dirPickerImages->GetPath().mb_str()) / getSelectedItemName()).string();
 }
 
 

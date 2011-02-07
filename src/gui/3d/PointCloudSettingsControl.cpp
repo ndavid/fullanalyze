@@ -271,7 +271,7 @@ void PointCloudSettingsControl::applyColorSingle()
 void PointCloudSettingsControl::generateTextureAttribute()
 {
 	//generation de la texture
-	m_ptCld.generateTexture(std::string(m_filePickerAttributeLut->GetPath().fn_str()));
+	m_ptCld.generateTexture(std::string((const char*)m_filePickerAttributeLut->GetPath().mb_str()));
 }
 
 void PointCloudSettingsControl::computeTextureMatrixAttribute()
@@ -310,12 +310,12 @@ void PointCloudSettingsControl::applyColorAttribute()
 
 void PointCloudSettingsControl::applyColorRGB()
 {
-	m_ptCld.setRedAttributeName(std::string(m_choiceRGB->GetStringSelection().fn_str()));
+	m_ptCld.setRedAttributeName(std::string((const char*)m_choiceRGB->GetStringSelection().mb_str()));
 }
 
 void PointCloudSettingsControl::initColorAttribute()
 {
-	std::string attributeName(m_choiceColorAttributeName->GetStringSelection().fn_str());
+	std::string attributeName((const char*)m_choiceColorAttributeName->GetStringSelection().mb_str());
 
 	//on indique le nom de la texture
 	m_ptCld.setTextureAttributeName(attributeName);

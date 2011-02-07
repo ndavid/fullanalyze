@@ -313,7 +313,7 @@ void CloudControl::AddRow(const std::string &name, CloudSettingsControl *cloudSe
 	layer_index << m_numberOfClouds;
 	//layer_name = layer_name + layer_index.str();
 	wxString layerName(layer_name.substr(0, 50).c_str(), *wxConvCurrent);
-	std::string ln(layerName.fn_str());
+	std::string ln((const char*)layerName.mb_str());
 
 	// on ajoute la ligne dans le conteneur
 	m_rows.push_back(boost::shared_ptr<CloudControlRow>(new CloudControlRow(this, ln, m_numberOfClouds, cloudSettings, tooltip)));
