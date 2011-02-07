@@ -131,14 +131,25 @@ INCLUDE_DIRECTORIES(${SRC_DIR})
 #####################################
 ### Search for needed packages
 #####################################
+find_package(TIFF REQUIRED)
+if(TIFF_FOUND)
+	include_directories(${TIFF_INCLUDE_DIR})
+else()
+	message(FATAL_ERROR "TIFF not found ! Please set TIFF path ...")
+endif()
+
+find_package(JPEG REQUIRED)
+if(JPEG_FOUND)
+	include_directories(${JPEG_INCLUDE_DIR})
+else()
+	message(FATAL_ERROR "JPEG not found ! Please set JPEG path ...")
+endif()
 
 #Find wxWidgets
 if ( WIN32 )
 	FIND_PACKAGE(wxWidgets REQUIRED adv base gl core xml aui xrc html tiff jpeg png)
 	IF(wxWidgets_FOUND)  
 		INCLUDE(${wxWidgets_USE_FILE})
-		include_directories( ${wxWidgets_ROOT_DIR}/src/jpeg )
-		include_directories( ${wxWidgets_ROOT_DIR}/src/tiff )
 		include_directories( ${wxWidgets_ROOT_DIR}/src/png )
 		include_directories( ${wxWidgets_ROOT_DIR}/src/zlib )
 		
