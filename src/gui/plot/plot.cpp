@@ -311,7 +311,7 @@ void Plot::OnClickSaveAs(wxCommandEvent& WXUNUSED(event))
 
 			if (m_frameConfigCalques->AfficheCourbe(it->first) || m_frameConfigCalques->AffichePoints(it->first))
 			{
-				std::string fic(file.fn_str());
+				std::string fic((const char*)file.mb_str());
 				fic += "_" + it->first;
 				std::ofstream fic_ecriture(fic.c_str());
 				fic_ecriture.precision(10);
@@ -487,12 +487,16 @@ const bool PlotCalques::AffichePoints(const std::string& dataName)
 
 const double PlotCalques::GetMinValue(const std::string& dataName)
 {
-	return atof(m_configCalque[dataName]->m_textCtrlMinValueAttribut->GetValue().fn_str());
+	double d;
+	m_configCalque[dataName]->m_textCtrlMinValueAttribut->GetValue().ToDouble(&d);
+	return d;
 }
 
 const double PlotCalques::GetMaxValue(const std::string& dataName)
 {
-	return atof(m_configCalque[dataName]->m_textCtrlMaxValueAttribut->GetValue().fn_str());
+	double d;
+	m_configCalque[dataName]->m_textCtrlMaxValueAttribut->GetValue().ToDouble(&d);
+	return d;
 }
 
 void PlotCalques::OnCheckBox(wxCommandEvent& event)

@@ -88,12 +88,12 @@ void Module_image_shading::run()
 	wxString imagesDir;
 	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
 
-        write_view(std::string(imagesDir.fn_str()) + "/" + boost::filesystem::basename(fileName) + "-shaded.tif",
+        write_view(std::string((const char*)imagesDir.mb_str()) + "/" + boost::filesystem::basename(fileName) + "-shaded.tif",
                    view(*result),
                    tiff_tag());
 
 	Lidar::Orientation2D ori;
 	ori.ReadOriFromImageFile(fileName);
-	ori.SaveOriToFile(std::string(imagesDir.fn_str()) + "/" + boost::filesystem::basename(fileName) + "-shaded.ori");
+	ori.SaveOriToFile(std::string((const char*)imagesDir.mb_str()) + "/" + boost::filesystem::basename(fileName) + "-shaded.ori");
 }
 
