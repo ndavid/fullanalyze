@@ -162,7 +162,7 @@ void FilesPanel::parseFullwaveFiles()
 	using namespace boost::filesystem;
 	using namespace std;
 
-	string dirName ( m_dirPickerFullwave->GetPath().fn_str());
+	string dirName ( (const char*)m_dirPickerFullwave->GetPath().mb_str());
 
 
 	wxConfigBase *pConfig = wxConfigBase::Get();

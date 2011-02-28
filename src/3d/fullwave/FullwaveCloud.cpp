@@ -41,19 +41,21 @@ Author:
  * \author Adrien Chauve
  * \date 20 févr. 2009
  */
+#ifdef WIN32
+   #define NOMINMAX
+   #include "windows.h" 
+#endif
 
 #include <numeric>
 #include <algorithm>
 
-#ifdef WIN32
-   #include "windows.h" 
-#endif
+
 
 #include "GL/gl.h"
 #include "GL/glu.h"
 
 
-#include "tools/ColorLookupTable.h"
+#include "tools/color_lookup_table.hpp"
 
 #include "LidarFormat/geometry/RegionOfInterest2D.h"
 
@@ -61,10 +63,11 @@ Author:
 #include "fullwave/algorithms/FullwaveSpatialIndexation.h"
 
 ///projection points
-#include "gui/PanelManager.h"
-#include "layers/VectorLayer.hpp"
-#include "layers/ImageLayer.hpp"
-#include "layers/VectorLayerContent.hpp"
+#include "gui/panel_manager.hpp"
+#include "layers/vector_layer.hpp"
+#include "layers/image_layer.hpp"
+//#include "layers/vector_layer_content.hpp"
+#include "layers/simple_vector_layer.hpp"
 
 #include "core/modules/FAEventHandler.h"
 
@@ -87,8 +90,8 @@ FullwaveCloud::FullwaveCloud(const shared_ptr<const Lidar::FullwaveLidarDataCont
 	name(cloudName);
 	initCentering();
 
-	m_layerFootprints = VectorLayer::CreateVectorLayer( "fw_cloud_" + name(), SHPT_ARC, CARTOGRAPHIC_COORDINATES , false );
-
+	//m_layerFootprints = VectorLayer::CreateVectorLayer( "fw_cloud_" + name(), SHPT_ARC, CARTOGRAPHIC_COORDINATES , false );
+	m_layerFootprints = layer::ptrLayerType(new simple_vector_layer( "fw_cloud_" + name()) );
 }
 
 
@@ -345,7 +348,7 @@ void FullwaveCloud::updateFromCrop(const RegionOfInterest2D& region)
 			m_spatialIndexation->setResolution(0.5); //1m //TODO arranger ça !
 			m_spatialIndexation->indexData();
 
-			PanelManager::Instance()->GetPanelsList()[0]->AddLayer(m_layerFootprints);
+			panel_manager::instance()->panels_list()[0]->add_layer(m_layerFootprints);
 		}
 
 		m_spatialIndexationIsSet = true;
@@ -363,12 +366,12 @@ void FullwaveCloud::updateFromCrop(const RegionOfInterest2D& region)
 
 void FullwaveCloud::updateVisuCrop()
 {
-	m_layerFootprints->Clear();
+	m_layerFootprints->clear();
 
 	//	///Projection des points dans le panel pour checker les crops
-	if(FAEventHandler::Instance()->lidarDisplayProjectedPoints() && isVisible())
+	if(FAEventHandler::instance()->lidarDisplayProjectedPoints() && isVisible())
 	{
-		boost::shared_ptr<VectorLayer> vectorLayerArcs = boost::dynamic_pointer_cast<VectorLayer>(m_layerFootprints);
+		boost::shared_ptr<simple_vector_layer> vectorLayerArcs = boost::dynamic_pointer_cast<simple_vector_layer>(m_layerFootprints);
 
 		LidarConstIteratorEcho itb = m_fwContainer->beginEcho();
 		const LidarConstIteratorEcho itBegin = m_fwContainer->beginEcho();
@@ -389,7 +392,7 @@ void FullwaveCloud::updateVisuCrop()
 						const TPoint2D<double> ptOrigin = m_transfo.applyTransfo(TPoint2D<float>(m_fwHelper.originXNthSequence(itb, i), m_fwHelper.originYNthSequence(itb, i)));
 						const TPoint2D<double> ptEnd = m_transfo.applyTransfo(TPoint2D<float>(m_fwHelper.endXNthSequence(itb, i), m_fwHelper.endYNthSequence(itb, i)));
 
-						vectorLayerArcs->AddLine(ptOrigin.x, ptOrigin.y, ptEnd.x, ptEnd.y);
+						vectorLayerArcs->add_line(ptOrigin.x, ptOrigin.y, ptEnd.x, ptEnd.y);
 					}
 					else
 						break;
@@ -401,7 +404,7 @@ void FullwaveCloud::updateVisuCrop()
 
 	}
 
-	PanelManager::Instance()->GetPanelsList()[0]->Refresh();
+	panel_manager::instance()->panels_list()[0]->Refresh();
 }
 
 void FullwaveCloud::resetCrop()

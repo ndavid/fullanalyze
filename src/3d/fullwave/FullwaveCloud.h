@@ -49,7 +49,7 @@ using boost::shared_ptr;
 
 #include "3d/Cloud.h"
 
-#include "layers/VectorLayer.hpp"
+#include "layers/vector_layer.hpp"
 
 
 namespace Lidar
@@ -131,7 +131,7 @@ class FullwaveCloud : public Cloud
 		unsigned char m_sphereDetails;
 
 		///FW cloud footprints
-		Layer::ptrLayerType m_layerFootprints;
+		layer::ptrLayerType m_layerFootprints;
 
 
 		void initCentering();
