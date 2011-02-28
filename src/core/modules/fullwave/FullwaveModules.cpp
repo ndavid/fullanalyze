@@ -77,7 +77,7 @@ void Module_fullwave_display3d::run()
 	shared_ptr<SelectedFullwaveData> selectedData = getSelectedFullwaveData(true);
 	const SelectedFullwaveData::FullwaveData& fwData = selectedData->front();
 
-	FAEventHandler::Instance()->getPanel3D()->getCloudControl()->AddCloud( shared_ptr<Cloud>(new FullwaveCloud(fwData.m_container, fwData.m_transfo, fwData.m_basename )));
+	FAEventHandler::instance()->getPanel3D()->getCloudControl()->AddCloud( shared_ptr<Cloud>(new FullwaveCloud(fwData.m_container, fwData.m_transfo, fwData.m_basename )));
 }
 
 
@@ -93,9 +93,9 @@ void Module_fullwave_display1d::run()
 
 
 	shared_ptr<gil::gray32F_image_t> sensorImage = Lidar::FullwaveSensorImage<>()(fwData.m_container, Lidar::FonctorSumBackscatteredEnergy());
-	FAEventHandler::Instance()->getPanelFWSensor()->addSensorLayer(sensorImage);
+	FAEventHandler::instance()->getPanelFWSensor()->addSensorLayer(sensorImage);
 
-	FAEventHandler::Instance()->setPlotFullwave(fwData.m_container);
+	FAEventHandler::instance()->setPlotFullwave(fwData.m_container);
 }
 
 
@@ -112,7 +112,7 @@ void Module_fullwave_correct_intensity::run()
 
 
 	double normalisationValue = 0;
-	wxTextEntryDialog dialogX(FAEventHandler::Instance()->getMainFrame(), _("Normalizing intensity"), _("Please enter text"), _("0."));
+	wxTextEntryDialog dialogX(FAEventHandler::instance()->getMainFrame(), _("Normalizing intensity"), _("Please enter text"), _("0."));
 	if (dialogX.ShowModal() == wxID_OK)
 	{
 		wxString result = dialogX.GetValue();
@@ -144,7 +144,7 @@ void Module_fullwave_center::run()
 	const SelectedFullwaveData::FullwaveData& fwData = selectedData->front();
 
 	double x=0, y=0;
-	wxTextEntryDialog dialogX(FAEventHandler::Instance()->getMainFrame(), _("Transfo x"), _("Please enter text"), _("0."));
+	wxTextEntryDialog dialogX(FAEventHandler::instance()->getMainFrame(), _("Transfo x"), _("Please enter text"), _("0."));
 	if (dialogX.ShowModal() == wxID_OK)
 	{
 		wxString result = dialogX.GetValue();
@@ -157,7 +157,7 @@ void Module_fullwave_center::run()
 	else
 		return;
 
-	wxTextEntryDialog dialogY(FAEventHandler::Instance()->getMainFrame(), _("Transfo y"), _("Please enter text"), _("0."));
+	wxTextEntryDialog dialogY(FAEventHandler::instance()->getMainFrame(), _("Transfo y"), _("Please enter text"), _("0."));
 	if (dialogY.ShowModal() == wxID_OK)
 	{
 		wxString result = dialogY.GetValue();
@@ -196,7 +196,7 @@ void Module_fullwave_display_strip::run()
 
 	std::vector<double> stripX, stripY;
 	FullwaveTools::calculeEmprise(*fwData.m_container, stripX, stripY, fwData.m_transfo);
-	FAEventHandler::Instance()->getPanelFWOrtho()->showStrip(stripX, stripY, fwData.m_basename);
+	FAEventHandler::instance()->getPanelFWOrtho()->showStrip(stripX, stripY, fwData.m_basename);
 }
 
 
