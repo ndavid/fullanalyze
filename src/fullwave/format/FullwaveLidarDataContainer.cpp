@@ -253,7 +253,8 @@ FullwaveLidarDataContainer::FullwaveLidarDataContainer(const std::string &xmlFil
 
 	if(fwMetaData.fullwaveFileName().present())
 	{
-		fileNameIntensities /= fwMetaData.fullwaveFileName().get();
+                std::string fwfilename = fwMetaData.fullwaveFileName().get();
+		fileNameIntensities /= fwfilename;
 	}
 	else
 	{

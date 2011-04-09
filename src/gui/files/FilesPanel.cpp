@@ -69,7 +69,7 @@ void getFileListExt(std::vector<std::string>& liste, const std::string dirName, 
 		{
 			if(itr->path().extension() == extensionName)
 			{
-				liste.push_back(itr->path().filename());
+				liste.push_back(itr->path().filename().string());
 			}
 		}
 
@@ -392,17 +392,17 @@ std::string FilesPanel::getSelectedItemName() const
 
 std::string FilesPanel::getFullwaveSelectedItemName() const
 {
-	return ( boost::filesystem::path(m_dirPickerFullwave->GetPath().fn_str()) / getSelectedItemName()).string();
+	return ( boost::filesystem::path((const char*) ( m_dirPickerFullwave->GetPath().mb_str(wxConvUTF8)) ) / getSelectedItemName()).string();
 }
 
 std::string FilesPanel::getLidarSelectedItemName() const
 {
-	return ( boost::filesystem::path(m_dirPickerLidar->GetPath().fn_str()) / getSelectedItemName()).string();
+	return ( boost::filesystem::path((const char*)(m_dirPickerLidar->GetPath().mb_str(wxConvUTF8)) ) / getSelectedItemName()).string();
 }
 
 std::string FilesPanel::getImagesSelectedItemName() const
 {
-	return ( boost::filesystem::path(m_dirPickerImages->GetPath().fn_str()) / getSelectedItemName()).string();
+	return ( boost::filesystem::path((const char*) (m_dirPickerImages->GetPath().mb_str(wxConvUTF8))) / getSelectedItemName()).string();
 }
 
 
