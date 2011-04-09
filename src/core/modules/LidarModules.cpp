@@ -123,10 +123,10 @@ void Module_lidar_simple_mns::run()
 	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
 
 	using namespace boost::filesystem;
-	gil::tiff_write_view( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-basic-mns.tif")).string() , gil::view(*result));
+	gil::tiff_write_view( (path((const char*) (imagesDir.mb_str(wxConvUTF8)) ) / (lidarData.m_basename + "-basic-mns.tif")).string() , gil::view(*result));
 
 	Lidar::Orientation2D ori = mns.getOri();
-	ori.SaveOriToFile( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-basic-mns.ori")).string() );
+	ori.SaveOriToFile( (path((const char*) imagesDir.mb_str(wxConvUTF8)) / (lidarData.m_basename + "-basic-mns.ori")).string() );
 
 }
 
@@ -165,10 +165,10 @@ void Module_lidar_point_density::run()
 	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
 
 	using namespace boost::filesystem;
-	gil::tiff_write_view( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-density.tif")).string() , gil::view(*result));
+	gil::tiff_write_view( (path((const char*) (imagesDir.mb_str(wxConvUTF8)) ) / (lidarData.m_basename + "-density.tif")).string() , gil::view(*result));
 
 	Lidar::Orientation2D ori = density_image.getOri();
-	ori.SaveOriToFile( (path(imagesDir.fn_str()) / (lidarData.m_basename + "-density.ori")).string() );
+	ori.SaveOriToFile( (path((const char*) (imagesDir.mb_str(wxConvUTF8))) / (lidarData.m_basename + "-density.ori")).string() );
 
 }
 
