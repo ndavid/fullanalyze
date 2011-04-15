@@ -45,6 +45,11 @@ Author:
 #include "LidarFormat/file_formats/StaticRegisterFormats.cpp"
 #endif
 
+#include "GilViewer/io/gilviewer_io_factory.hpp"
+#include "GilViewer/config/config.hpp"
+#if GILVIEWER_USE_GDAL
+#   include <gdal/ogrsf_frmts.h>
+#endif // GILVIEWER_USE_GDAL
 
 #ifdef __LINUX__
 #include <locale.h>
@@ -69,9 +74,9 @@ bool MyApp::InitFrame()
 
 	wxInitAllImageHandlers();
 
-#ifdef _WINDOWS
+/*#ifdef _WINDOWS
 	registerAllFileFormats();
-#endif
+#endif*/
 
 	m_mainFrameDock = new MainFrame;
 
@@ -84,6 +89,10 @@ bool MyApp::OnInit()
 setlocale (LC_ALL,"POSIX");
 #endif
 
+ register_all_file_formats();
+#if GILVIEWER_USE_GDAL
+    OGRRegisterAll();
+#endif // GILVIEWER_USE_GDAL
 	try
 	{
 		if ( InitFrame() )
