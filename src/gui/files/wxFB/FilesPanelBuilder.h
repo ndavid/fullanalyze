@@ -68,7 +68,7 @@ class FilesPanelBuilder : public wxPanel
 	protected:
 		enum
 		{
-			ID_DIR_PICKER_IMAGES = 100000,
+			ID_DIR_PICKER_IMAGES = 20000,
 			ID_DIR_PICKER_LIDAR,
 			ID_DIR_PICKER_FULLWAVE,
 			ID_TREE_FILES,

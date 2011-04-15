@@ -201,6 +201,21 @@ ELSE( GilViewer_FOUND)
 	MESSAGE(SEND_ERROR " GilViewernot found ! check if you have still install this library
 	and/or set the correct  GilViewerConfig path ")
 ENDIF(GilViewer_FOUND)
+
+# Option to choose to use GDAL/OGR
+option(USE_GDAL_OGR "Build GilVeiwer with GDAL/OGR" OFF)
+if(USE_GDAL_OGR)
+    # Find GDAL
+    find_package(GDAL)
+    if(GDAL_FOUND)
+        include_directories(${GDAL_INCLUDE_DIR})
+    else()
+        message(FATAL_ERROR "GDAL not found!")
+    endif()
+    set( GILVIEWER_USE_GDAL_OGR 1 )
+else()
+    set( GILVIEWER_USE_GDAL_OGR 0 )
+endif()
 #####################################
 ###                     Fin recherche des packages                         ###
 #####################################
