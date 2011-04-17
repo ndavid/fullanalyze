@@ -303,7 +303,11 @@ void FilesPanel::OnDirChangeImages(wxFileDirPickerEvent& event)
 
 void FilesPanel::OnPopupMenu(wxTreeEvent& event)
 {
-	const wxTreeItemId& parent = m_treeFiles->GetItemParent(event.GetItem());
+	wxTreeItemId id_select = event.GetItem();
+	if(!m_treeFiles->IsSelected(id_select))
+		m_treeFiles->SelectItem(id_select);
+
+	const wxTreeItemId& parent = m_treeFiles->GetItemParent(id_select);
 	wxMenu *menuToBeDisplayed = 0;
 
 	if(parent == m_rootImages)
@@ -419,22 +423,26 @@ void FilesPanel::OnClickPopupMenu(wxCommandEvent &event)
 
 std::string FilesPanel::getSelectedItemName() const
 {
-	return std::string((const char*)m_treeFiles->GetItemText(m_treeFiles->GetSelection()).mb_str());
+	std::string selected_item_name =((const char*)m_treeFiles->GetItemText(m_treeFiles->GetSelection()).mb_str());
+	return selected_item_name;
 }
 
 std::string FilesPanel::getFullwaveSelectedItemName() const
 {
-	return ( boost::filesystem::path((const char*)m_dirPickerFullwave->GetPath().mb_str()) / getSelectedItemName()).string();
+	std::string fw_selected_item_name = ( boost::filesystem::path((const char*)m_dirPickerFullwave->GetPath().mb_str()) / getSelectedItemName()).string();
+	return fw_selected_item_name;
 }
 
 std::string FilesPanel::getLidarSelectedItemName() const
 {
-	return ( boost::filesystem::path((const char*)m_dirPickerLidar->GetPath().mb_str()) / getSelectedItemName()).string();
+	std::string lidar_selected_item_name= ( boost::filesystem::path((const char*)m_dirPickerLidar->GetPath().mb_str()) / getSelectedItemName()).string();
+	return lidar_selected_item_name;
 }
 
 std::string FilesPanel::getImagesSelectedItemName() const
 {
-	return ( boost::filesystem::path((const char*)m_dirPickerImages->GetPath().mb_str()) / getSelectedItemName()).string();
+	std::string im_selected_image_name = ( boost::filesystem::path((const char*)m_dirPickerImages->GetPath().mb_str()) / getSelectedItemName()).string();
+	return im_selected_image_name;
 }
 
 
