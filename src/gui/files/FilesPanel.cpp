@@ -70,7 +70,7 @@ void getFileListExt(std::vector<std::string>& liste, const std::string dirName, 
 		{
 			if(itr->path().extension() == extensionName)
 			{
-				liste.push_back(itr->path().filename());
+				liste.push_back(itr->path().filename().string());
 			}
 		}
 
