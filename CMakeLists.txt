@@ -185,7 +185,8 @@ endif()
 FIND_PACKAGE(LidarFormat REQUIRED)
 IF(LidarFormat_FOUND)
 	MESSAGE(STATUS "LidarFormat_FOUND found !")
-	include_directories(${LidarFormat_INCLUDE_DIRS})
+	include_directories(${LidarFormat_INCLUDE_DIRS} ) 
+        MESSAGE(STATUS "LidarFormat_INCLUDE_DIRS "${LidarFormat_INCLUDE_DIRS}" ")
 ELSE(LidarFormat_FOUND)
 	# For convenience. inform the user
 	MESSAGE(SEND_ERROR "LidarFormat not found ! check if you have still install this library
