@@ -1,0 +1,8 @@
+.cproject
+.project
+CMakeCache.txt
+CMakeFiles
+FullAnalyze
+Makefile
+cmake_install.cmake
+src/plugins
