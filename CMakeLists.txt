@@ -169,7 +169,21 @@ endif()
 
 # Find BOOST
 # CMake does not include boost version 1.39
-SET(Boost_ADDITIONAL_VERSIONS "1.37.0" "1.37" "1.38" "1.38.0" "1.39.0" "1.39")
+SET(BOOST_ROOT "" CACHE PATH " path to boost root directory")
+SET(Boost_ADDITIONAL_VERSIONS 
+          "1.37.0" "1.37" 
+          "1.38" "1.38.0" 
+          "1.39.0" "1.39"
+           "1.40"
+           "1.41"
+          "1.42"
+          "1.43"
+          "1.44"
+           "1.46" "1.46.1"
+)
+SET(Boost_USE_STATIC_LIBS OFF CACHE BOOL "use boost static lib")
+SET(Boost_USE_MULTITHREADED ON CACHE BOOL "use boost multi thread lib")
+SET(Boost_NO_SYSTEM_PATHS ON CACHE BOOL "don't use boost_root path variable")
 find_package( Boost 1.36 COMPONENTS filesystem system)
 if( Boost_FOUND )
 	include_directories( ${Boost_INCLUDE_DIR} )
