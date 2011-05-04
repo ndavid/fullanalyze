@@ -124,7 +124,7 @@ void Module_lidar_simple_mns::run()
 	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
 
         using namespace boost::filesystem;
-	gil::tiff_write_view( (path((const char*) (imagesDir.mb_str(wxConvUTF8)) ) / (lidarData.m_basename + "-basic-mns.tif")).string(),
+	write_view( (path((const char*) (imagesDir.mb_str(wxConvUTF8)) ) / (lidarData.m_basename + "-basic-mns.tif")).string(),
                     view(*result),
                     tiff_tag());
 
@@ -169,7 +169,7 @@ void Module_lidar_point_density::run()
 	pConfig->Read(_T("/FA/Paths/ImagesWorkingDir"), &imagesDir, _(""));
 
 	using namespace boost::filesystem;
-	gil::tiff_write_view( (path((const char*) (imagesDir.mb_str(wxConvUTF8)) ) / (lidarData.m_basename + "-density.tif")).string() ,
+	write_view( (path((const char*) (imagesDir.mb_str(wxConvUTF8)) ) / (lidarData.m_basename + "-density.tif")).string() ,
                     view(*result),
                     tiff_tag());
 
@@ -298,7 +298,11 @@ void Module_lidar_print_echoes::run()
 		std::ostringstream message;
         message << "Error while loading lidar data ";
         message << "\n" << e.what();
+                #if wxMINOR_VERSION <9
 		::wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
+                #else
+		wxLogMessage( wxString(message.str().c_str(), *wxConvCurrent) );
+                #endif
 //		::wxLogWindow::;
 		return;
 	}

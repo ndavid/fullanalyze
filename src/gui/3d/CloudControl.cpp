@@ -611,7 +611,11 @@ void CloudControl::SwapRows(const unsigned int firstRow, const unsigned int seco
 		// On est dans du wx, je m'autorise une MessageBox ...
 		std::string mess(oss.str());
 		wxString mes(mess.c_str(), *wxConvCurrent);
+                #if wxMINOR_VERSION < 9
 		::wxLogMessage(mes);
+                #else
+		wxLogMessage(mes);
+                #endif
 		return;
 	}
 	else if (firstRow >= m_numberOfClouds || secondRow >= m_numberOfClouds)
@@ -626,7 +630,11 @@ void CloudControl::SwapRows(const unsigned int firstRow, const unsigned int seco
 		// On est dans du wx, je m'autorise une MessageBox ...
 		std::string mess(oss.str());
 		wxString mes(mess.c_str(), *wxConvCurrent);
+                #if wxMINOR_VERSION < 9
 		::wxLogMessage(mes);
+                #else
+		wxLogMessage(mes);
+                #endif
 		return;
 	}
 
