@@ -299,8 +299,12 @@ void Plot::OnClickCalques(wxCommandEvent& event)
 
 void Plot::OnClickSaveAs(wxCommandEvent& WXUNUSED(event))
 {
+        #if wxMINOR_VERSION <9
 	wxString file = wxFileSelector(_("Enregistrer les courbes sous (format ASCII)"), _(""), _(""), _(""), _("*.*"), wxSAVE, this);
-	std::cout<<"\tFichier choisi : "<<file<<"\n";
+	#else
+	wxString file = wxFileSelector(_("Enregistrer les courbes sous (format ASCII)"), _(""), _(""), _(""), _("*.*"), wxFD_SAVE, this);
+        #endif
+        std::cout<<"\tFichier choisi : "<<file<<"\n";
 
 	if (!file.empty())
 	{
