@@ -1,7 +1,7 @@
 PROJECT( FullAnalyze )
 
 cmake_minimum_required(VERSION 2.6)
-
+set(FullAnalyze_version "000200")
 # Useful for Eclipse code STL completion
 if(UNIX)
 	exec_program( gcc ARGS -dumpversion OUTPUT_VARIABLE GCC_VERSION )
