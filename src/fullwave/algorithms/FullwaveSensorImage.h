@@ -127,6 +127,15 @@ struct FullwaveSensorImage
 
 			for(; itSensorImage != sensorImage.end(); ++itSensorImage, ++itbW, ++itb)
 			{
+                                if(itbW == fwContainer->getBasicWaveformContainer().end())
+				 {
+                                  std::cout<<" end of waveform iterator reach "<<std::endl;
+                                 } 
+                                if(itb == fwContainer->endEcho() )
+                                {
+                                 std::cout<<"end of echo iterator reach "<<std::endl;
+                                }
+
 				*itSensorImage = f(fwHelper, itbW, itb);
 			}
 

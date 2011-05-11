@@ -91,10 +91,8 @@ void Module_fullwave_display1d::run()
 	shared_ptr<SelectedFullwaveData> selectedData = getSelectedFullwaveData(true);
 	const SelectedFullwaveData::FullwaveData& fwData = selectedData->front();
 
-
 	shared_ptr<gil::gray32F_image_t> sensorImage = Lidar::FullwaveSensorImage<>()(fwData.m_container, Lidar::FonctorSumBackscatteredEnergy());
-	FAEventHandler::instance()->getPanelFWSensor()->addSensorLayer(sensorImage);
-
+        FAEventHandler::instance()->getPanelFWSensor()->addSensorLayer(sensorImage);
 	FAEventHandler::instance()->setPlotFullwave(fwData.m_container);
 }
 
