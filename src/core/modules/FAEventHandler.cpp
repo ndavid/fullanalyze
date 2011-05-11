@@ -331,11 +331,3 @@ void FAEventHandler::setPlotFullwave(const shared_ptr<Lidar::FullwaveLidarDataCo
 #endif
 
 
-
-
-
-
-
-
-
-
