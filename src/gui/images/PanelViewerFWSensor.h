@@ -63,7 +63,7 @@ class PanelViewerFWSensor : public PanelViewerFW
 
 	protected:
 		///Raffraichissement des visus après événements
-		virtual void executeModeGeometryMoving();
+		virtual void execute_mode_geometry_moving();
 
 		PanelViewerFWSensor(wxFrame *parent);
 		friend PanelViewerFWSensor* createPanelViewerFWSensor(wxFrame* parent);

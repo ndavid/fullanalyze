@@ -66,8 +66,6 @@ PanelViewerFWSensor::~PanelViewerFWSensor()
 
 void PanelViewerFWSensor::addSensorLayer(const shared_ptr<boost::gil::gray32F_image_t>& img)
 {
-        std::cout<<" PanelViewerFWSensor::addSensorLayer "<<std::endl;
-        std::cout<<" get any_image "<<std::endl;
 	//boost::gil::any_image<all_image_types> any_sensorFW(img.get() );
         any_image_type any_sensorFW( *img );
 	boost::shared_ptr<image_type> sensor_im(new image_type(any_sensorFW) );
@@ -87,7 +85,7 @@ void PanelViewerFWSensor::setPointCallback(const boost::function<void(const TPoi
 	m_pointCallback = pointCallback;
 }
 
-void PanelViewerFWSensor::executeModeGeometryMoving()
+void PanelViewerFWSensor::execute_mode_geometry_moving()
 {
 	//position de la souris
 	if (m_geometry == GEOMETRY_POINT)
