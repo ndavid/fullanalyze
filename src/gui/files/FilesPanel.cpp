@@ -70,7 +70,11 @@ void getFileListExt(std::vector<std::string>& liste, const std::string dirName, 
 		{
 			if(itr->path().extension() == extensionName)
 			{
-				liste.push_back(itr->path().filename().string());
+#               if BOOST_FILESYSTEM_VERSION < 3
+                    liste.push_back(itr->path().filename());
+#               else
+                    liste.push_back(itr->path().filename().string() );
+#               endif
 			}
 		}
 
